@@ -1,0 +1,16 @@
+@font-face {
+	font-family: "Emmentaler-26";
+	src: url("emmentaler-26.woff");
+	font-weight: 500;
+	font-stretch: normal;
+	font-style: normal;
+	unicode-range: U+20, U+2B-2E, U+30-39, U+66,
+		U+6D, U+70, U+72-73, U+7A,
+		U+E100-E31F;
+}
+
+.emmentaler
+{
+	font-family: "Emmentaler-26";
+	font-size: 2rem;
+}

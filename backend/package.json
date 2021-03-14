@@ -1,0 +1,17 @@
+{
+  "name": "ame-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "run": "(cd dist && node main.js)"
+  },
+  "keywords": [],
+  "author": "Amir Czwink",
+  "license": "AGPL-3.0",
+  "dependencies": {
+    "typescript": "^4.1.5",
+    "acts-util-node": "*"
+  }
+}
