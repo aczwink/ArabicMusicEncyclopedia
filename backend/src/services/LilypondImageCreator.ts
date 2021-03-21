@@ -21,7 +21,7 @@ import os from "os";
 import path from "path";
 
 import { Injectable } from "acts-util-node";
-import { Accidental, NaturalNote, OctavePitch, OctavePitchToString } from "ame-api";
+import { Accidental, NaturalNote, OctavePitch } from "ame-api";
 import { ChordType } from "./ChordDetectionService";
 
 @Injectable
@@ -30,10 +30,15 @@ export class LilypondImageCreator
     //Public methods
     public async CreateChordImage(chords: (ChordType | undefined)[], pitches: OctavePitch[])
     {
+        return this.CreateImage(this.ChordsToLilypondText(chords, pitches));
+    }
+
+    public async CreateImage(text: string)
+    {
         const dir = await fs.promises.mkdtemp(`${os.tmpdir()}${path.sep}ame`, "utf-8");
 
         const inputPath = path.join(dir, "_input");
-        await fs.promises.writeFile(inputPath, this.ChordsToLilypondText(chords, pitches), "utf-8");
+        await fs.promises.writeFile(inputPath, text, "utf-8");
         await this.CallLilypond(dir, inputPath);
 
         const outputPath = path.join(dir, "_output.png");
@@ -47,14 +52,17 @@ export class LilypondImageCreator
     //Private methods
     private async CallLilypond(inputDir: string, inputPath: string)
     {
-        const child = child_process.exec("lilypond --png " + inputPath, {
-            cwd: inputDir,
+        const promise = new Promise<void>( (resolve, reject) => {
+            child_process.exec("lilypond --png " + inputPath, {
+                cwd: inputDir,
+            }, (err, _stdout, _stderr) => {
+                if(err)
+                    reject(err);
+                else
+                    resolve();
+            });
         });
-
-        await new Promise( (resolve, reject) => {
-            child.on("exit", resolve);
-            child.on("error", reject);
-        });
+        await promise;
 
         const child2 = child_process.exec("convert -trim " + inputPath + ".png" + " _output.png", {
             cwd: inputDir,

@@ -43,9 +43,8 @@ export class MaqamatController
         WHERE m.id = ?
         `;
 
-        const conn = await this.dbController.GetFreeConnection();
+        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
         const row = await conn.SelectOne(query, maqamId);
-        conn.Release();
 
         if(row === undefined)
             return undefined;
@@ -66,10 +65,9 @@ export class MaqamatController
         WHERE m.id = ?
         `;
 
-        const conn = await this.dbController.GetFreeConnection();
+        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
         const row = await conn.SelectOne(query, maqamId);
         const rows = await conn.Select("SELECT branchingJinsId FROM amedb.maqamat_forms WHERE maqamId = ?", maqamId);
-        conn.Release();
 
         if(row === undefined)
             return undefined;
@@ -90,9 +88,8 @@ export class MaqamatController
             args.push(rootJinsId);
         }
 
-        const conn = await this.dbController.GetFreeConnection();
+        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
         const rows = await conn.Select<Maqamat.API.List.MaqamOverviewData>(query, ...args);
-        conn.Release();
 
         return rows;
     }

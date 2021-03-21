@@ -19,13 +19,17 @@
 import { Routes } from "acfrontend";
 import { routes as ajnasRoutes } from "./ajnas/routing";
 import { routes as maqamatRoutes } from "./maqamat/routing";
+import { routes as musicalPiecesRoutes } from "./musical_pieces/routing";
 import { routes as rhythmsRoutes } from "./rhythms/routing";
+import { routes as personsRoutes } from "./persons/routing";
 import { routes as wikiRoutes } from "./wiki/routing";
 
 export const routes : Routes = [
     { path: "ajnas", children: ajnasRoutes },
     { path: "maqamat", children: maqamatRoutes },
+    { path: "musicalpieces", children: musicalPiecesRoutes },
     { path: "rhythms", children: rhythmsRoutes },
+    { path: "persons", children: personsRoutes },
     { path: "wiki", children: wikiRoutes },
     { path: "*", redirect: "wiki" },
 ];

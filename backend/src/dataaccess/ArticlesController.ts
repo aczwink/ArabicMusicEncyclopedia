@@ -29,18 +29,15 @@ export class ArticlesController
     //Public methods
     public async CreateArticle(title: string, text: string)
     {
-        const conn = await this.dbController.GetFreeConnection();
+        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
         await conn.InsertRow("amedb.articles", { title, text });
-        conn.Release();
     }
 
     public async QueryArticle(title: string): Promise<Article | undefined>
     {
-        const conn = await this.dbController.GetFreeConnection();
+        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
 
         const row = await conn.SelectOne("SELECT id, text FROM amedb.articles WHERE title = ?", title);
-
-        conn.Release();
 
         if(row === undefined)
             return undefined;

@@ -15,38 +15,39 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
+
 import { Injectable } from "acts-util-node";
-import { Rhythms } from "ame-api";
+import { Musical } from "ame-api";
 import { DatabaseController } from "./DatabaseController";
 
 @Injectable
-export class RhythmsController
+export class MusicalController
 {
     constructor(private dbController: DatabaseController)
     {
     }
 
     //Public methods
-    public async QueryRhythm(rhythmId: number)
+    public async QueryLanguages()
     {
-        let query = `
-        SELECT *
-        FROM amedb.rhythms
-        WHERE id = ?
-        `;
-
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const row = await conn.SelectOne<Rhythms.Rhythm>(query, rhythmId);
+        const rows= await conn.Select<Musical.API.LanguagesAPI.List.Language>("SELECT * FROM amedb.musical_pieces_languages");
+
+        return rows;
+    }
+
+    public async QueryForm(formId: number)
+    {
+        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
+        const row = await conn.SelectOne<Musical.API.FormsAPI.List.Form>("SELECT * FROM amedb.musical_pieces_forms WHERE id = ?", formId);
 
         return row;
     }
 
-    public async QueryRhythms(): Promise<Rhythms.RhythmOverviewData[]>
+    public async QueryForms() : Promise<Musical.API.FormsAPI.List.Form[]>
     {
-        let query = "SELECT id, name, timeSigNum, timeSigDen FROM amedb.rhythms";
-
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const rows = await conn.Select<Rhythms.RhythmOverviewData>(query);
+        const rows = await conn.Select<Musical.API.FormsAPI.List.Form>("SELECT * FROM amedb.musical_pieces_forms");
 
         return rows;
     }

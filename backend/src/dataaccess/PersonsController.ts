@@ -15,38 +15,40 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
+
 import { Injectable } from "acts-util-node";
-import { Rhythms } from "ame-api";
+import { Persons } from "ame-api";
+import { PersonType } from "ame-api/dist/Persons";
 import { DatabaseController } from "./DatabaseController";
 
 @Injectable
-export class RhythmsController
+export class PersonsController
 {
     constructor(private dbController: DatabaseController)
     {
     }
 
     //Public methods
-    public async QueryRhythm(rhythmId: number)
+    public async QueryPerson(personId: number)
     {
-        let query = `
-        SELECT *
-        FROM amedb.rhythms
-        WHERE id = ?
-        `;
-
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const row = await conn.SelectOne<Rhythms.Rhythm>(query, rhythmId);
+        const row = await conn.SelectOne<Persons.Person>("SELECT name, type, lifeTime, origin FROM amedb.persons WHERE id = ?", personId);
 
         return row;
     }
 
-    public async QueryRhythms(): Promise<Rhythms.RhythmOverviewData[]>
+    public async QueryPersonImage(personId: number)
     {
-        let query = "SELECT id, name, timeSigNum, timeSigDen FROM amedb.rhythms";
-
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const rows = await conn.Select<Rhythms.RhythmOverviewData>(query);
+        const row = await conn.SelectOne("SELECT data FROM amedb.persons_images WHERE personId = ?", personId);
+
+        return row;
+    }
+
+    public async QueryPersons(type: PersonType): Promise<Persons.PersonOverviewData[]>
+    {
+        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
+        const rows = await conn.Select<Persons.PersonOverviewData>("SELECT id, name FROM amedb.persons WHERE type = ?", type);
 
         return rows;
     }

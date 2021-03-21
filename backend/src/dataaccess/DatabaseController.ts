@@ -16,33 +16,54 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Injectable, MySQLConnectionPool } from "acts-util-node";
+import { DBConnectionPool, DBFactory, DBResource, Injectable } from "acts-util-node";
 
 @Injectable
 export class DatabaseController
 {
     constructor()
     {
-        this.pool = new MySQLConnectionPool({
-            host: "localhost",
-            user: "phpmyadmin",
-            password: "phpmyadmin"
-        });
-
-        this.pool.CheckConfig();
+        this.pool = null;
     }
 
     //Public methods
     public Close()
     {
+        if(this.pool === null)
+            return;
         this.pool.Close();
+        this.pool = null;
     }
 
-    public GetFreeConnection()
+    public async CreateAnyConnectionQueryExecutor()
     {
-        return this.pool.GetFreeConnection();
+        const instance = await this.GetPoolInstance();
+        return instance.value.CreateAnyConnectionQueryExecutor();
+    }
+
+    public async GetFreeConnection()
+    {
+        const instance = await this.GetPoolInstance();
+        return instance.value.GetFreeConnection();
     }
 
     //Private members
-    private pool: MySQLConnectionPool;
+    private pool: DBResource<DBConnectionPool> | null;
+
+    //Private methods
+    private async GetPoolInstance()
+    {
+        if(this.pool === null)
+        {
+            const factory = new DBFactory;
+
+            this.pool = await factory.CreateConnectionPool({
+                type: "mysql",
+                host: "localhost",
+                user: "phpmyadmin",
+                password: "phpmyadmin"
+            });
+        }
+        return this.pool;
+    }
 }

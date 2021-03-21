@@ -30,9 +30,9 @@ export class RootComponent extends Component
                     <Anchor route="/rhythms">Rhythms</Anchor>
                 </NavigationGroup>
                 <NavigationGroup>
-                    <Anchor route="/composers">Composers</Anchor>
-                    <Anchor route="/lyricists">Lyricists</Anchor>
-                    <Anchor route="/singers">Singers</Anchor>
+                    <Anchor route="/persons/composers">Composers</Anchor>
+                    <Anchor route="/persons/lyricists">Lyricists</Anchor>
+                    <Anchor route="/persons/singers">Singers</Anchor>
                 </NavigationGroup>
                 <NavigationGroup>
                     <Anchor route="/musicalpieces">Musical pieces</Anchor>

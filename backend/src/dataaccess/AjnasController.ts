@@ -37,11 +37,9 @@ export class AjnasController
     //Public methods
     public async QueryJins(jinsId: number): Promise<JinsData | undefined>
     {
-        const conn = await this.dbController.GetFreeConnection();
+        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
 
         const row = await conn.SelectOne("SELECT name, basePitch, intervals FROM amedb.ajnas WHERE id = ?", jinsId);
-
-        conn.Release();
 
         if(row === undefined)
             return undefined;
@@ -54,11 +52,9 @@ export class AjnasController
 
     public async QueryAjnas(): Promise<Ajnas.Jins[]>
     {
-        const conn = await this.dbController.GetFreeConnection();
+        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
 
         const rows = await conn.Select("SELECT id, name, basePitch FROM amedb.ajnas");
-
-        conn.Release();
 
         return rows.map(row => ({
             id: row.id,

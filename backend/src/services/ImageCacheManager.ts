@@ -20,7 +20,7 @@ import path from "path";
 
 import { Injectable } from "acts-util-node";
 
-type ImgType = "jins" | "maqam" | "maqamchords";
+type ImgType = "jins" | "maqam" | "maqamchords" | "rhythm";
 
 @Injectable
 export class ImageCacheManager

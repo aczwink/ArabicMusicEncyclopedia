@@ -15,26 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
-import * as Ajnas from "./Ajnas";
-import * as Maqamat from "./Maqamat";
-import * as Musical from "./Musical";
-import * as MusicalPieces from "./MusicalPieces";
-import * as Persons from "./Persons";
-import * as Rhythms from "./Rhythms";
-import * as Wiki from "./Wiki";
-import { Accidental, NaturalNote, OctavePitch, OctavePitchToString, ParseOctavePitch } from "./OctavePitch";
 
-export {
-    Accidental,
-    Ajnas,
-    Maqamat,
-    Musical,
-    MusicalPieces,
-    NaturalNote,
-    OctavePitch,
-    OctavePitchToString,
-    ParseOctavePitch,
-    Persons,
-    Rhythms,
-    Wiki,
-};
+import { Routes } from "acfrontend";
+import { AddMusicalPieceComponent } from "./AddMusicalPieceComponent";
+import { EditMusicalPieceComponent } from "./EditMusicalPieceComponent";
+import { MusicalPieceSearchComponent } from "./MusicalPieceSearchComponent";
+import { ShowMusicalPieceComponent } from "./ShowMusicalPieceComponent";
+
+export const routes : Routes = [
+    { path: "add", component: AddMusicalPieceComponent },
+    { path: "edit/:pieceId", component: EditMusicalPieceComponent },
+    { path: ":pieceId", component: ShowMusicalPieceComponent },
+    { path: "", component: MusicalPieceSearchComponent },
+];

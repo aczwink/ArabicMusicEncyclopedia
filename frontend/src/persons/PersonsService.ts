@@ -15,26 +15,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
-import * as Ajnas from "./Ajnas";
-import * as Maqamat from "./Maqamat";
-import * as Musical from "./Musical";
-import * as MusicalPieces from "./MusicalPieces";
-import * as Persons from "./Persons";
-import * as Rhythms from "./Rhythms";
-import * as Wiki from "./Wiki";
-import { Accidental, NaturalNote, OctavePitch, OctavePitchToString, ParseOctavePitch } from "./OctavePitch";
 
-export {
-    Accidental,
-    Ajnas,
-    Maqamat,
-    Musical,
-    MusicalPieces,
-    NaturalNote,
-    OctavePitch,
-    OctavePitchToString,
-    ParseOctavePitch,
-    Persons,
-    Rhythms,
-    Wiki,
-};
+import { Injectable } from "acfrontend";
+import { Persons } from "ame-api";
+import { APIService } from "../shared/APIService";
+
+@Injectable
+export class PersonsService
+{
+    constructor(private apiService: APIService)
+    {
+    }
+
+    //Public methods
+    public QueryPerson(routeParams: Persons.API.PersonAPI.RouteParams, data: Persons.API.PersonAPI.QueryPerson.RequestData)
+    {
+        return this.apiService.Request<Persons.API.PersonAPI.QueryPerson.ResultData>(Persons.API.PersonAPI.route, Persons.API.PersonAPI.QueryPerson.method, data, routeParams);
+    }
+
+    public QueryPersons(data: Persons.API.List.RequestData)
+    {
+        return this.apiService.Request<Persons.API.List.ResultData>(Persons.API.route, Persons.API.List.method, data);
+    }
+}

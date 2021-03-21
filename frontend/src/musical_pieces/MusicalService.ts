@@ -16,19 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { HTTPMethod, HTTPService, Injectable } from "acfrontend";
-import { g_backendAuthority } from "../backend";
+import { Injectable } from "acfrontend";
+import { Musical } from "ame-api";
+import { APIService } from "../shared/APIService";
 
 @Injectable
-export class APIService
+export class MusicalService
 {
-    constructor(private httpService: HTTPService)
+    constructor(private apiService: APIService)
     {
     }
 
-    //Private methods
-    public Request<T>(route: string, method: HTTPMethod, data: any, routeParams?: any)
+    //Public methods
+    public ListForms(routeParams: Musical.API.FormsAPI.RouteParams, data: Musical.API.FormsAPI.List.RequestData)
     {
-        return this.httpService.SimpleRequest<T>(g_backendAuthority, route, method, data, routeParams);
+        return this.apiService.Request<Musical.API.FormsAPI.List.ResultData>(Musical.API.FormsAPI.route, Musical.API.FormsAPI.List.method, data, routeParams);
+    }
+
+    public ListLanguages(routeParams: Musical.API.LanguagesAPI.RouteParams, data: Musical.API.LanguagesAPI.List.RequestData)
+    {
+        return this.apiService.Request<Musical.API.LanguagesAPI.List.ResultData>(Musical.API.LanguagesAPI.route, Musical.API.LanguagesAPI.List.method, data, routeParams);
     }
 }

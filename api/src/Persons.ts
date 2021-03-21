@@ -16,25 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-export interface RhythmOverviewData
+export enum PersonType
+{
+    Composer = 0,
+    Lyricist = 1,
+    Singer = 2
+};
+
+export interface PersonOverviewData
 {
     id: number;
     name: string;
-    timeSigNum: number;
-    timeSigDen: number;
 }
 
-export interface Rhythm extends RhythmOverviewData
+export interface Person
 {
-    popularity: string;
-    category: string;
-    usageImage: string;
-    usageText: string;
-    text: string;
+    name: string;
+    type: PersonType;
+    lifeTime: string;
+    origin: string;
 }
 
-const mainRoute = "/rhythms";
-const objectRoute = mainRoute + "/:rhythmId";
+const mainRoute = "/persons";
+const objectRoute = mainRoute + "/:personId";
 
 export namespace API
 {
@@ -46,51 +50,56 @@ export namespace API
 
         export interface RequestData
         {
+            type: PersonType;
         }
 
         export interface ResultData
         {
-            rhythms: RhythmOverviewData[];
+            persons: PersonOverviewData[];
         }
     }
 
-    export namespace ImageAPI
-    {
-        export const route = mainRoute + "/image";
-
-        export namespace Query
-        {
-            export const method = "GET";
-
-            export interface RequestData
-            {
-                data: string;
-            }
-    
-            export type ResultData = any;
-        }
-    }
-
-    export namespace RhythmAPI
+    export namespace PersonAPI
     {
         export const route = objectRoute;
 
         export interface RouteParams
         {
-            rhythmId: number;
+            personId: number;
         }
 
-        export namespace Query
+        export namespace QueryPerson
         {
             export const method = "GET";
-
+            
             export interface RequestData
             {
             }
-    
+
             export interface ResultData
             {
-                rhythm: Rhythm;
+                person: Person;
+            }
+        }
+
+        export namespace ImageAPI
+        {
+            export const route = objectRoute + "/image";
+
+            export interface RouteParams
+            {
+                personId: number;
+            }
+
+            export namespace Query
+            {
+                export const method = "GET";
+
+                export interface RequestData
+                {
+                }
+        
+                export type ResultData = any;
             }
         }
     }

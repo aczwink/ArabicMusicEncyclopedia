@@ -15,26 +15,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
-import * as Ajnas from "./Ajnas";
-import * as Maqamat from "./Maqamat";
-import * as Musical from "./Musical";
-import * as MusicalPieces from "./MusicalPieces";
-import * as Persons from "./Persons";
-import * as Rhythms from "./Rhythms";
-import * as Wiki from "./Wiki";
-import { Accidental, NaturalNote, OctavePitch, OctavePitchToString, ParseOctavePitch } from "./OctavePitch";
 
-export {
-    Accidental,
-    Ajnas,
-    Maqamat,
-    Musical,
-    MusicalPieces,
-    NaturalNote,
-    OctavePitch,
-    OctavePitchToString,
-    ParseOctavePitch,
-    Persons,
-    Rhythms,
-    Wiki,
-};
+import { HTTPEndPoint, HTTPRequest, HTTPResultData, Injectable } from "acts-util-node";
+import { Persons } from "ame-api";
+import { PersonsController } from "../../dataaccess/PersonsController";
+
+@Injectable
+class _api_
+{
+    constructor(private personsController: PersonsController)
+    {
+    }
+
+    @HTTPEndPoint({ method: Persons.API.List.method, route: Persons.API.route })
+    public async QueryPersons(request: HTTPRequest<Persons.API.List.RequestData>): Promise<HTTPResultData<Persons.API.List.ResultData>>
+    {
+        return {
+            data: {
+                persons: await this.personsController.QueryPersons(request.data.type),
+            }
+        };
+    }
+}
+
+export default _api_;

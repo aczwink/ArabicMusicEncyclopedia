@@ -16,81 +16,65 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-export interface RhythmOverviewData
-{
-    id: number;
-    name: string;
-    timeSigNum: number;
-    timeSigDen: number;
-}
-
-export interface Rhythm extends RhythmOverviewData
-{
-    popularity: string;
-    category: string;
-    usageImage: string;
-    usageText: string;
-    text: string;
-}
-
-const mainRoute = "/rhythms";
-const objectRoute = mainRoute + "/:rhythmId";
+const mainRoute = "/musical";
 
 export namespace API
 {
-    export const route = mainRoute;
-
-    export namespace List
+    export namespace FormsAPI
     {
-        export const method = "GET";
-
-        export interface RequestData
-        {
-        }
-
-        export interface ResultData
-        {
-            rhythms: RhythmOverviewData[];
-        }
-    }
-
-    export namespace ImageAPI
-    {
-        export const route = mainRoute + "/image";
-
-        export namespace Query
-        {
-            export const method = "GET";
-
-            export interface RequestData
-            {
-                data: string;
-            }
-    
-            export type ResultData = any;
-        }
-    }
-
-    export namespace RhythmAPI
-    {
-        export const route = objectRoute;
+        export const route = mainRoute + "/forms";
 
         export interface RouteParams
         {
-            rhythmId: number;
         }
 
-        export namespace Query
+        export namespace List
         {
             export const method = "GET";
 
             export interface RequestData
             {
             }
-    
+
             export interface ResultData
             {
-                rhythm: Rhythm;
+                forms: Form[];
+            }
+
+            export interface Form
+            {
+                id: number;
+                name: string;
+                hasLyrics: boolean;
+            }
+        }
+    }
+
+    export namespace LanguagesAPI
+    {
+        export const route = mainRoute + "/languages";
+
+        export interface RouteParams
+        {
+        }
+
+        export namespace List
+        {
+            export const method = "GET";
+
+            export interface RequestData
+            {
+            }
+
+            export interface ResultData
+            {
+                languages: Language[];
+            }
+
+            export interface Language
+            {
+                id: number;
+                name: string;
             }
         }
     }
