@@ -18,12 +18,13 @@
 
 import { HTTPEndPoint, HTTPRequest, HTTPResultData, Injectable } from "acts-util-node";
 import { MusicalPieces } from "ame-api";
+import { MusicalController } from "../../../dataaccess/MusicalController";
 import { MusicalPiecesController } from "../../../dataaccess/MusicalPiecesController";
 
 @Injectable
 class _api_
 {
-    constructor(private musicalPiecesController: MusicalPiecesController)
+    constructor(private musicalPiecesController: MusicalPiecesController, private musicalController: MusicalController)
     {
     }
 
@@ -42,6 +43,14 @@ class _api_
     @HTTPEndPoint({ method: MusicalPieces.API.PieceAPI.Set.method, route: MusicalPieces.API.PieceAPI.route })
     public async SetPiece(request: HTTPRequest<MusicalPieces.API.PieceAPI.Set.RequestData, MusicalPieces.API.PieceAPI.RouteParams>): Promise<HTTPResultData<MusicalPieces.API.PieceAPI.Set.ResultData>>
     {
+        const form = await this.musicalController.QueryForm(request.data.piece.formId);
+
+        await this.musicalPiecesController.UpdateMusicalPiece(request.routeParams.pieceId, request.data.piece);
+        if(form!.hasLyrics)
+            await this.musicalPiecesController.AddMusicalPieceLyrics(request.routeParams.pieceId, request.data.piece.lyrics!);
+        else
+            await this.musicalPiecesController.DeleteMusicalPieceLyrics(request.routeParams.pieceId);
+
         return {
             data: {
             }

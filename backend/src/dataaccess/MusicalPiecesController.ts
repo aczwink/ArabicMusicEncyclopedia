@@ -61,6 +61,13 @@ export class MusicalPiecesController
         })
     }
 
+    public async DeleteMusicalPieceLyrics(pieceId: number)
+    {
+        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
+
+        await conn.DeleteRows("amedb.musical_pieces_lyrics", "pieceId = ?", pieceId);
+    }
+
     public async QueryMusicalPiece(pieceId: number): Promise<MusicalPieces.Piece | undefined>
     {
         const query = `
@@ -121,6 +128,24 @@ export class MusicalPiecesController
         if(row === undefined)
             return 0;
         return row.cnt as number;
+    }
+
+    public async UpdateMusicalPiece(pieceId: number, piece: MusicalPieces.Piece)
+    {
+        const conn = await this.dbController.GetFreeConnection();
+
+        await conn.value.UpdateRows("amedb.musical_pieces", {
+            name: piece.name,
+            formId: piece.formId,
+            composerId: piece.composerId,
+            releaseDate: piece.releaseDate,
+        }, "id = ?", pieceId);
+
+        await this.SetPieceMaqamatAndRhythms(pieceId, piece.maqamat, piece.rhythms, conn.value);
+
+        conn.Close();
+
+        return pieceId;
     }
 
     //Private methods
