@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 import http from "http";
+import os from "os";
 
 import { Factory, GlobalInjector, HTTP_APILoader } from "acts-util-node";
 import { DatabaseController } from "./dataaccess/DatabaseController";
@@ -24,8 +25,12 @@ const port = 8083;
 
 async function SetupServer()
 {
+    const frontEndPort = 8082;
     const requestHandler = Factory.CreateHTTPRequestHandler({
-        trustedOrigins: ["http://localhost:8082"]
+        trustedOrigins: [
+            "http://localhost:" + frontEndPort,
+            "http://" + os.hostname() + ":" + frontEndPort
+        ]
     });
 
     const server = http.createServer(requestHandler.requestListener);

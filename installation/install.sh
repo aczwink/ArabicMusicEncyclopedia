@@ -45,16 +45,12 @@ sudo npm link
 cd ..
 
 cd backend
-npm link acts-util-core
-npm link acts-util-node
-npm link ame-api
+npm link acts-util-core acts-util-node ame-api
 npm install
 cd ..
 
 cd frontend
-npm link acts-util-core
-npm link acfrontend
-npm link ame-api
+npm link acts-util-core acfrontend ame-api
 npm install
 mkdir dist
 npm run deploy
@@ -72,7 +68,6 @@ cd ..
 
 #issue update
 ln -s ArabicMusicEncyclopedia/installation/update.sh update.sh
-chmod +x update.sh
 ./update.sh
 
 #install systemd unit

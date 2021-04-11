@@ -60,7 +60,7 @@ export class DatabaseController
             this.pool = await factory.CreateConnectionPool({
                 type: "mysql",
                 host: "localhost",
-                user: "phpmyadmin",
+                username: "phpmyadmin",
                 password: "phpmyadmin"
             });
         }
