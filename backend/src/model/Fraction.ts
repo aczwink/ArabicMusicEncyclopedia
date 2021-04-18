@@ -28,6 +28,18 @@ export class Fraction
         return new Fraction( this.num * rhs.den + rhs.num * this.den, this.den * rhs.den).Reduce();
     }
 
+    public Eval()
+    {
+        return this.num / this.den;
+    }
+
+    public Min(other: Fraction)
+    {
+        if(this.Eval() < other.Eval())
+            return this;
+        return other;
+    }
+
     public Negate(): Fraction
     {
         return new Fraction(-this.num, this.den);

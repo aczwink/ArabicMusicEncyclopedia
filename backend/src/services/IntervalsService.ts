@@ -27,6 +27,18 @@ import { Interval } from "../model/Interval";
 export class IntervalsService
 {
     //Public methods
+    public ComputeIntervalsFromPitches(pitches: OctavePitch[])
+    {
+        const result = [];
+        for(let i = 0; i < pitches.length-1; i++)
+        {
+            const d1 = this.IntervalBetween(pitches[i], pitches[i+1]);
+            result.push(d1);
+        }
+
+        return result;
+    }
+
     public ComputeIntervalsUpwardsFromFirst(intervals: Fraction[])
     {
         let last = new Fraction(0, 1);
@@ -41,6 +53,19 @@ export class IntervalsService
     public ExtendScale(intervals: Interval[], extension: number)
     {
         return intervals.concat(intervals.slice(0, extension));
+    }
+
+    public FromNumericIntervals(fractions: Fraction[])
+    {
+        return fractions.map(fraction => {
+            if((fraction.num === 1) && (fraction.den === 1))
+                return Interval.Tone;
+            if((fraction.num === 1) && (fraction.den === 2))
+                return Interval.SemiTone;
+            if((fraction.num === 3) && (fraction.den === 4))
+                return Interval.ThreeQuarters;
+            throw new Error("Illegal fraction: " + fraction.ToString());
+        });
     }
 
     public GetMaqamIntervals(maqam: MaqamData, rootJins: JinsData, branchingJins: JinsData)
@@ -98,6 +123,17 @@ export class IntervalsService
         if(Math.floor(v) === v)
             return v;
         return undefined;
+    }
+
+    private IntervalBetween(a: OctavePitch, b: OctavePitch): Fraction
+    {
+        if(a.baseNote === b.baseNote)
+            return this.AccidentalToFraction(a.accidental).Negate().Add(this.AccidentalToFraction(b.accidental));
+
+        let d = 1;
+        if((a.baseNote === NaturalNote.B) || (a.baseNote === NaturalNote.E))
+            d = 2;
+        return new Fraction(1, d).Add(this.IntervalBetween({ accidental: a.accidental, baseNote: (a.baseNote+1) % 7 }, b));
     }
 
     private NumericIntervalToAccidental(fraction: Fraction): Accidental

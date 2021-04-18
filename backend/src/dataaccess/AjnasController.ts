@@ -54,12 +54,13 @@ export class AjnasController
     {
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
 
-        const rows = await conn.Select("SELECT id, name, basePitch FROM amedb.ajnas");
+        const rows = await conn.Select("SELECT id, name, basePitch, text FROM amedb.ajnas");
 
         return rows.map(row => ({
             id: row.id,
             name: row.name,
-            basePitch: ParseOctavePitch(row.basePitch)
+            basePitch: ParseOctavePitch(row.basePitch),
+            text: row.text,
         }));
     }
 }

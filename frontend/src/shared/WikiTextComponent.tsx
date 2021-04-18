@@ -34,10 +34,20 @@ export class WikiTextComponent extends Component<{ text: string; }>
     //Private members
     private elements: SingleRenderValue[];
 
+    //Private methods
+    private ReformatText()
+    {
+        this.elements = WikiTextFormatter.FormatWikiText(this.input.text);
+    }
+
     //Event handlers
     public OnInitiated()
     {
-        const formatter = new WikiTextFormatter(this.input.text);
-        this.elements = formatter.Format();
+        this.ReformatText();
+    }
+
+    public OnInputChanged()
+    {
+        this.ReformatText();
     }
 }

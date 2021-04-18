@@ -21,7 +21,7 @@ import { g_backendBaseUrl } from "../backend";
 interface Formatter
 {
     pattern: RegExp;
-    mapper: (matched: string) => SingleRenderValue;
+    mapper: (matched: RegExpExecArray) => SingleRenderValue;
 }
 
 export class WikiTextFormatter
@@ -29,69 +29,60 @@ export class WikiTextFormatter
     constructor(private input: string)
     {
         this.currentList = [];
-        this.elements = [];
     }
 
     //Public methods
     public Format()
     {
-        const parts = this.ApplyBlockReplacements();
-        for (const part of parts)
-        {
-            if(typeof(part) === "string")
-            {
-                const lines = part.split("\n");
-                for (const l of lines)
-                {
-                    const line = l.trim();
+        const parts = this.ApplyBlockReplacements([this.input]);
+        return this.ApplyTransformation(parts, this.ExecuteLineReplacements.bind(this));
+    }
 
-                    if(line.startsWith("# "))
-                    {
-                        const formatted = this.FormatInlineText(line.substr(2));
-                        this.currentList.push(<fragment>{formatted}</fragment>);
-                    }
-                    else if(line.startsWith("== ") && line.endsWith(" =="))
-                    {
-                        const formatted = this.FormatInlineText(line.substr(3, line.length - 6));
-                        this.Add(<h2>{formatted}</h2>);
-                    }
-                    else //text
-                        this.Add(line);
-                }
-
-                this.FinishCurrentList();
-            }
-            else
-                this.elements.push(part);
-        }
-
-        return this.elements;
+    //Class functions
+    public static FormatWikiText(text: string)
+    {
+        const instance = new WikiTextFormatter(text);
+        return instance.Format();
     }
 
     //Private members
     private currentList: SingleRenderValue[];
-    private elements: SingleRenderValue[];
 
     //Private methods
-    private Add(line: string)
+    private Add(line: string): SingleRenderValue[]
     {
-        this.FinishCurrentList();
-        this.elements.push(line);
+        const result = this.FinishCurrentList();
+        if(result === undefined)
+            return [line];
+        return [result, line];
     }
 
-    private ApplyBlockReplacements()
+    private ApplyBlockReplacements(renderValues: SingleRenderValue[])
     {
         const formatters: Formatter[] = [
             {
-                pattern: /<Rhythm>.+<\/Rhythm>/s,
-                mapper: (matched: string) => {
-                    const rhythmData = matched.substr(8, matched.length - 8 - 9);
-                    return <img src={g_backendBaseUrl + "/rhythms/image?data=" + encodeURIComponent(rhythmData)} />;
+                pattern: /<gallery>(.+?)<\/gallery>/s,
+                mapper: (matched: RegExpExecArray) => {
+                    const data = matched[1];
+                    const entries = data.split("\n").filter(line => line.trim().length > 0).map(line => line.split("|")).map(x => <li>
+                        <div class="column">
+                            <fragment>{WikiTextFormatter.FormatWikiText(x[0])}</fragment>
+                            {x[1]}
+                        </div>
+                    </li>);
+                    return <ul class="horzList">{entries}</ul>;
+                }
+            },
+            {
+                pattern: /<score(?: type="(?<type>.+?)")>(?<content>.+?)<\/score>/s,
+                mapper: (matched: RegExpExecArray) => {
+                    const data = matched.groups!.content!.trim();
+                    return <img src={g_backendBaseUrl + "/score/image?type=" + matched.groups!.type + "&data=" + encodeURIComponent(data)} />;
                 }
             }
         ];
 
-        return this.ApplyFormatters([this.input], formatters);
+        return this.ApplyFormatters(renderValues, formatters);
     }
 
     private ApplyFormatters(renderValues: SingleRenderValue[], formatters: Formatter[])
@@ -99,36 +90,19 @@ export class WikiTextFormatter
         let result: SingleRenderValue[] = renderValues;
         for (const formatter of formatters)
         {
-            const formatted: SingleRenderValue[] = [];
-            for (const part of result)
-            {
-                if(typeof(part) === "string")
-                    formatted.push(...this.FormatText(part, formatter.pattern, formatter.mapper));
-                else
-                    formatted.push(part);
-            }
-            result = formatted;
+            result = this.ApplyTransformation(result, this.FormatText.bind(this, formatter.pattern, formatter.mapper));
         }
 
         return result;
     }
 
-    private FinishCurrentList()
-    {
-        if(this.currentList.length > 0)
-        {
-            this.elements.push(<ol>{this.currentList.map(elem => <li>{elem}</li>)}</ol>);
-            this.currentList = [];
-        }
-    }
-
-    private FormatInlineText(text: string): SingleRenderValue[]
+    private ApplyInlineTextFormatters(text: string): SingleRenderValue[]
     {
         const lineFormatters = [
             {
                 pattern: /(?:(https?:\/\/)|(www\.))[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/,
-                mapper: (match: string) => {
-                    let url = match;
+                mapper: (match: RegExpExecArray) => {
+                    let url = match[0];
                     if(!url.startsWith("http"))
                         url = "http://" + url;
 
@@ -137,8 +111,8 @@ export class WikiTextFormatter
             },
             {
                 pattern: /\[\[(.+)\]\]/,
-                mapper: (match: string) => {
-                    const title = match.substr(2, match.length - 4);
+                mapper: (match: RegExpExecArray) => {
+                    const title = match[0].substr(2, match[0].length - 4);
                     return <Anchor route={"/wiki/" + title}>{title}</Anchor>;
                 }
             }
@@ -147,7 +121,58 @@ export class WikiTextFormatter
         return this.ApplyFormatters([text], lineFormatters);
     }
 
-    private FormatText(text: string, pattern: RegExp, mapper: (matched: string) => SingleRenderValue)
+    private ApplyTransformation(renderValues: SingleRenderValue[], transformation: (part: string) => SingleRenderValue[])
+    {
+        const formatted: SingleRenderValue[] = [];
+        for (const part of renderValues)
+        {
+            if(typeof(part) === "string")
+                formatted.push(...transformation(part));
+            else
+                formatted.push(part);
+        }
+        return formatted;
+    }
+
+    private ExecuteLineReplacements(part: string)
+    {
+        const result = [];
+        const lines = part.split("\n");
+        for (const l of lines)
+        {
+            const line = l.trim();
+
+            if(line.startsWith("# "))
+            {
+                const formatted = this.ApplyInlineTextFormatters(line.substr(2));
+                this.currentList.push(<fragment>{formatted}</fragment>);
+            }
+            else if(line.startsWith("== ") && line.endsWith(" =="))
+            {
+                const formatted = this.ApplyInlineTextFormatters(line.substr(3, line.length - 6));
+                result.push(this.Add(<h2>{formatted}</h2>));
+            }
+            else //text
+                result.push(this.Add(line));
+        }
+
+        const listRes = this.FinishCurrentList();
+        if(listRes !== undefined)
+            result.push(listRes);
+        return result;
+    }
+
+    private FinishCurrentList()
+    {
+        if(this.currentList.length > 0)
+        {
+            const data = this.currentList;
+            this.currentList = [];
+            return <ol>{data.map(elem => <li>{elem}</li>)}</ol>;
+        }
+    }
+
+    private FormatText(pattern: RegExp, mapper: (matched: RegExpExecArray) => SingleRenderValue, text: string)
     {
         const result = [];
 
@@ -157,7 +182,7 @@ export class WikiTextFormatter
             if(match.index > 0)
                 result.push(text.substr(0, match.index));
 
-            result.push(mapper(match[0]));
+            result.push(mapper(match));
             text = text.substr(match.index + match[0].length);
         }
         if(text)

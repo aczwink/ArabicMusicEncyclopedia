@@ -27,8 +27,9 @@ CREATE TABLE `ajnas` (
   `name` text NOT NULL,
   `basePitch` char(3) NOT NULL,
   `intervals` text NOT NULL,
+  `text` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -255,4 +256,4 @@ CREATE TABLE `rhythms` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-04-07 19:53:07
+-- Dump completed on 2021-04-18 23:03:19
