@@ -54,23 +54,6 @@ export namespace API
         }
     }
 
-    export namespace ImageAPI
-    {
-        export const route = mainRoute + "/image";
-
-        export namespace Query
-        {
-            export const method = "GET";
-
-            export interface RequestData
-            {
-                data: string;
-            }
-    
-            export type ResultData = any;
-        }
-    }
-
     export namespace RhythmAPI
     {
         export const route = objectRoute;

@@ -20,6 +20,7 @@ import { Component, Injectable, JSX_CreateElement, ProgressSpinner } from "acfro
 import { Ajnas, OctavePitch, OctavePitchToString } from "ame-api";
 import { g_backendBaseUrl } from "../backend";
 import { PitchSelectionComponent } from "../shared/PitchSelectionComponent";
+import { WikiTextComponent } from "../shared/WikiTextComponent";
 import { AjnasService } from "./AjnasService";
 
 @Injectable
@@ -70,8 +71,11 @@ export class ListAjnasComponent extends Component
 
         const pitch = this.selectedPitch === null ? this.selectedJins.basePitch : this.selectedPitch;
         return <fragment>
-            <img src={g_backendBaseUrl + "/ajnas/" + this.selectedJins.id + "/image?basePitch=" + OctavePitchToString(pitch)} />
-            Transpose: <PitchSelectionComponent selection={pitch} onChanged={newValue => this.selectedPitch = newValue} />
+            <div class="column">
+                <img src={g_backendBaseUrl + "/ajnas/" + this.selectedJins.id + "/image?basePitch=" + OctavePitchToString(pitch)} />
+                <div class="row">Transpose: <PitchSelectionComponent selection={pitch} onChanged={newValue => this.selectedPitch = newValue} /></div>
+            </div>
+            <WikiTextComponent text={this.selectedJins.text} />
         </fragment>
     }
 

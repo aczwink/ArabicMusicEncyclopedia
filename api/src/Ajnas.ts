@@ -23,6 +23,7 @@ export interface Jins
     id: number;
     name: string;
     basePitch: OctavePitch;
+    text: string;
 }
 
 const mainRoute = "/ajnas";

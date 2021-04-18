@@ -15,39 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
-import { Component } from "acfrontend";
-import { WikiTextFormatter } from "./WikiTextFormatter";
 
-export class WikiTextComponent extends Component<{ text: string; }>
+const mainRoute = "/score";
+
+export type ScoreType = "maqam" | "rhythm";
+
+export namespace API
 {
-    constructor()
+    export namespace ImageAPI
     {
-        super();
-        this.elements = [];
-    }
+        export const route = mainRoute + "/image";
 
-    protected Render(): RenderValue
-    {
-        return this.elements;
-    }
+        export namespace Query
+        {
+            export const method = "GET";
 
-    //Private members
-    private elements: SingleRenderValue[];
-
-    //Private methods
-    private ReformatText()
-    {
-        this.elements = WikiTextFormatter.FormatWikiText(this.input.text);
-    }
-
-    //Event handlers
-    public OnInitiated()
-    {
-        this.ReformatText();
-    }
-
-    public OnInputChanged()
-    {
-        this.ReformatText();
+            export interface RequestData
+            {
+                type: ScoreType;
+                data: string;
+            }
+    
+            export type ResultData = any;
+        }
     }
 }

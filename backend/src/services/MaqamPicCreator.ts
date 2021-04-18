@@ -103,6 +103,8 @@ export class MaqamPicCreator
             {
                 case Accidental.Flat:
                     return "b";
+                case Accidental.HalfFlat:
+                    return "hb";
                 case Accidental.Natural:
                     return "n";
                 default:
