@@ -21,6 +21,7 @@ import { OctavePitch, OctavePitchToString } from "ame-api";
 import { Maqam } from "ame-api/dist/Maqamat";
 import { g_backendBaseUrl } from "../backend";
 import { PitchSelectionComponent } from "../shared/PitchSelectionComponent";
+import { WikiTextComponent } from "../shared/WikiTextComponent";
 import { MaqamatService } from "./MaqamatService";
 
 @Injectable
@@ -43,6 +44,11 @@ export class MaqamComponent extends Component
         const pitch = this.selectedPitch === null ? this.maqam.basePitch : this.selectedPitch;
         return <div>
             <h1>Maqam {this.maqam.name}</h1>
+
+            <p>
+                <WikiTextComponent text={this.maqam.text} />
+            </p>
+            
             Transpose: <PitchSelectionComponent selection={pitch} onChanged={newValue => this.selectedPitch = newValue} />
 
             <h2>Forms</h2>

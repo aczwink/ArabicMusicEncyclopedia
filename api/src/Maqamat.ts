@@ -21,6 +21,7 @@ import { OctavePitch } from "./OctavePitch";
 export interface Maqam
 {
     name: string;
+    text: string;
     basePitch: OctavePitch;
     branchingJinsIds: number[];
 }
