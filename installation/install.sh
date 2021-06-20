@@ -4,6 +4,11 @@ sudo apt update
 sudo apt install npm
 sudo npm install -g npm@latest
 
+#install node
+npm cache clean -f
+npm install -g n
+sudo n stable
+
 #install necessary software
 sudo apt install apache2 git ruby-sass
 
