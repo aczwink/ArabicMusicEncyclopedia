@@ -72,6 +72,8 @@ export class IntervalsService
     {
         switch(maqam.dominant)
         {
+            case 3:
+                return rootJins.intervals.concat(branchingJins.intervals).concat(maqam.additionalIntervals);
             case 5:
                 return rootJins.intervals.concat(maqam.additionalIntervals).concat(branchingJins.intervals);
             default:
@@ -172,6 +174,8 @@ export class IntervalsService
     {
         switch(interval)
         {
+            case Interval.OneAndAHalfTones:
+                return new Fraction(3, 2);
             case Interval.SemiTone:
                 return new Fraction(1, 2);
             case Interval.ThreeQuarters:

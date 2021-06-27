@@ -18,6 +18,7 @@
 
 export enum Interval
 {
+    OneAndAHalfTones = "3/2",
     SemiTone = "1/2",
     ThreeQuarters = "3/4",
     Tone = "1",
