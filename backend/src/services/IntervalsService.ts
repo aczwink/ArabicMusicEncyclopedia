@@ -73,6 +73,7 @@ export class IntervalsService
         switch(maqam.dominant)
         {
             case 3:
+            case 4:
                 return rootJins.intervals.concat(branchingJins.intervals).concat(maqam.additionalIntervals);
             case 5:
                 return rootJins.intervals.concat(maqam.additionalIntervals).concat(branchingJins.intervals);
