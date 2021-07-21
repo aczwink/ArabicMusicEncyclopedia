@@ -29,7 +29,7 @@ CREATE TABLE `ajnas` (
   `intervals` text NOT NULL,
   `text` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -60,12 +60,13 @@ CREATE TABLE `maqamat` (
   `name` text NOT NULL,
   `rootJinsId` int(10) unsigned NOT NULL,
   `dominant` tinyint(3) unsigned NOT NULL,
+  `basePitchOverride` char(3) DEFAULT NULL,
   `additionalIntervals` text NOT NULL,
   `text` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `maqamat_rootJinsId` (`rootJinsId`),
   CONSTRAINT `maqamat_rootJinsId` FOREIGN KEY (`rootJinsId`) REFERENCES `ajnas` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -257,4 +258,4 @@ CREATE TABLE `rhythms` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-06-20 23:16:30
+-- Dump completed on 2021-07-21 23:16:49

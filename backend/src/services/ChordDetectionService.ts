@@ -23,10 +23,23 @@ import { IntervalsService } from "./IntervalsService";
 
 export enum ChordType
 {
+    PowerChord,
+    //triads
+    AugmentedTriad,
+    DiminishedTriad,
     MajorTriad,
     MinorTriad,
-    DiminishedTriad,
-    PowerChord,
+    //Sevenths
+    DominantSeventh,
+    MajorSeventh,
+    MinorSeventh,
+}
+
+interface ChordMatcher
+{
+    type: ChordType;
+    matcher: (semiTones: (number | undefined)[]) => boolean;
+    children?: ChordMatcher[];
 }
 
 @Injectable
@@ -48,11 +61,29 @@ export class ChordDetectionService
     //Private methods
     private FindChordsFromSemitones(intervals: Fraction[])
     {
-        const chordMatchers: { type: ChordType, matcher: (st: (number | undefined)[]) => boolean}[] = [
-            { type: ChordType.MajorTriad, matcher: st => (st[1] === 4) && (st[3] === 7) },
-            { type: ChordType.MinorTriad, matcher: st => (st[1] === 3) && (st[3] === 7) },
+        const minorSeventhSemiTones = 10;
+
+        const chordMatchers: ChordMatcher[] = [
+            {
+                type: ChordType.PowerChord, matcher: st => (st[3] === 7), children:
+                [
+                    {
+                        type: ChordType.MajorTriad, matcher: st => (st[1] === 4), children:
+                        [
+                            { type: ChordType.DominantSeventh, matcher: st => st[5] === minorSeventhSemiTones},
+                            { type: ChordType.MajorSeventh, matcher: st => st[5] === 11}
+                        ]
+                    },
+                    {
+                        type: ChordType.MinorTriad, matcher: st => (st[1] === 3), children:
+                        [
+                            { type: ChordType.MinorSeventh, matcher: st => st[5] === minorSeventhSemiTones},
+                        ]
+                    },
+                ]
+            },
             { type: ChordType.DiminishedTriad, matcher: st => (st[1] === 3) && (st[3] === 6) },
-            { type: ChordType.PowerChord, matcher: st => (st[1] === undefined) && (st[3] === 7) },
+            { type: ChordType.AugmentedTriad, matcher: st => (st[1] === 4) && (st[3] === 8) },
         ];
 
         const chords = [];
@@ -61,18 +92,28 @@ export class ChordDetectionService
             const upwards = this.intervalsService.ComputeIntervalsUpwardsFromFirst(intervals.slice(index));
             const semiTones = this.intervalsService.To12TET(upwards);
 
-            chords.push(undefined);
-
-            for (const { type, matcher } of chordMatchers)
-            {
-                if(matcher(semiTones))
-                {
-                    chords[index] = type;
-                    break;
-                }
-            }
+            const match = this.MatchChord(semiTones, chordMatchers);
+            chords.push(match);
         }
 
         return chords;
+    }
+
+    private MatchChord(semiTones: (number | undefined)[], chordMatchers: ChordMatcher[]): ChordType | undefined
+    {
+        for (const chordMatcher of chordMatchers)
+        {
+            if(chordMatcher.matcher(semiTones))
+            {
+                if(chordMatcher.children !== undefined)
+                {
+                    const childResult = this.MatchChord(semiTones, chordMatcher.children);
+                    return childResult === undefined ? chordMatcher.type : childResult;
+                }
+                return chordMatcher.type;
+            }
+        }
+
+        return undefined;
     }
 }

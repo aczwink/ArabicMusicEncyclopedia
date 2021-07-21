@@ -69,12 +69,12 @@ class _api_
         const created = await this.maqamPicCreator.CreateImage(basePitch, this.intervalsService.GetMaqamIntervals(maqam, rootJins, branchingJins), [
             {
                 start: 1,
-                length: 4,
+                length: 1 + rootJins.intervals.length,
                 name: rootJins.name,
             },
             {
-                start: maqam.dominant,
-                length: 4,
+                start: maqam.dominant === 34 ? 3 : maqam.dominant,
+                length: 1 + branchingJins.intervals.length,
                 name: branchingJins.name
             }
         ]);

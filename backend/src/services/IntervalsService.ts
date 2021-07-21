@@ -77,6 +77,8 @@ export class IntervalsService
                 return rootJins.intervals.concat(branchingJins.intervals).concat(maqam.additionalIntervals);
             case 5:
                 return rootJins.intervals.concat(maqam.additionalIntervals).concat(branchingJins.intervals);
+            case 34: //special for maqam saba. Dominant is on 3 but saba jins spans until 4
+                return rootJins.intervals.concat(branchingJins.intervals.slice(1)).concat(maqam.additionalIntervals);
             default:
                 throw new Error("Dominant not handled: " + maqam.dominant);
         }

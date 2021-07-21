@@ -57,7 +57,7 @@ export class LilypondImageCreator
                 cwd: inputDir,
             }, (err, _stdout, _stderr) => {
                 if(err)
-                    reject(err);
+                    reject(err.message + _stdout + _stderr);
                 else
                     resolve();
             });
@@ -97,8 +97,20 @@ export class LilypondImageCreator
         \\header { tagline = ""}
         #(set-global-staff-size 32)
 
+        chExceptionMusic = {
+            <do sol>1-\\markup { \\super "5" }
+            <do mib solb>1-\\markup { "dim" }
+            <do mi sold>1-\\markup { "aug" }
+            <do mi sol si>1-\\markup { "M7" }
+        }
+        chExceptions = #( append
+            ( sequential-music-to-chord-exceptions chExceptionMusic #t)
+            ignatzekExceptions)
+          
+
         <<
         \\override Score.BarLine.stencil = ##f
+        \\override Score.NonMusicalPaperColumn.padding = #1.5
             \\relative do'
             {
                 \\override Staff.TimeSignature #'stencil = ##f
@@ -106,7 +118,8 @@ export class LilypondImageCreator
             }
             \\new ChordNames {
                 \\chordmode {
-                ${lilychordmusic}
+                    \\set chordNameExceptions = #chExceptions
+                    ${lilychordmusic}
                 }
             }
         >>
@@ -117,10 +130,15 @@ export class LilypondImageCreator
     {
         switch(chord)
         {
+            case ChordType.AugmentedTriad:
             case ChordType.DiminishedTriad:
             case ChordType.MajorTriad:
             case ChordType.MinorTriad:
                 return [pitches[0], pitches[2], pitches[4]];
+            case ChordType.DominantSeventh:
+            case ChordType.MajorSeventh:
+            case ChordType.MinorSeventh:
+                return [pitches[0], pitches[2], pitches[4], pitches[6]];
             case ChordType.PowerChord:
                 return [pitches[0], pitches[4]];
         }
@@ -128,14 +146,22 @@ export class LilypondImageCreator
 
     private ToLilypondChord(pitch: OctavePitch, chord: ChordType)
     {
-        function ChordTypeToString(chord: ChordType)
+        function ChordTypeToString(chord: ChordType): string
         {
             switch(chord)
             {
+                case ChordType.AugmentedTriad:
+                    return ":aug";
                 case ChordType.DiminishedTriad:
                     return ":dim";
+                case ChordType.DominantSeventh:
+                    return ":7";
+                case ChordType.MajorSeventh:
+                    return ":maj7";
                 case ChordType.MajorTriad:
                     return "";
+                case ChordType.MinorSeventh:
+                    return ":m7";
                 case ChordType.MinorTriad:
                     return ":m";
                 case ChordType.PowerChord:
@@ -143,16 +169,7 @@ export class LilypondImageCreator
             }
         }
 
-        let prefix = "";
-        switch(chord)
-        {
-            case ChordType.PowerChord:
-            case ChordType.DiminishedTriad: //displays for example Am^b5 instead of A^o
-                prefix = "\\powerChords ";
-                break;
-        }
-
-        return prefix + this.ToLilypondNote(pitch) + "1" + ChordTypeToString(chord);
+        return this.ToLilypondNote(pitch) + "1" + ChordTypeToString(chord);
     }
 
     private ToLilypondNote(pitch: OctavePitch)

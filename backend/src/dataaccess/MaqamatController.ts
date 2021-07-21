@@ -58,7 +58,7 @@ export class MaqamatController
     public async QueryMaqamInfo(maqamId: number): Promise<Maqamat.Maqam | undefined>
     {
         const query = `
-        SELECT m.name, m.text, j.basePitch
+        SELECT m.name, m.text, IFNULL(m.basePitchOverride, j.basePitch) AS basePitch
         FROM amedb.maqamat m
         INNER JOIN amedb.ajnas j
             ON j.id = m.rootJinsId
