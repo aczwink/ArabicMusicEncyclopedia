@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Anchor, Component, Injectable, JSX_CreateElement, ProgressSpinner } from "acfrontend";
+import { Anchor, Component, Injectable, JSX_CreateElement, MatIcon, ProgressSpinner, RouterButton } from "acfrontend";
 import { Persons } from "ame-api";
 import { PersonsService } from "./PersonsService";
 
@@ -34,14 +34,17 @@ export class ListPersonsComponent extends Component<{ type: Persons.PersonType }
     {
         if(this.data === null)
             return <ProgressSpinner />;
-        return <table>
-            <tr>
-                <th>Name</th>
-            </tr>
-            {this.data.map(row => <tr>
-                <td><Anchor route={"/persons/" + row.id}>{row.name}</Anchor></td>
-            </tr>)}
-        </table>;
+        return <fragment>
+            <table>
+                <tr>
+                    <th>Name</th>
+                </tr>
+                {this.data.map(row => <tr>
+                    <td><Anchor route={"/persons/" + row.id}>{row.name}</Anchor></td>
+                </tr>)}
+            </table>
+            <RouterButton route={"/persons/add/" + this.input.type}><MatIcon>add</MatIcon></RouterButton>
+        </fragment>;
     }
 
     //Private members

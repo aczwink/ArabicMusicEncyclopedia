@@ -27,6 +27,17 @@ class _api_
     {
     }
 
+    @HTTPEndPoint({ method: Persons.API.AddPerson.method, route: Persons.API.route })
+    public async AddPerson(request: HTTPRequest<Persons.API.AddPerson.RequestData>): Promise<HTTPResultData<Persons.API.AddPerson.ResultData>>
+    {
+        const personId = await this.personsController.AddPerson(request.data.person);
+        return {
+            data: {
+                personId
+            }
+        };
+    }
+
     @HTTPEndPoint({ method: Persons.API.List.method, route: Persons.API.route })
     public async QueryPersons(request: HTTPRequest<Persons.API.List.RequestData>): Promise<HTTPResultData<Persons.API.List.ResultData>>
     {

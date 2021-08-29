@@ -17,10 +17,18 @@
  * */
 
 import { Routes } from "acfrontend";
+import { AddPersonComponent } from "./AddPersonComponent";
+import { EditPersonComponent } from "./EditPersonComponent";
 import { ListComposersComponent, ListLyricistsComponent, ListSingersComponent } from "./ListPersonsComponent";
 import { ShowPersonComponent } from "./ShowPersonComponent";
 
 export const routes : Routes = [
+    { path: "add", children: [
+        { path: ":type", component: AddPersonComponent }
+    ]},
+    { path: "edit", children: [
+        { path: ":personId", component: EditPersonComponent }
+    ]},
     { path: "composers", component: ListComposersComponent },
     { path: "lyricists", component: ListLyricistsComponent },
     { path: "singers", component: ListSingersComponent },

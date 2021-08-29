@@ -29,6 +29,19 @@ export class PersonsController
     }
 
     //Public methods
+    public async AddPerson(person: Persons.Person)
+    {
+        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
+        const result = await conn.InsertRow("amedb.persons", {
+            name: person.name,
+            type: person.type,
+            lifeTime: person.lifeTime,
+            origin: person.origin
+        });
+
+        return result.insertId;
+    }
+
     public async QueryPerson(personId: number)
     {
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
@@ -42,7 +55,9 @@ export class PersonsController
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
         const row = await conn.SelectOne("SELECT data FROM amedb.persons_images WHERE personId = ?", personId);
 
-        return row;
+        if(row === undefined)
+            return undefined;
+        return row.data;
     }
 
     public async QueryPersons(type: PersonType): Promise<Persons.PersonOverviewData[]>
@@ -51,5 +66,33 @@ export class PersonsController
         const rows = await conn.Select<Persons.PersonOverviewData>("SELECT id, name FROM amedb.persons WHERE type = ?", type);
 
         return rows;
+    }
+
+    public async UpdatePerson(personId: number, person: Persons.Person)
+    {
+        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
+
+        await conn.UpdateRows("amedb.persons", {
+            name: person.name,
+            type: person.type,
+            lifeTime: person.lifeTime,
+            origin: person.origin
+        }, "id = ?", personId);
+    }
+
+    public async UpdatePersonImage(personId: number, image: Buffer)
+    {
+        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
+
+        const result = await conn.UpdateRows("amedb.persons_images", {
+            data: image
+        }, "personId = ?", personId);
+        if(result.affectedRows === 0)
+        {
+            await conn.InsertRow("amedb.persons_images", {
+                personId,
+                data: image
+            });
+        }
     }
 }

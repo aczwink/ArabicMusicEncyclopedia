@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Component, Injectable, JSX_CreateElement, ProgressSpinner, RouterState } from "acfrontend";
+import { Anchor, Component, Injectable, JSX_CreateElement, MatIcon, ProgressSpinner, RouterState } from "acfrontend";
 import { Persons } from "ame-api";
 import { g_backendBaseUrl } from "../backend";
 import { PersonsService } from "./PersonsService";
@@ -39,7 +39,10 @@ export class ShowPersonComponent extends Component
             return <ProgressSpinner />;
 
         return <fragment>
-            <h1>{this.data.name}</h1>
+            <h1>
+                {this.data.name}
+                <Anchor route={"/persons/edit/" + this.personId}><MatIcon>edit</MatIcon></Anchor>
+            </h1>
             <div>
                 <div class="box" style="float: right; display: block">
                     <img src={g_backendBaseUrl + "/persons/" + this.personId + "/image"} style="max-width: 25rem" />

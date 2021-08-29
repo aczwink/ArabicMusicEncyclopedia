@@ -44,6 +44,21 @@ export namespace API
 {
     export const route = mainRoute;
 
+    export namespace AddPerson
+    {
+        export const method = "POST";
+
+        export interface RequestData
+        {
+            person: Person;
+        }
+
+        export interface ResultData
+        {
+            personId: number;
+        }
+    }
+
     export namespace List
     {
         export const method = "GET";
@@ -66,6 +81,20 @@ export namespace API
         export interface RouteParams
         {
             personId: number;
+        }
+
+        export namespace EditPerson
+        {
+            export const method = "PUT";
+
+            export interface RequestData
+            {
+                person: Person;
+            }
+
+            export interface ResultData
+            {
+            }
         }
 
         export namespace QueryPerson
@@ -91,6 +120,19 @@ export namespace API
                 personId: number;
             }
 
+            export namespace Delete
+            {
+                export const method = "DELETE";
+
+                export interface RequestData
+                {
+                }
+        
+                export interface ResultData
+                {
+                }
+            }
+
             export namespace Query
             {
                 export const method = "GET";
@@ -100,6 +142,19 @@ export namespace API
                 }
         
                 export type ResultData = any;
+            }
+
+            export namespace Update
+            {
+                export const method = "PUT";
+
+                export interface RequestData
+                {
+                }
+        
+                export interface ResultData
+                {
+                }
             }
         }
     }

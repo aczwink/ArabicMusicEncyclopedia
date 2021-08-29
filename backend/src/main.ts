@@ -17,6 +17,7 @@
  * */
 import http from "http";
 import os from "os";
+import multer from "multer";
 
 import { Factory, GlobalInjector, HTTP_APILoader } from "acts-util-node";
 import { DatabaseController } from "./dataaccess/DatabaseController";
@@ -31,7 +32,10 @@ async function SetupServer()
             "http://localhost:" + frontEndPort,
             "http://" + os.hostname() + ":" + frontEndPort
         ]
-    });
+    });;
+    requestHandler.RegisterUpload(multer({
+        storage: multer.memoryStorage() 
+    }));
 
     const server = http.createServer(requestHandler.requestListener);
 

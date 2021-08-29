@@ -28,6 +28,16 @@ export class PersonsService
     }
 
     //Public methods
+    public AddPerson(routeParams: undefined, data: Persons.API.AddPerson.RequestData)
+    {
+        return this.apiService.Request<Persons.API.AddPerson.ResultData>(Persons.API.route, Persons.API.AddPerson.method, data, routeParams);
+    }
+
+    public EditPerson(routeParams: Persons.API.PersonAPI.RouteParams, data: Persons.API.PersonAPI.EditPerson.RequestData)
+    {
+        return this.apiService.Request<Persons.API.PersonAPI.EditPerson.ResultData>(Persons.API.PersonAPI.route, Persons.API.PersonAPI.EditPerson.method, data, routeParams);
+    }
+
     public QueryPerson(routeParams: Persons.API.PersonAPI.RouteParams, data: Persons.API.PersonAPI.QueryPerson.RequestData)
     {
         return this.apiService.Request<Persons.API.PersonAPI.QueryPerson.ResultData>(Persons.API.PersonAPI.route, Persons.API.PersonAPI.QueryPerson.method, data, routeParams);
@@ -36,5 +46,24 @@ export class PersonsService
     public QueryPersons(data: Persons.API.List.RequestData)
     {
         return this.apiService.Request<Persons.API.List.ResultData>(Persons.API.route, Persons.API.List.method, data);
+    }
+
+    public async UpdatePersonImage(personId: number, image: File | null)
+    {
+        const routeParams: Persons.API.PersonAPI.ImageAPI.RouteParams = {
+            personId
+        };
+
+        if(image === null)
+        {
+            await this.apiService.Request(Persons.API.PersonAPI.ImageAPI.route, Persons.API.PersonAPI.ImageAPI.Delete.method, undefined, routeParams);
+        }
+        else
+        {
+            const fd = new FormData();
+            fd.append("image", image);
+
+            await this.apiService.Request(Persons.API.PersonAPI.ImageAPI.route, Persons.API.PersonAPI.ImageAPI.Update.method, fd, routeParams);
+        }
     }
 }

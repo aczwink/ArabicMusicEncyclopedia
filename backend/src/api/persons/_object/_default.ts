@@ -27,6 +27,15 @@ class _api_
     {
     }
 
+    @HTTPEndPoint({ method: Persons.API.PersonAPI.EditPerson.method, route: Persons.API.PersonAPI.route })
+    public async EditPerson(request: HTTPRequest<Persons.API.PersonAPI.EditPerson.RequestData, Persons.API.PersonAPI.RouteParams>): Promise<HTTPResultData<Persons.API.PersonAPI.EditPerson.ResultData>>
+    {
+        await this.personsController.UpdatePerson(request.routeParams.personId, request.data.person);
+        return {
+            data: undefined
+        };
+    }
+
     @HTTPEndPoint({ method: Persons.API.PersonAPI.QueryPerson.method, route: Persons.API.PersonAPI.route })
     public async QueryPerson(request: HTTPRequest<Persons.API.PersonAPI.QueryPerson.RequestData, Persons.API.PersonAPI.RouteParams>): Promise<HTTPResultData<Persons.API.PersonAPI.QueryPerson.ResultData>>
     {
@@ -47,6 +56,15 @@ class _api_
             headers: {
                 "content-type": image === undefined ? "image/gif" : "TODO"
             }
+        };
+    }
+
+    @HTTPEndPoint({ method: Persons.API.PersonAPI.ImageAPI.Update.method, route: Persons.API.PersonAPI.ImageAPI.route, files: [{name: "image", maxCount: 1}] })
+    public async UpdatePersonImage(request: HTTPRequest<Persons.API.PersonAPI.ImageAPI.Update.RequestData, Persons.API.PersonAPI.ImageAPI.RouteParams>): Promise<HTTPResultData<Persons.API.PersonAPI.ImageAPI.Query.ResultData>>
+    {
+        await this.personsController.UpdatePersonImage(request.routeParams.personId, request.files.image![0].buffer);
+        return {
+            data: {}
         };
     }
 }
