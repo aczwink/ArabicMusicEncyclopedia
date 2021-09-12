@@ -41,7 +41,7 @@ cd ..
 
 
 #arabicmusicencyclopedia
-git clone https://github.com/aczwink/ArabicMusicEncyclopedia.git
+git clone git@github.com:aczwink/ArabicMusicEncyclopedia.git
 cd ArabicMusicEncyclopedia
 
 cd api
