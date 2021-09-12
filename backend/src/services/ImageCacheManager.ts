@@ -32,7 +32,7 @@ export class ImageCacheManager
         {
             return await fs.promises.readFile(this.ConstructPath(imgType, cacheName));
         }
-        catch(e)
+        catch(e: any)
         {
             if(e.code === "ENOENT")
                 return undefined;
@@ -47,7 +47,7 @@ export class ImageCacheManager
         {
             await fs.promises.writeFile(this.ConstructPath(imgType, cacheName), data);
         }
-        catch(e)
+        catch(e: any)
         {
             if(e.code === "ENOENT")
             {
@@ -66,7 +66,7 @@ export class ImageCacheManager
         {
             await fs.promises.mkdir(this.ConstructDirPath(imgType));
         }
-        catch(e)
+        catch(e: any)
         {
             if(e.code === "ENOENT")
             {
