@@ -61,6 +61,8 @@ class _api_
                 return this.CreateMaqamImage(text);
             case "rhythm":
                 return this.CreateRhythmImage(text);
+            case "rhythm2":
+                return this.CreateRhythm2Image(text);
         }
     }
 
@@ -78,6 +80,16 @@ class _api_
     {
         const completeText = `
         \\include "arabic-rhythm1.ly"
+        ${text}
+        }}
+        `;
+        return this.lilypondImageCreator.CreateImage(completeText);
+    }
+
+    private CreateRhythm2Image(text: string)
+    {
+        const completeText = `
+        \\include "arabic-rhythm2.ly"
         ${text}
         }}
         `;

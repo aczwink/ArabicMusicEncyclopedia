@@ -18,7 +18,7 @@
 
 const mainRoute = "/score";
 
-export type ScoreType = "maqam" | "rhythm";
+export type ScoreType = "maqam" | "rhythm" | "rhythm2";
 
 export namespace API
 {

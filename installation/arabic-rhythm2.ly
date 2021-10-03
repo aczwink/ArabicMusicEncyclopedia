@@ -286,11 +286,14 @@ sep =
 }
 
 \score{
+	\layout
+	{
+	    #(layout-set-staff-size 26)
+	}
 	\new Staff{
 
 	\pointAndClickOff
 	\override Staff.Clef.stencil = ##f
-	#(set-global-staff-size 18)
 	\numericTimeSignature
 
 	\override Staff.StaffSymbol.line-count = #2

@@ -106,7 +106,7 @@ export class WikiTextFormatter
                     if(!url.startsWith("http"))
                         url = "http://" + url;
 
-                    return <a href={url}>{match}</a>;
+                    return <a href={url} target="_blank">{url}</a>;
                 }
             },
             {
