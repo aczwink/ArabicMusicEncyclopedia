@@ -39,12 +39,13 @@ export class ShowRhythmComponent extends Component
 
         return <fragment>
             <h1>
-                {this.data.name} {this.data.timeSigNum}/{this.data.timeSigDen}
+                {this.data.name}
                 <Anchor route={"/rhythms/edit/" + this.rhythmId}><MatIcon>edit</MatIcon></Anchor>
             </h1>
             <div>
                 <div class="box" style="float: right; display: block">
                     <table class="keyValue">
+                        {this.RenderAlternativeNames()}
                         <tr>
                             <th>Popularity</th>
                             <td>{this.data.popularity}</td>
@@ -65,6 +66,18 @@ export class ShowRhythmComponent extends Component
     //Private members
     private rhythmId: number;
     private data: Rhythms.Rhythm | null;
+
+    //Private methods
+    private RenderAlternativeNames()
+    {
+        if(this.data!.alternativeNames.trim().length > 0)
+            return <tr>
+                <th>Alternative names</th>
+                <td>{this.data?.alternativeNames}</td>
+            </tr>
+
+        return null;
+    }
 
     //Event handlers
     public async OnInitiated()

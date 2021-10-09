@@ -43,7 +43,14 @@ export class RhythmsController
 
     public async QueryRhythms(): Promise<Rhythms.RhythmOverviewData[]>
     {
-        let query = "SELECT id, name, timeSigNum, timeSigDen FROM amedb.rhythms ORDER BY timeSigNum / timeSigDen";
+        let query = `
+        SELECT
+            r.id, r.name, rts.numerator AS timeSigNum
+        FROM amedb.rhythms r
+        INNER JOIN amedb.rhythms_timeSigs rts
+            ON r.id = rts.rhythmId
+        ORDER BY rts.numerator, r.name
+        `;
 
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
         const rows = await conn.Select<Rhythms.RhythmOverviewData>(query);

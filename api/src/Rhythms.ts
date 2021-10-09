@@ -21,11 +21,11 @@ export interface RhythmOverviewData
     id: number;
     name: string;
     timeSigNum: number;
-    timeSigDen: number;
 }
 
 export interface Rhythm extends RhythmOverviewData
 {
+    alternativeNames: string;
     popularity: string;
     category: string;
     usageImage: string;

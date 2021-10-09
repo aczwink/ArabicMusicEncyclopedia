@@ -24,11 +24,83 @@ interface Formatter
     mapper: (matched: RegExpExecArray) => SingleRenderValue;
 }
 
+enum CurrentListType
+{
+    None,
+    Paragraph,
+    NumberedList
+}
+
+class Block
+{
+    constructor(private _type: CurrentListType)
+    {
+        this.entries = [];
+    }
+
+    //Properties
+    public get type()
+    {
+        return this._type;
+    }
+
+    //Public methods
+    public Add(renderNode: any)
+    {
+        this.entries.push(renderNode);
+    }
+
+    public ToRenderNode()
+    {
+        switch(this.type)
+        {
+            case CurrentListType.None:
+                return this.entries;
+            case CurrentListType.NumberedList:
+                return <ol>{this.entries.map(elem => <li>{elem}</li>)}</ol>;
+            case CurrentListType.Paragraph:
+                return <p>{this.entries.join("\n")}</p>
+        }
+    }
+    
+    //Private members
+    private entries: any[];
+}
+
+class BlockList
+{
+    constructor()
+    {
+        this.blocks = [];
+    }
+
+    //Public methods
+    public Add(type: CurrentListType, renderNode: any)
+    {
+        const lastBlock = this.blocks[this.blocks.length - 1];
+        if( (lastBlock !== undefined) && (lastBlock.type === type) )
+            lastBlock.Add(renderNode);
+        else
+        {
+            const block = new Block(type);
+            block.Add(renderNode);
+            this.blocks.push(block);
+        }
+    }
+
+    public ToRenderNodeList()
+    {
+        return this.blocks.map(block => block.ToRenderNode());
+    }
+
+    //Private members
+    private blocks: Block[];
+}
+
 export class WikiTextFormatter
 {
     constructor(private input: string)
     {
-        this.currentList = [];
     }
 
     //Public methods
@@ -45,18 +117,7 @@ export class WikiTextFormatter
         return instance.Format();
     }
 
-    //Private members
-    private currentList: SingleRenderValue[];
-
     //Private methods
-    private Add(line: string): SingleRenderValue[]
-    {
-        const result = this.FinishCurrentList();
-        if(result === undefined)
-            return [line];
-        return [result, line];
-    }
-
     private ApplyBlockReplacements(renderValues: SingleRenderValue[])
     {
         const formatters: Formatter[] = [
@@ -136,7 +197,8 @@ export class WikiTextFormatter
 
     private ExecuteLineReplacements(part: string)
     {
-        const result = [];
+        const blockList = new BlockList();
+
         const lines = part.split("\n");
         for (const l of lines)
         {
@@ -145,31 +207,18 @@ export class WikiTextFormatter
             if(line.startsWith("# "))
             {
                 const formatted = this.ApplyInlineTextFormatters(line.substr(2));
-                this.currentList.push(<fragment>{formatted}</fragment>);
+                blockList.Add(CurrentListType.NumberedList, <fragment>{formatted}</fragment>);
             }
             else if(line.startsWith("== ") && line.endsWith(" =="))
             {
                 const formatted = this.ApplyInlineTextFormatters(line.substr(3, line.length - 6));
-                result.push(this.Add(<h2>{formatted}</h2>));
+                blockList.Add(CurrentListType.None, <h2>{formatted}</h2>);
             }
             else //text
-                result.push(this.Add(line));
+                blockList.Add(CurrentListType.Paragraph, line);
         }
 
-        const listRes = this.FinishCurrentList();
-        if(listRes !== undefined)
-            result.push(listRes);
-        return result;
-    }
-
-    private FinishCurrentList()
-    {
-        if(this.currentList.length > 0)
-        {
-            const data = this.currentList;
-            this.currentList = [];
-            return <ol>{data.map(elem => <li>{elem}</li>)}</ol>;
-        }
+        return blockList.ToRenderNodeList();
     }
 
     private FormatText(pattern: RegExp, mapper: (matched: RegExpExecArray) => SingleRenderValue, text: string)

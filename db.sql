@@ -1,8 +1,8 @@
--- MySQL dump 10.19  Distrib 10.3.30-MariaDB, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.19  Distrib 10.3.31-MariaDB, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: amedb
 -- ------------------------------------------------------
--- Server version	10.3.30-MariaDB-0ubuntu0.20.04.1
+-- Server version	10.3.31-MariaDB-0ubuntu0.20.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -238,15 +238,29 @@ DROP TABLE IF EXISTS `rhythms`;
 CREATE TABLE `rhythms` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` text NOT NULL,
-  `timeSigNum` tinyint(3) unsigned NOT NULL,
-  `timeSigDen` tinyint(3) unsigned NOT NULL,
+  `alternativeNames` text NOT NULL,
   `popularity` text NOT NULL,
   `category` text NOT NULL,
   `usageImage` text NOT NULL,
   `usageText` text NOT NULL,
   `text` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `rhythms_timeSigs`
+--
+
+DROP TABLE IF EXISTS `rhythms_timeSigs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `rhythms_timeSigs` (
+  `rhythmId` int(10) unsigned NOT NULL,
+  `numerator` tinyint(3) unsigned NOT NULL,
+  PRIMARY KEY (`rhythmId`,`numerator`),
+  CONSTRAINT `rhythms_timeSigs` FOREIGN KEY (`rhythmId`) REFERENCES `rhythms` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -258,4 +272,4 @@ CREATE TABLE `rhythms` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-08-29 22:39:45
+-- Dump completed on 2021-10-09 21:43:19

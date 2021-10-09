@@ -46,7 +46,7 @@ export class ListRhythmsByTimeSignatureComponent extends Component
     private RenderRhythmSection(rhyhtmSection: Rhythms.RhythmOverviewData[])
     {
         return <fragment>
-            <h2>{rhyhtmSection[0].timeSigNum}/{rhyhtmSection[0].timeSigDen}</h2>
+            <h2>{rhyhtmSection[0].timeSigNum}</h2>
             <ul>
                 {rhyhtmSection.map(r => <li><Anchor route={"/rhythms/" + r.id}>{r.name}</Anchor></li>)}
             </ul>
@@ -60,7 +60,7 @@ export class ListRhythmsByTimeSignatureComponent extends Component
         const m = new Map<number, Rhythms.RhythmOverviewData[]>();
         for (const rhythm of data.rhythms)
         {
-            const timeSig = rhythm.timeSigNum / rhythm.timeSigDen;
+            const timeSig = rhythm.timeSigNum;
             if(m.has(timeSig))
                 m.get(timeSig)!.push(rhythm);
             else

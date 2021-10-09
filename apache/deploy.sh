@@ -10,5 +10,6 @@ cp $distPath/acts-util-core.js $deployPath/
 cp $distPath/acfrontend.js $deployPath/
 cp $distPath/bundle.js $deployPath/
 cp $distPath/clean.css $deployPath/
+cp -r $frontendPath/images $deployPath/
 
 chown -R www-data:www-data $deployPath
