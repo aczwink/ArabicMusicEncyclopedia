@@ -43,9 +43,9 @@ export class MusicalPiecesListComponent extends Component<{ pieces: MusicalPiece
         return <tr>
             <td>{piece.formName}</td>
             <td><Anchor route={"/musicalpieces/" + piece.id}>{piece.name}</Anchor></td>
-            <td>{piece.composerName}</td>
+            <td><Anchor route={"/persons/" + piece.composerId}>{piece.composerName}</Anchor></td>
             <td>{piece.releaseDate}</td>
-            <td>{piece.singerName}</td>
+            <td><Anchor route={"/persons/" + piece.singerId}>{piece.singerName}</Anchor></td>
         </tr>
     }
 }

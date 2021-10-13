@@ -69,7 +69,7 @@ export class ShowMusicalPieceComponent extends Component
                         </tr>
                         <tr>
                             <th>Composer</th>
-                            <td>{this.composer.name}</td>
+                            <td><Anchor route={"/persons/" + this.piece.composerId}>{this.composer.name}</Anchor></td>
                         </tr>
                         <tr>
                             <th>Release date</th>
@@ -123,11 +123,11 @@ export class ShowMusicalPieceComponent extends Component
         return <fragment>
             <tr>
                 <th>Singer</th>
-                <td>{this.singer.name}</td>
+                <td><Anchor route={"/persons/" + this.piece?.lyrics?.singerId}>{this.singer.name}</Anchor></td>
             </tr>
             <tr>
                 <th>Songwriter</th>
-                <td>{this.lyricist.name}</td>
+                <td><Anchor route={"/persons/" + this.piece?.lyrics?.lyricistId}>{this.lyricist.name}</Anchor></td>
             </tr>
             <tr>
                 <th>Language</th>

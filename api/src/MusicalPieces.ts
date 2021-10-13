@@ -95,8 +95,10 @@ export namespace API
             id: number;
             name: string;
             formName: string;
+            composerId: number;
             composerName: string;
             releaseDate: string;
+            singerId?: number;
             singerName: string;
         }
     }

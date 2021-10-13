@@ -35,7 +35,7 @@ class _api_
 
         const pieceId = await this.musicalPiecesController.AddMusicalPiece(request.data.piece);
         if(form!.hasLyrics)
-            await this.musicalPiecesController.AddMusicalPieceLyrics(pieceId, request.data.piece.lyrics!);
+            await this.musicalPiecesController.UpdateMusicalPieceLyrics(pieceId, request.data.piece.lyrics!);
 
         return {
             data: {

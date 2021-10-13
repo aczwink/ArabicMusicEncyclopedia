@@ -48,19 +48,6 @@ export class MusicalPiecesController
         return pieceId;
     }
 
-    public async AddMusicalPieceLyrics(pieceId: number, data: MusicalPieces.PieceLyrics)
-    {
-        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-
-        await conn.InsertRow("amedb.musical_pieces_lyrics", {
-            pieceId,
-            lyricistId: data.lyricistId,
-            singerId: data.singerId,
-            languageId: data.languageId,
-            lyrics: data.lyricsText,
-        })
-    }
-
     public async DeleteMusicalPieceLyrics(pieceId: number)
     {
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
@@ -95,7 +82,8 @@ export class MusicalPiecesController
     public async QueryMusicalPieces(offset: number, limit: number)
     {
         const query = `
-        SELECT mp.id, mp.name, mpf.name AS formName, pc.name AS composerName, mp.releaseDate, ps.name AS singerName
+        SELECT
+            mp.id, mp.name, mp.composerId, mpl.singerId, mpf.name AS formName, pc.name AS composerName, mp.releaseDate, ps.name AS singerName
         FROM amedb.musical_pieces mp
         INNER JOIN amedb.musical_pieces_forms mpf
             ON mpf.id = mp.formId
@@ -148,11 +136,34 @@ export class MusicalPiecesController
         return pieceId;
     }
 
+    public async UpdateMusicalPieceLyrics(pieceId: number, data: MusicalPieces.PieceLyrics)
+    {
+        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
+
+        const result = await conn.UpdateRows("amedb.musical_pieces_lyrics", {
+            lyricistId: data.lyricistId,
+            singerId: data.singerId,
+            languageId: data.languageId,
+            lyrics: data.lyricsText,
+        }, "pieceId = ?", pieceId);
+
+        if(result.affectedRows === 0)
+        {
+            await conn.InsertRow("amedb.musical_pieces_lyrics", {
+                pieceId,
+                lyricistId: data.lyricistId,
+                singerId: data.singerId,
+                languageId: data.languageId,
+                lyrics: data.lyricsText,
+            });
+        }
+    }
+
     //Private methods
     private async QueryPieceLyrics(pieceId: number): Promise<MusicalPieces.PieceLyrics | undefined>
     {
         const query = `
-        SELECT mpl.languageId, mpl.lyricistId, mpl.singerId
+        SELECT mpl.languageId, mpl.lyricistId, mpl.singerId, mpl.lyrics
         FROM amedb.musical_pieces_lyrics mpl
         WHERE mpl.pieceId = ?
         `;
@@ -200,8 +211,8 @@ export class MusicalPiecesController
 
     private async SetPieceMaqamatAndRhythms(pieceId: number, maqamat: MusicalPieces.PieceMaqamAssociation[], rhythms: MusicalPieces.PieceRhythmAssociation[], conn: DBQueryExecutor)
     {
-        conn.DeleteRows("amedb.musical_pieces_maqamat", "pieceId = ?", pieceId);
-        conn.DeleteRows("amedb.musical_pieces_rhythms", "pieceId = ?", pieceId);
+        await conn.DeleteRows("amedb.musical_pieces_maqamat", "pieceId = ?", pieceId);
+        await conn.DeleteRows("amedb.musical_pieces_rhythms", "pieceId = ?", pieceId);
 
         await maqamat.Values().Map(assoc => conn.InsertRow("amedb.musical_pieces_maqamat", {
             pieceId,

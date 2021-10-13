@@ -47,7 +47,7 @@ class _api_
 
         await this.musicalPiecesController.UpdateMusicalPiece(request.routeParams.pieceId, request.data.piece);
         if(form!.hasLyrics)
-            await this.musicalPiecesController.AddMusicalPieceLyrics(request.routeParams.pieceId, request.data.piece.lyrics!);
+            await this.musicalPiecesController.UpdateMusicalPieceLyrics(request.routeParams.pieceId, request.data.piece.lyrics!);
         else
             await this.musicalPiecesController.DeleteMusicalPieceLyrics(request.routeParams.pieceId);
 
