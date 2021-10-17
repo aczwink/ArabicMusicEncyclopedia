@@ -58,7 +58,7 @@ export class MusicalPiecesController
     public async QueryMusicalPiece(pieceId: number): Promise<MusicalPieces.Piece | undefined>
     {
         const query = `
-        SELECT mp.name, mp.formId, mp.composerId, mp.releaseDate
+        SELECT mp.name, mp.formId, mp.composerId, mp.releaseDate, mp.text
         FROM amedb.musical_pieces mp
         WHERE mp.id = ?
         `;
@@ -76,6 +76,7 @@ export class MusicalPiecesController
             name: row.name,
             releaseDate: row.releaseDate,
             rhythms: await this.QueryPieceRhythms(pieceId),
+            text: row.text,
         };
     }
 
@@ -83,7 +84,7 @@ export class MusicalPiecesController
     {
         const query = `
         SELECT
-            mp.id, mp.name, mp.composerId, mpl.singerId, mpf.name AS formName, pc.name AS composerName, mp.releaseDate, ps.name AS singerName
+            mp.id, mp.name, mp.composerId, mp.releaseDate, mpl.singerId, mpf.name AS formName, pc.name AS composerName, ps.name AS singerName
         FROM amedb.musical_pieces mp
         INNER JOIN amedb.musical_pieces_forms mpf
             ON mpf.id = mp.formId
@@ -127,6 +128,7 @@ export class MusicalPiecesController
             formId: piece.formId,
             composerId: piece.composerId,
             releaseDate: piece.releaseDate,
+            text: piece.text
         }, "id = ?", pieceId);
 
         await this.SetPieceMaqamatAndRhythms(pieceId, piece.maqamat, piece.rhythms, conn.value);

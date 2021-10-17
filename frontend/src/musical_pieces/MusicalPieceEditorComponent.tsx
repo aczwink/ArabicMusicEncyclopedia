@@ -23,6 +23,7 @@ import { PersonType } from "ame-api/dist/Persons";
 import { MaqamatService } from "../maqamat/MaqamatService";
 import { PersonsService } from "../persons/PersonsService";
 import { RhythmsService } from "../rhythms/RhythmsService";
+import { WikiTextEditComponent } from "../shared/WikiTextEditComponent";
 import { MusicalService } from "./MusicalService";
 
 @Injectable
@@ -68,6 +69,8 @@ export class MusicalPieceEditorComponent extends Component<{ piece: MusicalPiece
                 <LineEdit value={piece.releaseDate} onChanged={newValue => piece.releaseDate = newValue} />
             </FormField>
             {this.RenderLyricsPart(piece)}
+            <h2>Text</h2>
+            <WikiTextEditComponent text={piece.text} onChanged={newValue => piece.text = newValue} />
 
             <h2>Maqamat</h2>
             <div class="row">

@@ -99,6 +99,7 @@ CREATE TABLE `musical_pieces` (
   `formId` int(10) unsigned NOT NULL,
   `composerId` int(10) unsigned NOT NULL,
   `releaseDate` text NOT NULL,
+  `text` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `musical_pieces_composerId` (`composerId`),
   KEY `musical_pieces_formId` (`formId`),
@@ -272,4 +273,4 @@ CREATE TABLE `rhythms_timeSigs` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-10-09 21:43:19
+-- Dump completed on 2021-10-17 23:16:19

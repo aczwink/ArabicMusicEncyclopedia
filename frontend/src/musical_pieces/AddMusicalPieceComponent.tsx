@@ -35,6 +35,7 @@ export class AddMusicalPieceComponent extends Component
             name: "",
             releaseDate: "",
             rhythms: [],
+            text: "",
         };
     }
 

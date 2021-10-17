@@ -42,6 +42,7 @@ export interface Piece
     formId: number;
     composerId: number;
     releaseDate: string;
+    text: string;
 
     lyrics?: PieceLyrics;
     maqamat: PieceMaqamAssociation[];

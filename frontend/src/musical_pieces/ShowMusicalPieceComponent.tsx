@@ -21,6 +21,7 @@ import { Musical, MusicalPieces, Persons } from "ame-api";
 import { MaqamatService } from "../maqamat/MaqamatService";
 import { PersonsService } from "../persons/PersonsService";
 import { RhythmsService } from "../rhythms/RhythmsService";
+import { WikiTextComponent } from "../shared/WikiTextComponent";
 import { MusicalPiecesService } from "./MusicalPiecesService";
 import { MusicalService } from "./MusicalService";
 
@@ -95,6 +96,7 @@ export class ShowMusicalPieceComponent extends Component
                     </table>
                 </div>
                 {this.RenderLyrics()}
+                <WikiTextComponent text={this.piece.text} />
             </div>
         </fragment>;
     }
@@ -142,7 +144,7 @@ export class ShowMusicalPieceComponent extends Component
             return null;
         return <fragment>
             <h2>Lyrics</h2>
-            {this.piece.lyrics.lyricsText}
+            <p style="white-space: break-spaces;">{this.piece.lyrics.lyricsText}</p>
         </fragment>;
     }
 
