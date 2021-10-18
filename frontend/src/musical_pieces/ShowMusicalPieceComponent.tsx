@@ -82,7 +82,7 @@ export class ShowMusicalPieceComponent extends Component
                     <h4>Maqamat</h4>
                     <table>
                         {this.maqamat.map(m => <tr>
-                            <th>{m.name}</th>
+                            <th><Anchor route={"/maqamat/" + m.id}>{m.name}</Anchor></th>
                             <td>{m.explanation}</td>
                         </tr>)}
                     </table>
@@ -90,7 +90,7 @@ export class ShowMusicalPieceComponent extends Component
                     <h4>Rhythms</h4>
                     <table>
                         {this.rhythms.map(r => <tr>
-                            <th>{r.name}</th>
+                            <th><Anchor route={"/rhythms/" + r.id}>{r.name}</Anchor></th>
                             <td>{r.explanation}</td>
                         </tr>)}
                     </table>

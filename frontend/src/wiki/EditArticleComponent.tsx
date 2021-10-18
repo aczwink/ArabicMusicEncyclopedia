@@ -16,47 +16,50 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Anchor, Component, Injectable, JSX_CreateElement, MatIcon, ProgressSpinner, Router, RouterState } from "acfrontend";
-import { Article } from "ame-api/dist/Wiki";
-import { WikiTextComponent } from "../shared/WikiTextComponent";
+import { Component, Injectable, JSX_CreateElement, ProgressSpinner, Router, RouterState } from "acfrontend";
 import { WikiService } from "./WikiService";
+import { WikiTextEditComponent } from "../shared/WikiTextEditComponent";
 
 @Injectable
-export class ShowArticleComponent extends Component
+export class EditArticleComponent extends Component
 {
     constructor(routerState: RouterState, private wikiService: WikiService, private router: Router)
     {
         super();
 
         this.title = routerState.routeParams.title!;
-        this.article = null;
+        this.text = null;
     }
     
-    protected Render()
+    protected Render(): RenderValue
     {
-        if(this.article === null)
+        if(this.text === null)
             return <ProgressSpinner />;
-    
+
         return <fragment>
-            <h1>
-                {this.title}
-                <Anchor route={"/wiki/edit/" + this.title}><MatIcon>edit</MatIcon></Anchor>
-            </h1>
-            <WikiTextComponent text={this.article.text} />
+            <h1>Edit article: {this.title}</h1>
+            <WikiTextEditComponent text={this.text} onChanged={newValue => this.text = newValue} />
+            <button type="button" onclick={this.OnSaveArticle.bind(this)}>Save</button>
         </fragment>;
     }
 
     //Private members
     private title: string;
-    private article: Article | null;
-
+    private text: string | null;
+    
     //Event handlers
     public async OnInitiated()
     {
         const result = await this.wikiService.QueryArticle({}, { title: this.title });
-        this.article = result.article;
+        this.text = result.article!.text;
+    }
 
-        if(result.article === null)
-            this.router.RouteTo("/wiki/create/" + this.title);
+
+    private async OnSaveArticle()
+    {
+        const text = this.text!;
+        this.text = null;
+        await this.wikiService.UpdateArticle({}, { title: this.title, text });
+        this.router.RouteTo("/wiki/" + this.title);
     }
 }

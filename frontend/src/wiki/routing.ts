@@ -18,10 +18,14 @@
 
 import { Routes } from "acfrontend";
 import { CreateArticleComponent } from "./CreateArticleComponent";
+import { EditArticleComponent } from "./EditArticleComponent";
+import { FileUpdateComponent } from "./FileUpdateComponent";
 import { ShowArticleComponent } from "./ShowArticleComponent";
 
 export const routes : Routes = [
     { path: "create/:title", component: CreateArticleComponent },
+    { path: "edit/:title", component: EditArticleComponent },
+    { path: "file/:title", component: FileUpdateComponent },
     { path: ":title", component: ShowArticleComponent },
     { path: "*", redirect: "Main" },
 ];

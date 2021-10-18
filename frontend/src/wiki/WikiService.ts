@@ -37,4 +37,9 @@ export class WikiService
     {
         return this.apiService.Request<Wiki.API.QueryArticle.ResultData>(Wiki.API.route, Wiki.API.QueryArticle.method, data, routeParams);
     }
+
+    public UpdateArticle(routeParams: Wiki.API.RouteParams, data: Wiki.API.UpdateArticle.RequestData)
+    {
+        return this.apiService.Request<Wiki.API.UpdateArticle.ResultData>(Wiki.API.route, Wiki.API.UpdateArticle.method, data, routeParams);
+    }
 }

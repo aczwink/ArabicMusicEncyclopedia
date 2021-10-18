@@ -46,6 +46,15 @@ class _api_
             }
         };
     }
+
+    @HTTPEndPoint({ method: Wiki.API.UpdateArticle.method, route: Wiki.API.route })
+    public async UpdateArticle(request: HTTPRequest<Wiki.API.UpdateArticle.RequestData, Wiki.API.RouteParams>): Promise<HTTPResultData<Wiki.API.UpdateArticle.ResultData>>
+    {
+        await this.articlesController.UpdateArticle(request.data.title, request.data.text);
+        return {
+            data: {}
+        };
+    }
 }
 
 export default _api_;

@@ -16,36 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-export interface Article
-{
-    id: number;
-    text: string;
-}
-
 export namespace API
 {
-    export const route = "/articles";
+    export const route = "/files";
 
     export interface RouteParams
     {
     }
 
-    export namespace CreateArticle
-    {
-        export const method = "POST";
-
-        export interface RequestData
-        {
-            title: string;
-            text: string;
-        }
-
-        export interface ResultData
-        {
-        }
-    }
-
-    export namespace QueryArticle
+    export namespace QueryFile
     {
         export const method = "GET";
 
@@ -53,21 +32,14 @@ export namespace API
         {
             title: string;
         }
-
-        export interface ResultData
-        {
-            article: Article | null;
-        }
     }
 
-    export namespace UpdateArticle
+    export namespace UpdateFile
     {
         export const method = "PUT";
 
         export interface RequestData
         {
-            title: string;
-            text: string;
         }
 
         export interface ResultData

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 import { Component } from "acfrontend";
-import { WikiTextFormatter } from "./WikiTextFormatter";
+import { WikiTextFormatter } from "./wiki_text/WikiTextFormatter";
 
 export class WikiTextComponent extends Component<{ text: string; }>
 {

@@ -15,41 +15,36 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
+
 import { Injectable } from "acts-util-node";
-import { Article } from "ame-api/dist/Wiki";
 import { DatabaseController } from "./DatabaseController";
 
 @Injectable
-export class ArticlesController
+export class FilesController
 {
     constructor(private dbController: DatabaseController)
     {
     }
 
     //Public methods
-    public async CreateArticle(title: string, text: string)
-    {
-        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        await conn.InsertRow("amedb.articles", { title, text });
-    }
-
-    public async QueryArticle(title: string): Promise<Article | undefined>
+    public async QueryFile(title: string)
     {
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
 
-        const row = await conn.SelectOne("SELECT id, text FROM amedb.articles WHERE title = ?", title);
-
+        const row = await conn.SelectOne("SELECT data FROM amedb.files WHERE title = ?", title);
         if(row === undefined)
-            return undefined;
-        return {
-            id: row.id,
-            text: row.text,
-        };
+            return null;
+        return row.data as Buffer;
     }
 
-    public async UpdateArticle(title: string, text: string)
+    public async UpdateFile(fileName: string, buffer: Buffer)
     {
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        await conn.UpdateRows("amedb.articles", { text }, "title = ?", title);
+
+        const result = await conn.UpdateRows("amedb.files", { data: buffer}, "title = ?", fileName);
+        if(result.affectedRows === 0)
+        {
+            await conn.InsertRow("amedb.files", { title: fileName, data: buffer});
+        }
     }
 }

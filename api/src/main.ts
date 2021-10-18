@@ -23,6 +23,7 @@ import * as Persons from "./Persons";
 import * as Rhythms from "./Rhythms";
 import * as Score from "./Score";
 import * as Wiki from "./Wiki";
+import * as WikiFiles from "./WikiFiles";
 import { Accidental, NaturalNote, OctavePitch, OctavePitchToString, ParseOctavePitch } from "./OctavePitch";
 
 export {
@@ -39,4 +40,5 @@ export {
     Rhythms,
     Score,
     Wiki,
+    WikiFiles,
 };
