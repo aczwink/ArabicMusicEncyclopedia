@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
+import { JSX_CreateElement } from "acfrontend";
 import { BlockList, CurrentListType } from "./blocks";
 import { blockFormatters, inlineFormatters, lineFormatters, RegExFormatter } from "./formatters";
 
@@ -75,7 +76,7 @@ export class WikiTextFormatter
         }
         
         //text
-        return { type: CurrentListType.Paragraph, renderNode: line };
+        return { type: CurrentListType.Paragraph, renderNode: <fragment>{this.ApplyInlineTextFormatters(line)}</fragment> };
     }
 
     private ApplyTransformation(renderValues: SingleRenderValue[], transformation: (part: string) => SingleRenderValue[])

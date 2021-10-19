@@ -54,7 +54,7 @@ class Block
             case CurrentListType.NumberedList:
                 return <ol>{this.entries.map(elem => <li>{elem}</li>)}</ol>;
             case CurrentListType.Paragraph:
-                return <p>{this.entries.join("\n")}</p>;
+                return <p>{this.entries as any}</p>;
             case CurrentListType.UnnumberedList:
                 return <ul>{this.entries.map(elem => <li>{elem}</li>)}</ul>;
         }
