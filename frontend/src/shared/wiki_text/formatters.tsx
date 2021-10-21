@@ -83,7 +83,18 @@ export const inlineFormatters = [
 
             const filePrefix = "File:";
             if(content.startsWith(filePrefix))
-                return <FileReferenceComponent fileName={content.substr(filePrefix.length)} />;
+            {
+                const parts = content.substr(filePrefix.length).split("|");
+                const inner = <FileReferenceComponent fileName={parts[0]} />;
+                if(parts.length == 1)
+                    return inner;
+                return <div class="box">
+                    <div class="column">
+                        {inner}
+                        {parts[1]}
+                    </div>
+                </div>;
+            }
 
             const title = content;
             return <Anchor route={"/wiki/" + title}>{title}</Anchor>;

@@ -43,8 +43,14 @@ export class FileReferenceComponent extends Component<{ fileName: string; }>
         if(this.exists === false)
             return "Create file: " + fileName;
 
-        if(fileName.endsWith(".jpg"))
-            return <img src={g_backendBaseUrl + "/files?title=" + fileName} />;
+        const imageExtensions = [
+            ".gif", ".jpg"
+        ];
+        for (const ext of imageExtensions)
+        {
+            if(fileName.endsWith(ext))
+                return <img src={g_backendBaseUrl + "/files?title=" + fileName} />;   
+        }
         return fileName;
     }
 
