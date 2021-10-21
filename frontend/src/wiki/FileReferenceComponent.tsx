@@ -44,7 +44,7 @@ export class FileReferenceComponent extends Component<{ fileName: string; }>
             return "Create file: " + fileName;
 
         const imageExtensions = [
-            ".gif", ".jpg", ".png"
+            ".gif", ".jpg", ".png", ".svg"
         ];
         for (const ext of imageExtensions)
         {
