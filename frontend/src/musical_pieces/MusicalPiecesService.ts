@@ -33,6 +33,18 @@ export class MusicalPiecesService
         return this.apiService.Request<MusicalPieces.API.Add.ResultData>(MusicalPieces.API.route, MusicalPieces.API.Add.method, data, routeParams);
     }
 
+    public async AddPieceAttachment(pieceId: number, comment: string, file: File)
+    {
+        const fd = new FormData();
+        fd.append("comment", comment);
+        fd.append("data", file);
+
+        const routeParams: MusicalPieces.API.PieceAPI.RouteParams = {
+            pieceId
+        };        
+        await this.apiService.Request(MusicalPieces.API.PieceAPI.AttachmentsAPI.route, MusicalPieces.API.PieceAPI.AttachmentsAPI.Add.method, fd, routeParams);
+    }
+
     public ListPieces(data: MusicalPieces.API.List.RequestData)
     {
         return this.apiService.Request<MusicalPieces.API.List.ResultData>(MusicalPieces.API.route, MusicalPieces.API.List.method, data);

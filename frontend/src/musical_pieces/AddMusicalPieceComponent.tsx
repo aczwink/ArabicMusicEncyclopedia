@@ -29,6 +29,7 @@ export class AddMusicalPieceComponent extends Component
         super();
 
         this.piece = {
+            attachments: [],
             composerId: 0,
             formId: 1,
             maqamat: [],

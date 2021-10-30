@@ -29,6 +29,17 @@ export class MusicalPiecesController
     }
 
     //Public methods
+    public async AddAttachment(pieceId: number, comment: string, data: Buffer)
+    {
+        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
+
+        await conn.InsertRow("amedb.musical_pieces_attachments", {
+            pieceId,
+            comment,
+            content: data
+        });
+    }
+
     public async AddMusicalPiece(piece: MusicalPieces.Piece)
     {
         const conn = await this.dbController.GetFreeConnection();
@@ -55,6 +66,16 @@ export class MusicalPiecesController
         await conn.DeleteRows("amedb.musical_pieces_lyrics", "pieceId = ?", pieceId);
     }
 
+    public async QueryAttachment(attachmentId: number)
+    {
+        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
+        const row = await conn.SelectOne("SELECT content FROM amedb.musical_pieces_attachments WHERE attachmentId = ?", attachmentId);
+
+        if(row === undefined)
+            return undefined;
+        return row.content as Buffer;
+    }
+
     public async QueryMusicalPiece(pieceId: number): Promise<MusicalPieces.Piece | undefined>
     {
         const query = `
@@ -69,6 +90,7 @@ export class MusicalPiecesController
         if(row === undefined)
             return undefined;
         return {
+            attachments: await this.QueryPieceAttachments(pieceId),
             composerId: row.composerId,
             formId: row.formId,
             lyrics: await this.QueryPieceLyrics(pieceId),
@@ -162,6 +184,20 @@ export class MusicalPiecesController
     }
 
     //Private methods
+    private async QueryPieceAttachments(pieceId: number)
+    {
+        const query = `
+        SELECT mpa.attachmentId, mpa.comment
+        FROM amedb.musical_pieces_attachments mpa
+        WHERE mpa.pieceId = ?
+        `;
+
+        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
+        const rows = await conn.Select<MusicalPieces.PieceAttachmentAssociation>(query, pieceId);
+
+        return rows;
+    }
+
     private async QueryPieceLyrics(pieceId: number): Promise<MusicalPieces.PieceLyrics | undefined>
     {
         const query = `

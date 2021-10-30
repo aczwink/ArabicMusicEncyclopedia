@@ -16,12 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Anchor, Component, Injectable, JSX_CreateElement, MatIcon, ProgressSpinner, RouterState } from "acfrontend";
+import { Anchor, Component, Injectable, JSX_CreateElement, MatIcon, PopupManager, ProgressSpinner, RouterState } from "acfrontend";
 import { Musical, MusicalPieces, Persons } from "ame-api";
+import { g_backendBaseUrl } from "../backend";
 import { MaqamatService } from "../maqamat/MaqamatService";
 import { PersonsService } from "../persons/PersonsService";
 import { RhythmsService } from "../rhythms/RhythmsService";
 import { WikiTextComponent } from "../shared/WikiTextComponent";
+import { AddAttachmentComponent } from "./AddAttachmentComponent";
 import { MusicalPiecesService } from "./MusicalPiecesService";
 import { MusicalService } from "./MusicalService";
 
@@ -36,7 +38,8 @@ interface Association
 export class ShowMusicalPieceComponent extends Component
 {
     constructor(routerState: RouterState, private musicalPiecesService: MusicalPiecesService, private personsService: PersonsService,
-        private musicalService: MusicalService, private maqamatService: MaqamatService, private rhythmsService: RhythmsService)
+        private musicalService: MusicalService, private maqamatService: MaqamatService, private rhythmsService: RhythmsService,
+        private popupManager: PopupManager)
     {
         super();
 
@@ -94,6 +97,14 @@ export class ShowMusicalPieceComponent extends Component
                             <td>{r.explanation}</td>
                         </tr>)}
                     </table>
+
+                    <h4>Attachments</h4>
+                    <table>
+                        {this.piece.attachments.map(attachment => <tr>
+                            <th><a href={g_backendBaseUrl + "/musicalpieces/" + this.pieceId + "/attachments/" + attachment.attachmentId} target="_blank">{attachment.comment}</a></th>
+                        </tr>)}
+                    </table>
+                    <a onclick={this.OnAddAttachment.bind(this)}><MatIcon>add</MatIcon></a>
                 </div>
                 {this.RenderLyrics()}
                 <WikiTextComponent text={this.piece.text} />
@@ -149,6 +160,11 @@ export class ShowMusicalPieceComponent extends Component
     }
 
     //Event handlers
+    private OnAddAttachment()
+    {
+        this.popupManager.OpenDialog(<AddAttachmentComponent pieceId={this.pieceId} />, { title: "Upload attachment" });
+    }
+
     public async OnInitiated()
     {
         const result = await this.musicalPiecesService.QueryPiece({ pieceId: this.pieceId }, {});

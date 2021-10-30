@@ -36,6 +36,12 @@ export interface PieceRhythmAssociation
     explanation: string;
 }
 
+export interface PieceAttachmentAssociation
+{
+    attachmentId: number;
+    comment: string;
+}
+
 export interface Piece
 {
     name: string;
@@ -47,6 +53,7 @@ export interface Piece
     lyrics?: PieceLyrics;
     maqamat: PieceMaqamAssociation[];
     rhythms: PieceRhythmAssociation[];
+    attachments: PieceAttachmentAssociation[];
 }
 
 const mainRoute = "/musicalpieces";
@@ -138,6 +145,49 @@ export namespace API
         
             export interface ResultData
             {
+            }
+        }
+
+        export namespace AttachmentsAPI
+        {
+            export const route = objectRoute + "/attachments";
+
+            export namespace Add
+            {
+                export const method = "POST";
+
+                export interface RequestData
+                {
+                    comment: string;
+                }
+            
+                export interface ResultData
+                {
+                }
+            }
+
+            export namespace AttachmentAPI
+            {
+                export const route = objectRoute + "/attachments/:attachmentId";
+
+                export interface RouteParams
+                {
+                    attachmentId: number;
+                    pieceId: number;
+                }
+
+                export namespace Query
+                {
+                    export const method = "GET";
+
+                    export interface RequestData
+                    {
+                    }
+                
+                    export interface ResultData
+                    {
+                    }
+                }
             }
         }
     }
