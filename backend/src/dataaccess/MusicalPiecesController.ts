@@ -49,6 +49,7 @@ export class MusicalPiecesController
             formId: piece.formId,
             composerId: piece.composerId,
             releaseDate: piece.releaseDate,
+            text: piece.text
         });
         const pieceId = result.insertId;
 

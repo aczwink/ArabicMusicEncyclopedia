@@ -119,7 +119,25 @@ CREATE TABLE `musical_pieces` (
   KEY `musical_pieces_formId` (`formId`),
   CONSTRAINT `musical_pieces_composerId` FOREIGN KEY (`composerId`) REFERENCES `persons` (`id`),
   CONSTRAINT `musical_pieces_formId` FOREIGN KEY (`formId`) REFERENCES `musical_pieces_forms` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `musical_pieces_attachments`
+--
+
+DROP TABLE IF EXISTS `musical_pieces_attachments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `musical_pieces_attachments` (
+  `attachmentId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `pieceId` int(10) unsigned NOT NULL,
+  `comment` text NOT NULL,
+  `content` longblob NOT NULL,
+  PRIMARY KEY (`attachmentId`),
+  KEY `musical_pieces_attachments_pieceId` (`pieceId`),
+  CONSTRAINT `musical_pieces_attachments_pieceId` FOREIGN KEY (`pieceId`) REFERENCES `musical_pieces` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -225,7 +243,7 @@ CREATE TABLE `persons` (
   `lifeTime` text NOT NULL,
   `origin` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -244,6 +262,21 @@ CREATE TABLE `persons_images` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `persons_locations`
+--
+
+DROP TABLE IF EXISTS `persons_locations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `persons_locations` (
+  `personId` int(10) unsigned NOT NULL,
+  `location` char(2) NOT NULL,
+  PRIMARY KEY (`personId`,`location`),
+  CONSTRAINT `persons_locations_personId` FOREIGN KEY (`personId`) REFERENCES `persons` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `rhythms`
 --
 
@@ -254,9 +287,7 @@ CREATE TABLE `rhythms` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` text NOT NULL,
   `alternativeNames` text NOT NULL,
-  `popularity` text NOT NULL,
   `category` text NOT NULL,
-  `usageImage` text NOT NULL,
   `usageText` text NOT NULL,
   `text` text NOT NULL,
   PRIMARY KEY (`id`)
@@ -287,4 +318,4 @@ CREATE TABLE `rhythms_timeSigs` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-10-18 22:30:37
+-- Dump completed on 2021-11-09 22:16:28

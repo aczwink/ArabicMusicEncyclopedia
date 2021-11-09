@@ -18,6 +18,7 @@
 
 import { Anchor, Component, Injectable, JSX_CreateElement, MatIcon, ProgressSpinner, RouterState } from "acfrontend";
 import { Rhythms } from "ame-api";
+import { MapComponent } from "../shared/MapComponent";
 import { WikiTextComponent } from "../shared/WikiTextComponent";
 import { RhythmsService } from "./RhythmsService";
 
@@ -48,14 +49,14 @@ export class ShowRhythmComponent extends Component
                         {this.RenderAlternativeNames()}
                         <tr>
                             <th>Popularity</th>
-                            <td>{this.data.popularity}</td>
+                            <td>{this.RenderPopularity(this.data.popularity)}</td>
                         </tr>
                         <tr>
                             <th>Category</th>
                             <td>{this.data.category}</td>
                         </tr>
                     </table>
-                    <img src={"/images/usagemaps/" + this.data.usageImage + ".svg"} style="width: 25rem" />
+                    <MapComponent usages={this.data.usage} />
                     <p style="white-space: break-spaces;">{this.data.usageText}</p>
                 </div>
                 <WikiTextComponent text={this.data.text} />
@@ -77,6 +78,17 @@ export class ShowRhythmComponent extends Component
             </tr>
 
         return null;
+    }
+
+    private RenderPopularity(popularity: number): RenderValue
+    {
+        if(popularity > 0.75)
+            return "very popular";
+        if(popularity > 0.5)
+            return "popular";
+        if(popularity > 0.25)
+            return "infrequently used";
+        return "very rarely used";
     }
 
     //Event handlers

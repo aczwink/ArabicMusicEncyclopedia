@@ -27,7 +27,7 @@ export class RhythmsController
     }
 
     //Public methods
-    public async QueryRhythm(rhythmId: number)
+    public async QueryRhythm(rhythmId: number): Promise<Rhythms.Rhythm | undefined>
     {
         let query = `
         SELECT *
@@ -36,9 +36,24 @@ export class RhythmsController
         `;
 
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const row = await conn.SelectOne<Rhythms.Rhythm>(query, rhythmId);
+        const row = await conn.SelectOne(query, rhythmId);
 
-        return row;
+        if(row === undefined)
+            return undefined;
+
+        const usage = await this.QueryRhythmUsage(rhythmId);
+        return {
+            alternativeNames: row.alternativeNames,
+            category: row.category,
+            id: row.id,
+            name: row.name,
+            text: row.text,
+            usageText: row.usageText,
+            timeSigNum: 0,
+
+            popularity: usage.Values().Map(x => x.usage).Sum() / usage.length,
+            usage
+        };
     }
 
     public async QueryRhythms(): Promise<Rhythms.RhythmOverviewData[]>
@@ -56,5 +71,48 @@ export class RhythmsController
         const rows = await conn.Select<Rhythms.RhythmOverviewData>(query);
 
         return rows;
+    }
+
+    //Private methods
+    private async QueryMaxRhythmUsage(): Promise<number>
+    {
+        let query = `
+        SELECT MAX(rhythmUsageCounts.count) AS maxCount
+        FROM (
+            SELECT mpr.rhythmId, COUNT(mpr.pieceId) AS count
+            FROM amedb.musical_pieces_rhythms mpr
+            GROUP BY mpr.rhythmId
+        ) AS rhythmUsageCounts
+        `;
+
+        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
+        const row = await conn.SelectOne(query);
+
+        if(row === undefined)
+            return 1;
+        return row.maxCount;
+    }
+
+    private async QueryRhythmUsage(rhythmId: number): Promise<Rhythms.RhythmCountryUsage[]>
+    {
+        let query = `
+        SELECT pl.location, COUNT(*) AS count
+        FROM amedb.musical_pieces_rhythms mpr
+        INNER JOIN amedb.musical_pieces mp
+            ON mp.id = mpr.pieceId
+        INNER JOIN amedb.persons_locations pl
+            ON pl.personId = mp.composerId
+        WHERE mpr.rhythmId = ?
+        GROUP BY pl.location
+        `;
+
+        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
+        const rows = await conn.Select(query, rhythmId);
+
+        const maxCount = await this.QueryMaxRhythmUsage();
+        return rows.map(row => ({
+            countryCode: row.location,
+            usage: row.count / maxCount
+        }));
     }
 }

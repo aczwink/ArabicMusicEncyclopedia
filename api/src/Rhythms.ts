@@ -23,12 +23,20 @@ export interface RhythmOverviewData
     timeSigNum: number;
 }
 
+export type CountryCode = "sy" | "tr";
+
+export interface RhythmCountryUsage
+{
+    countryCode: CountryCode;
+    usage: number;
+}
+
 export interface Rhythm extends RhythmOverviewData
 {
     alternativeNames: string;
-    popularity: string;
+    popularity: number;
     category: string;
-    usageImage: string;
+    usage: RhythmCountryUsage[];
     usageText: string;
     text: string;
 }
