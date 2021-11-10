@@ -50,6 +50,20 @@ export class MusicalPieceEditorComponent extends Component<{ piece: MusicalPiece
         )
             return <ProgressSpinner />;
 
+        const form = this.forms!.Values().Filter(x => x.id === this.input.piece.formId).First();
+        if(form.hasLyrics)
+        {
+            if(this.input.piece.lyrics === undefined)
+                this.input.piece.lyrics = {
+                    languageId: 1,
+                    lyricistId: 1,
+                    lyricsText: "",
+                    singerId: 1,
+                };
+        }
+        else
+            this.input.piece.lyrics = undefined;
+
         const piece = this.CreateDataBindingProxy(this.input.piece);
         return <fragment>
             <FormField hint="Name">
@@ -125,17 +139,9 @@ export class MusicalPieceEditorComponent extends Component<{ piece: MusicalPiece
 
     private RenderLyricsPart(piece: MusicalPieces.Piece)
     {
-        const form = this.forms!.Values().Filter(x => x.id === piece.formId).First();
-        if(form.hasLyrics)
+        if(piece.lyrics !== undefined)
         {
-            if(piece.lyrics === undefined)
-                piece.lyrics = {
-                    languageId: 1,
-                    lyricistId: 1,
-                    lyricsText: "",
-                    singerId: 1,
-                };
-            const lyrics = piece.lyrics!;
+            const lyrics = piece.lyrics;
 
             return <fragment>
                 <FormField hint="Language">

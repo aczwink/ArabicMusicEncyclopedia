@@ -16,4 +16,4 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-export type CountryCode = "eg" | "sy" | "tr";
+export type CountryCode = "eg" | "lb" | "sy" | "tr";
