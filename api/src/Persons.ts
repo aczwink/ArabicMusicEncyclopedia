@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
+import { CountryCode } from "./Locale";
+
 export enum PersonType
 {
     Composer = 0,
@@ -35,6 +37,7 @@ export interface Person
     type: PersonType;
     lifeTime: string;
     origin: string;
+    countryCodes: CountryCode[];
 }
 
 const mainRoute = "/persons";

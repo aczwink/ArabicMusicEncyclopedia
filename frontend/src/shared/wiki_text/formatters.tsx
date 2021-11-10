@@ -67,16 +67,6 @@ export const lineFormatters: LineFormatter[] = [
 
 export const inlineFormatters = [
     {
-        pattern: /(?:(https?:\/\/)|(www\.))[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/,
-        mapper: (match: RegExpExecArray) => {
-            let url = match[0];
-            if(!url.startsWith("http"))
-                url = "http://" + url;
-
-            return <a href={url} target="_blank">{url}</a>;
-        }
-    },
-    {
         pattern: /\[\[(.+)\]\]/,
         mapper: (match: RegExpExecArray) => {
             const content = match[0].substr(2, match[0].length - 4);
@@ -99,5 +89,34 @@ export const inlineFormatters = [
             const title = content;
             return <Anchor route={"/wiki/" + title}>{title}</Anchor>;
         }
-    }
+    },
+    {
+        pattern: /\[(.+)\]/,
+        mapper: (match: RegExpExecArray) => {
+            const idx = match[1].indexOf(" ");
+
+            let url, text;
+            if(idx == -1)
+            {
+                url = match[1];
+                text = url;
+            }
+            else
+            {
+                url = match[1].substr(0, idx);
+                text = match[1].substr(idx + 1);
+            }        
+            return <a href={url} target="_blank">{text}</a>
+        }
+    },
+    {
+        pattern: /(?:(https?:\/\/)|(www\.))[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/,
+        mapper: (match: RegExpExecArray) => {
+            let url = match[0];
+            if(!url.startsWith("http"))
+                url = "http://" + url;
+
+            return <a href={url} target="_blank">{url}</a>;
+        }
+    },
 ];

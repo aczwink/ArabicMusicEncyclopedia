@@ -17,7 +17,7 @@
  * */
 
 import { Component, Injectable, JSX_CreateElement } from "acfrontend";
-import { Rhythms } from "ame-api";
+import { Locale, Rhythms } from "ame-api";
 
 @Injectable
 export class MapComponent extends Component<{ usages: Rhythms.RhythmCountryUsage[] }>
@@ -39,11 +39,12 @@ export class MapComponent extends Component<{ usages: Rhythms.RhythmCountryUsage
     private usageImage: "levant" | "arabicworld";
 
     //Private methods
-    private Colorize(doc: Document, countryCode: Rhythms.CountryCode, color: string)
+    private Colorize(doc: Document, countryCode: Locale.CountryCode, color: string)
     {
         if(this.usageImage === "levant")
         {
             const codesToPathsMap = {
+                "eg": "path4341",
                 "sy": "path4439",
                 "tr": "path4419",
             };

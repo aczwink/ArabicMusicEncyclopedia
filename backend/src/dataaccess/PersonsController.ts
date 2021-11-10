@@ -18,6 +18,7 @@
 
 import { Injectable } from "acts-util-node";
 import { Persons } from "ame-api";
+import { CountryCode } from "ame-api/dist/Locale";
 import { PersonType } from "ame-api/dist/Persons";
 import { DatabaseController } from "./DatabaseController";
 
@@ -39,6 +40,8 @@ export class PersonsController
             origin: person.origin
         });
 
+        await this.UpdatePersonLocations(result.insertId, person.countryCodes);
+
         return result.insertId;
     }
 
@@ -46,6 +49,11 @@ export class PersonsController
     {
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
         const row = await conn.SelectOne<Persons.Person>("SELECT name, type, lifeTime, origin FROM amedb.persons WHERE id = ?", personId);
+        if(row === undefined)
+            return undefined;
+
+        const countryCodes = await conn.Select("SELECT location FROM amedb.persons_locations WHERE personId = ?", personId);
+        row.countryCodes = countryCodes.map(x => x.location);
 
         return row;
     }
@@ -78,6 +86,8 @@ export class PersonsController
             lifeTime: person.lifeTime,
             origin: person.origin
         }, "id = ?", personId);
+
+        await this.UpdatePersonLocations(personId, person.countryCodes);
     }
 
     public async UpdatePersonImage(personId: number, image: Buffer)
@@ -94,5 +104,14 @@ export class PersonsController
                 data: image
             });
         }
+    }
+
+    //Private methods
+    private async UpdatePersonLocations(personId: number, countryCodes: CountryCode[])
+    {
+        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
+
+        await conn.DeleteRows("amedb.persons_locations", "personId = ?", personId);
+        await countryCodes.Values().Map(cc => conn.InsertRow("amedb.persons_locations", { personId, location: cc }) ).PromiseAll();
     }
 }

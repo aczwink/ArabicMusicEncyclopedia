@@ -15,32 +15,5 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
-import * as Ajnas from "./Ajnas";
-import * as Locale from "./Locale";
-import * as Maqamat from "./Maqamat";
-import * as Musical from "./Musical";
-import * as MusicalPieces from "./MusicalPieces";
-import * as Persons from "./Persons";
-import * as Rhythms from "./Rhythms";
-import * as Score from "./Score";
-import * as Wiki from "./Wiki";
-import * as WikiFiles from "./WikiFiles";
-import { Accidental, NaturalNote, OctavePitch, OctavePitchToString, ParseOctavePitch } from "./OctavePitch";
 
-export {
-    Accidental,
-    Ajnas,
-    Locale,
-    Maqamat,
-    Musical,
-    MusicalPieces,
-    NaturalNote,
-    OctavePitch,
-    OctavePitchToString,
-    ParseOctavePitch,
-    Persons,
-    Rhythms,
-    Score,
-    Wiki,
-    WikiFiles,
-};
+export type CountryCode = "eg" | "sy" | "tr";

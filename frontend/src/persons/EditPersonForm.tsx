@@ -18,6 +18,7 @@
 
 import { Component, FileSelect, JSX_CreateElement, LineEdit, Select } from "acfrontend";
 import { Persons } from "ame-api";
+import { CountryCode } from "ame-api/dist/Locale";
 import { PersonType } from "ame-api/dist/Persons";
 
 export class EditPersonForm extends Component<{ person: Persons.Person; saveButtonText: string; onSave: (image?: File | null) => void }>
@@ -55,6 +56,10 @@ export class EditPersonForm extends Component<{ person: Persons.Person; saveButt
                 <td><LineEdit value={p.origin} onChanged={newValue => p.origin = newValue} /></td>
             </tr>
             <tr>
+                <th>Location</th>
+                <td>{this.RenderLocations()}</td>
+            </tr>
+            <tr>
                 <th>Lifetime</th>
                 <td><LineEdit value={p.lifeTime} onChanged={newValue => p.lifeTime = newValue} /></td>
             </tr>
@@ -90,10 +95,32 @@ export class EditPersonForm extends Component<{ person: Persons.Person; saveButt
         return this.IsNotEmpty(p.name) && this.IsNotEmpty(p.lifeTime) && this.IsNotEmpty(p.origin);
     }
 
+    private RenderLocations()
+    {
+        const allCodes: CountryCode[] = ["eg", "sy", "tr"];
+
+        return allCodes.map(code => {
+            const checked = this.person!.countryCodes.Contains(code);
+            return <fragment>
+                <input type="checkbox" checked={checked} onclick={this.OnLocationChanged.bind(this, code, checked)} />
+                {code}
+            </fragment>;
+        });
+    }
+
     //Eventhandlers
     public OnInitiated()
     {
         this.person = this.CreateDataBindingProxy(this.input.person);
+    }
+
+    private OnLocationChanged(code: CountryCode, wasChecked: boolean)
+    {
+        if(wasChecked)
+            this.person!.countryCodes.Remove(this.person!.countryCodes.indexOf(code));
+        else
+            this.person!.countryCodes.push(code);
+        this.Update();
     }
 
     private OnSave()

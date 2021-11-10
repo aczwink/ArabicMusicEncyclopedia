@@ -16,14 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
+import { CountryCode } from "./Locale";
+
 export interface RhythmOverviewData
 {
     id: number;
     name: string;
     timeSigNum: number;
 }
-
-export type CountryCode = "sy" | "tr";
 
 export interface RhythmCountryUsage
 {
