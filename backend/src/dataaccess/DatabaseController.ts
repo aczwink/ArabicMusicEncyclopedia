@@ -41,6 +41,12 @@ export class DatabaseController
         return instance.value.CreateAnyConnectionQueryExecutor();
     }
 
+    public CreateQueryBuilder()
+    {
+        const factory = new DBFactory;
+        return factory.CreateQueryBuilder("mysql");
+    }
+
     public async GetFreeConnection()
     {
         const instance = await this.GetPoolInstance();

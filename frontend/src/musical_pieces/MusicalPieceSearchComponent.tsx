@@ -16,8 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Component, Injectable, JSX_CreateElement, PaginationComponent, ProgressSpinner } from "acfrontend";
+import { Component, FormField, Injectable, JSX_CreateElement, PaginationComponent, ProgressSpinner } from "acfrontend";
 import { MusicalPieces } from "ame-api";
+import { PersonType } from "ame-api/dist/Persons";
+import { SinglePersonSelectionComponent } from "../persons/SinglePersonSelectionComponent";
 import { MusicalPiecesListComponent } from "./MusicalPiecesListComponent";
 import { MusicalPiecesService } from "./MusicalPiecesService";
 
@@ -31,6 +33,7 @@ export class MusicalPieceSearchComponent extends Component
         this.loading = false;
         this.offset = 0;
         this.size = 25;
+        this.composerId = null;
         this.pieces = [];
         this.totalCount = 0;
     }
@@ -40,6 +43,9 @@ export class MusicalPieceSearchComponent extends Component
         return <fragment>
             <div class="box">
                 <form onsubmit={this.OnSubmit.bind(this)}>
+                    <FormField hint="Composer">
+                        <SinglePersonSelectionComponent type={PersonType.Composer} onSelectionChanged={newValue => this.composerId = newValue} />
+                    </FormField>
                     <button type="submit">Search</button>
                 </form>
             </div>
@@ -51,6 +57,7 @@ export class MusicalPieceSearchComponent extends Component
     private loading: boolean;
     private offset: number;
     private size: number;
+    private composerId: number | null;
     private pieces: MusicalPieces.API.List.Piece[];
     private totalCount: number;
 
@@ -58,7 +65,11 @@ export class MusicalPieceSearchComponent extends Component
     private async ExecuteSearch()
     {
         this.loading = true;
-        const result = await this.musicalPiecesService.ListPieces({ offset: this.offset, limit: this.size });
+        const result = await this.musicalPiecesService.ListPieces({
+            composerId: this.composerId,
+            offset: this.offset,
+            limit: this.size
+        });
         this.pieces = result.pieces;
         this.totalCount = result.totalCount;
         this.loading = false;
@@ -77,11 +88,6 @@ export class MusicalPieceSearchComponent extends Component
     }
 
     //Event handlers
-    public OnInitiated()
-    {
-        this.ExecuteSearch();
-    }
-
     private OnOffsetChanged(newValue: number)
     {
         this.offset = newValue;

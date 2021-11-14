@@ -103,43 +103,33 @@ export class MusicalPiecesController
         };
     }
 
-    public async QueryMusicalPieces(offset: number, limit: number)
+    public async QueryMusicalPieces(composerId: number | null, offset: number, limit: number)
     {
-        const query = `
-        SELECT
-            mp.id, mp.name, mp.composerId, mp.releaseDate, mpl.singerId, mpf.name AS formName, pc.name AS composerName, ps.name AS singerName
-        FROM amedb.musical_pieces mp
-        INNER JOIN amedb.musical_pieces_forms mpf
-            ON mpf.id = mp.formId
-        INNER JOIN amedb.persons pc
-            ON pc.id = mp.composerId
-        LEFT JOIN amedb.musical_pieces_lyrics mpl
-            ON mpl.pieceId = mp.id
-        LEFT JOIN amedb.persons ps
-            ON ps.id = mpl.singerId
-        LIMIT ?
-        OFFSET ?
-        `;
+        const builder = this.CreateQueryBuilder(composerId);
+        builder.offset = offset;
+        builder.limit = limit;
 
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const rows = await conn.Select<MusicalPieces.API.List.Piece>(query, limit, offset);
+        const rows = await conn.Select<MusicalPieces.API.List.Piece>(builder.CreateSQLQuery(), limit, offset);
 
         return rows;
     }
 
-    public async QueryMusicalPiecesCount()
+    public async QueryMusicalPiecesCount(composerId: number | null)
     {
-        const query = `
-        SELECT COUNT(*) AS cnt
-        FROM amedb.musical_pieces mp
-        `;
+        const builder = this.CreateQueryBuilder(composerId);
+        builder.SetColumns(
+            {
+                special: "count"
+            }
+        );
 
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const row = await conn.SelectOne(query);
+        const row = await conn.SelectOne(builder.CreateSQLQuery());
 
         if(row === undefined)
             return 0;
-        return row.cnt as number;
+        return row.count as number;
     }
 
     public async UpdateMusicalPiece(pieceId: number, piece: MusicalPieces.Piece)
@@ -185,6 +175,79 @@ export class MusicalPiecesController
     }
 
     //Private methods
+    private CreateQueryBuilder(composerId: number | null)
+    {
+        const builder = this.dbController.CreateQueryBuilder();
+        const mp = builder.SetPrimaryTable("amedb.musical_pieces");
+
+        const mpf = builder.AddJoin({
+            type: "INNER",
+            tableName: "amedb.musical_pieces_forms",
+            conditions: [{
+                column: "id",
+                operator: "=",
+                joinTable: mp,
+                joinTableColumn: "formId"
+            }]
+        });
+
+        const pc = builder.AddJoin({
+            type: "INNER",
+            tableName: "amedb.persons",
+            conditions: [{
+                column: "id",
+                operator: "=",
+                joinTable: mp,
+                joinTableColumn: "composerId"
+            }]
+        });
+
+        const mpl = builder.AddJoin({
+            type: "LEFT",
+            tableName: "amedb.musical_pieces_lyrics",
+            conditions: [{
+                column: "pieceId",
+                operator: "=",
+                joinTable: mp,
+                joinTableColumn: "id"
+            }]
+        });
+
+        const ps = builder.AddJoin({
+            type: "LEFT",
+            tableName: "amedb.persons",
+            conditions: [{
+                column: "id",
+                operator: "=",
+                joinTable: mpl,
+                joinTableColumn: "singerId"
+            }]
+        });
+
+        builder.SetColumns([
+            { table: mp, column: "id"},
+            { table: mp, column: "name"},
+            { table: mp, column: "composerId"},
+            { table: mp, column: "releaseDate"},
+            { table: mpf, column: "name AS formName"},
+            { table: pc, column: "name AS composerName"},
+            { table: mpl, column: "singerId"},
+            { table: ps, column: "name AS singerName"}
+        ]);
+
+        if(composerId !== null)
+        {
+            builder.AddCondition({
+                table: mp,
+                column: "composerId",
+                operator: "=",
+                constant: composerId
+            });
+        }
+
+        return builder;
+    }
+
     private async QueryPieceAttachments(pieceId: number)
     {
         const query = `

@@ -202,16 +202,16 @@ export class MusicalPieceEditorComponent extends Component<{ piece: MusicalPiece
         const forms = await this.musicalService.ListForms({}, {});
         this.forms = forms.forms;
 
-        const composers = await this.personsService.QueryPersons({ type: PersonType.Composer });
+        const composers = await this.personsService.QueryPersons({ type: PersonType.Composer, limit: 100, nameFilter: "", offset: 0 });
         this.composers = composers.persons;
 
         const languages = await this.musicalService.ListLanguages({}, {});
         this.languages = languages.languages;
 
-        const singers = await this.personsService.QueryPersons({ type: PersonType.Singer });
+        const singers = await this.personsService.QueryPersons({ type: PersonType.Singer, limit: 100, nameFilter: "", offset: 0 });
         this.singers = singers.persons;
 
-        const songwriters = await this.personsService.QueryPersons({ type: PersonType.Lyricist });
+        const songwriters = await this.personsService.QueryPersons({ type: PersonType.Lyricist, limit: 100, nameFilter: "", offset: 0 });
         this.songwriters = songwriters.persons;
 
         const maqamat = await this.maqamatService.QueryMaqamat({});

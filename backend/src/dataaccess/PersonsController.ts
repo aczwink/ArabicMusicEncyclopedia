@@ -68,12 +68,24 @@ export class PersonsController
         return row.data;
     }
 
-    public async QueryPersons(type: PersonType): Promise<Persons.PersonOverviewData[]>
+    public async QueryPersons(type: PersonType, nameFilter: string, offset: number, limit: number)
     {
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const rows = await conn.Select<Persons.PersonOverviewData>("SELECT id, name FROM amedb.persons WHERE type = ?", type);
+        const query = `
+        SELECT id, name
+        FROM amedb.persons
+        WHERE type = ? AND name LIKE ?
+        LIMIT ?
+        OFFSET ?
+        `;
+        const rows = await conn.Select<Persons.PersonOverviewData>(query, type, "%" + nameFilter + "%", limit, offset);
 
-        return rows;
+        const row = await conn.Select("SELECT COUNT(*) AS cnt FROM amedb.persons WHERE type = ? AND name LIKE ?", type, "%" + nameFilter + "%");
+
+        return {
+            persons: rows,
+            totalCount: (row as any).cnt
+        };
     }
 
     public async UpdatePerson(personId: number, person: Persons.Person)

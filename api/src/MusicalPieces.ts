@@ -88,6 +88,7 @@ export namespace API
 
         export interface RequestData
         {
+            composerId: number | null;
             offset: number;
             limit: number;
         }

@@ -69,11 +69,15 @@ export namespace API
         export interface RequestData
         {
             type: PersonType;
+            nameFilter: string;
+            offset: number;
+            limit: number;
         }
 
         export interface ResultData
         {
             persons: PersonOverviewData[];
+            totalCount: number;
         }
     }
 

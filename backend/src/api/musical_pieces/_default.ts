@@ -47,8 +47,8 @@ class _api_
     @HTTPEndPoint({ method: MusicalPieces.API.List.method, route: MusicalPieces.API.route })
     public async ListPieces(request: HTTPRequest<MusicalPieces.API.List.RequestData>): Promise<HTTPResultData<MusicalPieces.API.List.ResultData>>
     {
-        const mp = await this.musicalPiecesController.QueryMusicalPieces(request.data.offset, request.data.limit);
-        const count = await this.musicalPiecesController.QueryMusicalPiecesCount();
+        const mp = await this.musicalPiecesController.QueryMusicalPieces(request.data.composerId, request.data.offset, request.data.limit);
+        const count = await this.musicalPiecesController.QueryMusicalPiecesCount(request.data.composerId);
 
         return {
             data: {

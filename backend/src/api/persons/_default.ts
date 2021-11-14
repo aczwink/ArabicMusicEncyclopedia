@@ -41,9 +41,11 @@ class _api_
     @HTTPEndPoint({ method: Persons.API.List.method, route: Persons.API.route })
     public async QueryPersons(request: HTTPRequest<Persons.API.List.RequestData>): Promise<HTTPResultData<Persons.API.List.ResultData>>
     {
+        const result = await this.personsController.QueryPersons(request.data.type, request.data.nameFilter, request.data.offset, request.data.limit);
         return {
             data: {
-                persons: await this.personsController.QueryPersons(request.data.type),
+                persons: result.persons,
+                totalCount: result.totalCount,
             }
         };
     }

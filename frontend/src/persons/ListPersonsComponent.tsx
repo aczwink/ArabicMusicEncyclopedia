@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Anchor, Component, Injectable, JSX_CreateElement, MatIcon, ProgressSpinner, RouterButton } from "acfrontend";
+import { Anchor, Component, Injectable, JSX_CreateElement, LineEdit, MatIcon, PaginationComponent, ProgressSpinner, RouterButton } from "acfrontend";
 import { Persons } from "ame-api";
 import { PersonsService } from "./PersonsService";
 
@@ -27,13 +27,61 @@ export class ListPersonsComponent extends Component<{ type: Persons.PersonType }
     {
         super();
 
-        this.data = null;
+        this.data = [];
+        this.loading = false;
+        this.nameFilter = "";
+        this.offset = 0;
+        this.size = 25;
+        this.count = 0;
     }
     
     protected Render(): RenderValue
     {
+        if(this.loading)
+            return <ProgressSpinner />;
+
+        return <fragment>
+            <div class="box">
+                <LineEdit value={this.nameFilter} onChanged={newValue => this.nameFilter = newValue} />
+                <form onsubmit={this.OnSubmit.bind(this)}>
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+            {this.RenderResultList()}
+            <RouterButton route={"/persons/add/" + this.input.type}><MatIcon>add</MatIcon></RouterButton>
+        </fragment>;
+    }
+
+    //Private members
+    private data: Persons.PersonOverviewData[];
+    private loading: boolean;
+    private nameFilter: string;
+    private count: number;
+    private offset: number;
+    private size: number;
+
+    //Private methods
+    private async ExecuteSearch()
+    {
+        this.loading = true;
+        const result = await this.personsService.QueryPersons({
+            type: this.input.type,
+            limit: this.size,
+            nameFilter: this.nameFilter,
+            offset: this.offset
+        });
+        this.data = result.persons;
+        this.count = result.totalCount;
+        this.loading = false;
+    }
+
+    private RenderResultList()
+    {
         if(this.data === null)
             return <ProgressSpinner />;
+        if(this.data.length === 0)
+            return null;
+            
         return <fragment>
             <table>
                 <tr>
@@ -43,18 +91,27 @@ export class ListPersonsComponent extends Component<{ type: Persons.PersonType }
                     <td><Anchor route={"/persons/" + row.id}>{row.name}</Anchor></td>
                 </tr>)}
             </table>
-            <RouterButton route={"/persons/add/" + this.input.type}><MatIcon>add</MatIcon></RouterButton>
+            <PaginationComponent count={this.count} offset={this.offset} size={this.size} onOffsetChanged={this.OnOffsetChanged.bind(this)} onSizeChanged={this.OnSizeChanged.bind(this)} />
         </fragment>;
     }
 
-    //Private members
-    private data: Persons.PersonOverviewData[] | null;
-
     //Event handlers
-    public async OnInitiated()
+    private OnOffsetChanged(newValue: number)
     {
-        const result = await this.personsService.QueryPersons({ type: this.input.type });
-        this.data = result.persons;
+        this.offset = newValue;
+        this.ExecuteSearch();
+    }
+
+    private OnSizeChanged(newValue: number)
+    {
+        this.size = newValue;
+        this.ExecuteSearch();
+    }
+
+    private OnSubmit(event: Event)
+    {
+        event.preventDefault();
+        this.ExecuteSearch();
     }
 }
 
