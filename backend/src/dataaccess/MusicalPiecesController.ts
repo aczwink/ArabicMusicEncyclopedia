@@ -21,6 +21,17 @@ import { DBQueryExecutor } from "acts-util-node/dist/db/DBQueryExecutor";
 import { MusicalPieces } from "ame-api";
 import { DatabaseController } from "./DatabaseController";
 
+interface MusicalPiecesFilterCriteria
+{
+    formId: number | null;
+    titleFilter: string;
+    composerId: number | null;
+    lyricistId: number | null;
+    singerId: number | null;
+    maqamId: number | null;
+    rhythmId: number | null;
+}
+
 @Injectable
 export class MusicalPiecesController
 {
@@ -103,9 +114,9 @@ export class MusicalPiecesController
         };
     }
 
-    public async QueryMusicalPieces(composerId: number | null, offset: number, limit: number)
+    public async QueryMusicalPieces(filterCriteria: MusicalPiecesFilterCriteria, offset: number, limit: number)
     {
-        const builder = this.CreateQueryBuilder(composerId);
+        const builder = this.CreateQueryBuilder(filterCriteria);
         builder.offset = offset;
         builder.limit = limit;
 
@@ -115,9 +126,9 @@ export class MusicalPiecesController
         return rows;
     }
 
-    public async QueryMusicalPiecesCount(composerId: number | null)
+    public async QueryMusicalPiecesCount(filterCriteria: MusicalPiecesFilterCriteria)
     {
-        const builder = this.CreateQueryBuilder(composerId);
+        const builder = this.CreateQueryBuilder(filterCriteria);
         builder.SetColumns(
             {
                 special: "count"
@@ -175,7 +186,7 @@ export class MusicalPiecesController
     }
 
     //Private methods
-    private CreateQueryBuilder(composerId: number | null)
+    private CreateQueryBuilder(filterCriteria: MusicalPiecesFilterCriteria)
     {
         const builder = this.dbController.CreateQueryBuilder();
         const mp = builder.SetPrimaryTable("amedb.musical_pieces");
@@ -235,15 +246,99 @@ export class MusicalPiecesController
             { table: ps, column: "name AS singerName"}
         ]);
 
-        if(composerId !== null)
+        builder.AddCondition({
+            table: mp,
+            column: "name",
+            operator: "LIKE",
+            constant: "%" + filterCriteria.titleFilter + "%"
+        });
+
+        if(filterCriteria.formId !== null)
+        {
+            builder.AddCondition({
+                table: mp,
+                column: "formId",
+                operator: "=",
+                constant: filterCriteria.formId
+            });
+        }
+
+        if(filterCriteria.composerId !== null)
         {
             builder.AddCondition({
                 table: mp,
                 column: "composerId",
                 operator: "=",
-                constant: composerId
+                constant: filterCriteria.composerId
             });
         }
+
+        if(filterCriteria.lyricistId !== null)
+        {
+            builder.AddCondition({
+                table: mpl,
+                column: "lyricistId",
+                operator: "=",
+                constant: filterCriteria.lyricistId
+            });
+        }
+
+        if(filterCriteria.singerId !== null)
+        {
+            builder.AddCondition({
+                table: mpl,
+                column: "singerId",
+                operator: "=",
+                constant: filterCriteria.singerId
+            });
+        }
+
+        if(filterCriteria.maqamId !== null)
+        {
+            builder.AddJoin({
+                type: "INNER",
+                tableName: "amedb.musical_pieces_maqamat",
+                conditions: [
+                    {
+                        column: "pieceId",
+                        operator: "=",
+                        joinTable: mp,
+                        joinTableColumn: "id"
+                    },
+                    {
+                        column: "maqamId",
+                        operator: "=",
+                        joinValue: filterCriteria.maqamId
+                    }
+                ]
+            });
+        }
+
+        if(filterCriteria.rhythmId !== null)
+        {
+            builder.AddJoin({
+                type: "INNER",
+                tableName: "amedb.musical_pieces_rhythms",
+                conditions: [
+                    {
+                        column: "pieceId",
+                        operator: "=",
+                        joinTable: mp,
+                        joinTableColumn: "id"
+                    },
+                    {
+                        column: "rhythmId",
+                        operator: "=",
+                        joinValue: filterCriteria.rhythmId
+                    }
+                ]
+            });
+        }
+
+        builder.AddGrouping({
+            table: mp,
+            columnName: "id"
+        });
 
         return builder;
     }

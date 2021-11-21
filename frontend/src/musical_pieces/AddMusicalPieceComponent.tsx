@@ -38,19 +38,21 @@ export class AddMusicalPieceComponent extends Component
             rhythms: [],
             text: "",
         };
+        this.isValid = false;
     }
 
     protected Render(): RenderValue
     {
         return <fragment>
             <h1>Add musical piece</h1>
-            <MusicalPieceEditorComponent piece={this.piece} />
-            <button type="button" onclick={this.OnCreate.bind(this)}>Add</button>
+            <MusicalPieceEditorComponent piece={this.piece} onValidationUpdated={newValue => this.isValid = newValue} />
+            <button type="button" onclick={this.OnCreate.bind(this)} disabled={!this.isValid}>Add</button>
         </fragment>;
     }
 
     //Private members
     private piece: MusicalPieces.Piece;
+    private isValid: boolean;
 
     //Event handlers
     private async OnCreate()

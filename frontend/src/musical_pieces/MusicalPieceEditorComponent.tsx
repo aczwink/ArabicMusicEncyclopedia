@@ -17,36 +17,32 @@
  * */
 
 import { Component, FormField, Injectable, JSX_CreateElement, LineEdit, MatIcon, ProgressSpinner, Select, Textarea } from "acfrontend";
-import { Maqamat, Musical, MusicalPieces, Persons, Rhythms } from "ame-api";
+import { Maqamat, Musical, MusicalPieces, Rhythms } from "ame-api";
 import { PieceMaqamAssociation, PieceRhythmAssociation } from "ame-api/dist/MusicalPieces";
 import { PersonType } from "ame-api/dist/Persons";
 import { MaqamatService } from "../maqamat/MaqamatService";
-import { PersonsService } from "../persons/PersonsService";
 import { RhythmsService } from "../rhythms/RhythmsService";
 import { WikiTextEditComponent } from "../shared/WikiTextEditComponent";
 import { MusicalService } from "./MusicalService";
+import { SinglePersonSelectionComponent } from "../persons/SinglePersonSelectionComponent";
 
 @Injectable
-export class MusicalPieceEditorComponent extends Component<{ piece: MusicalPieces.Piece }>
+export class MusicalPieceEditorComponent extends Component<{ piece: MusicalPieces.Piece; onValidationUpdated: (newValue: boolean) => void }>
 {
-    constructor(private personsService: PersonsService, private musicalService: MusicalService, private maqamatService: MaqamatService, private rhythmsService: RhythmsService)
+    constructor(private musicalService: MusicalService, private maqamatService: MaqamatService, private rhythmsService: RhythmsService)
     {
         super();
 
-        this.composers = null;
         this.forms = null;
         this.languages = null;
         this.maqamat = null;
         this.rhythms = null;
-        this.singers = null;
-        this.songwriters = null;
     }
     
     protected Render(): RenderValue
     {
         if(
-            (this.composers === null) || (this.forms === null) || (this.languages === null) || (this.maqamat === null) || (this.rhythms === null)
-            || (this.singers === null) || (this.songwriters === null)
+            (this.forms === null) || (this.languages === null) || (this.maqamat === null) || (this.rhythms === null)
         )
             return <ProgressSpinner />;
 
@@ -56,9 +52,9 @@ export class MusicalPieceEditorComponent extends Component<{ piece: MusicalPiece
             if(this.input.piece.lyrics === undefined)
                 this.input.piece.lyrics = {
                     languageId: 1,
-                    lyricistId: 1,
+                    lyricistId: 0,
                     lyricsText: "",
-                    singerId: 1,
+                    singerId: 0,
                 };
         }
         else
@@ -74,10 +70,8 @@ export class MusicalPieceEditorComponent extends Component<{ piece: MusicalPiece
                     {this.forms.map(form => <option value={form.id.toString()} selected={piece.formId === form.id}>{form.name}</option>)}
                 </Select>
             </FormField>
-            <FormField hint="Composers">
-                <Select onChanged={newValue => piece.composerId = parseInt(newValue[0])}>
-                    {this.composers.map(composer => <option value={composer.id} selected={composer.id === piece.composerId}>{composer.name}</option>)}
-                </Select>
+            <FormField hint="Composer">
+                <SinglePersonSelectionComponent type={PersonType.Composer} selected={piece.composerId === 0 ? undefined : piece.composerId} onSelectionChanged={this.OnComposerChanged.bind(this)} />
             </FormField>
             <FormField hint="Release date">
                 <LineEdit value={piece.releaseDate} onChanged={newValue => piece.releaseDate = newValue} />
@@ -115,13 +109,10 @@ export class MusicalPieceEditorComponent extends Component<{ piece: MusicalPiece
     }
 
     //Private members
-    private composers: Persons.PersonOverviewData[] | null;
     private forms: Musical.API.FormsAPI.List.Form[] | null;
     private languages: Musical.API.LanguagesAPI.List.Language[] | null;
     private maqamat: Maqamat.API.List.MaqamOverviewData[] | null;
     private rhythms: Rhythms.RhythmOverviewData[] | null;
-    private singers: Persons.PersonOverviewData[] | null;
-    private songwriters: Persons.PersonOverviewData[] | null;
 
     //Private methods
     private AddEntry<T>(arr: T[], itemToAdd: T)
@@ -150,14 +141,10 @@ export class MusicalPieceEditorComponent extends Component<{ piece: MusicalPiece
                     </Select>
                 </FormField>
                 <FormField hint="Singer">
-                    <Select onChanged={newValue => lyrics.singerId = parseInt(newValue[0])}>
-                        {this.singers!.map(singer => <option value={singer.id} selected={singer.id === lyrics.singerId}>{singer.name}</option>)}
-                    </Select>
+                    <SinglePersonSelectionComponent type={PersonType.Singer} selected={lyrics.singerId === 0 ? undefined : lyrics.singerId} onSelectionChanged={this.OnSingerChanged.bind(this)} />
                 </FormField>
                 <FormField hint="Songwriter">
-                    <Select onChanged={newValue => lyrics.lyricistId = parseInt(newValue[0])}>
-                        {this.songwriters!.map(singer => <option value={singer.id} selected={singer.id === lyrics.lyricistId}>{singer.name}</option>)}
-                    </Select>
+                    <SinglePersonSelectionComponent type={PersonType.Lyricist} selected={lyrics.lyricistId === 0 ? undefined : lyrics.lyricistId} onSelectionChanged={this.OnSongWriterChanged.bind(this)} />
                 </FormField>
                 <FormField hint="Lyrics">
                     <Textarea value={lyrics.lyricsText} onChanged={newValue => lyrics.lyricsText = newValue} />
@@ -196,28 +183,46 @@ export class MusicalPieceEditorComponent extends Component<{ piece: MusicalPiece
         </tr>;
     }
 
+    private UpdateValidation()
+    {
+        const piece = this.input.piece;
+        const areLyricsValid = (piece.lyrics !== undefined) ? ((piece.lyrics.lyricistId !== 0) && (piece.lyrics.singerId !== 0)) : true;
+        const canSave = (piece.composerId !== 0) && areLyricsValid;
+
+        this.input.onValidationUpdated(canSave);
+    }
+
     //Event handlers
     public async OnInitiated()
     {
         const forms = await this.musicalService.ListForms({}, {});
         this.forms = forms.forms;
 
-        const composers = await this.personsService.QueryPersons({ type: PersonType.Composer, limit: 100, nameFilter: "", offset: 0 });
-        this.composers = composers.persons;
-
         const languages = await this.musicalService.ListLanguages({}, {});
         this.languages = languages.languages;
-
-        const singers = await this.personsService.QueryPersons({ type: PersonType.Singer, limit: 100, nameFilter: "", offset: 0 });
-        this.singers = singers.persons;
-
-        const songwriters = await this.personsService.QueryPersons({ type: PersonType.Lyricist, limit: 100, nameFilter: "", offset: 0 });
-        this.songwriters = songwriters.persons;
 
         const maqamat = await this.maqamatService.QueryMaqamat({});
         this.maqamat = maqamat;
 
         const rhythms = await this.rhythmsService.QueryRhythms({});
         this.rhythms = rhythms.rhythms;
+    }
+
+    private OnComposerChanged(newValue: number)
+    {
+        this.input.piece.composerId = newValue;
+        this.UpdateValidation();
+    }
+
+    private OnSingerChanged(newValue: number)
+    {
+        this.input.piece.lyrics!.singerId = newValue;
+        this.UpdateValidation();
+    }
+
+    private OnSongWriterChanged(newValue: number)
+    {
+        this.input.piece.lyrics!.lyricistId = newValue;
+        this.UpdateValidation();
     }
 }

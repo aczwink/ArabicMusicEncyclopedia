@@ -31,6 +31,7 @@ export class EditMusicalPieceComponent extends Component
         this.pieceId = parseInt(routerState.routeParams.pieceId!);
         this.origPieceName = "";
         this.piece = null;
+        this.isValid = true;
     }
     
     protected Render(): RenderValue
@@ -40,8 +41,8 @@ export class EditMusicalPieceComponent extends Component
 
         return <fragment>
             <h1>Edit musical piece: {this.origPieceName}</h1>
-            <MusicalPieceEditorComponent piece={this.piece} />
-            <button type="button" onclick={this.OnSave.bind(this)}>Save</button>
+            <MusicalPieceEditorComponent piece={this.piece} onValidationUpdated={newValue => this.isValid = newValue} />
+            <button type="button" onclick={this.OnSave.bind(this)} disabled={!this.isValid}>Save</button>
         </fragment>;
     }
 
@@ -49,6 +50,7 @@ export class EditMusicalPieceComponent extends Component
     private pieceId: number;
     private origPieceName: string;
     private piece: MusicalPieces.Piece | null;
+    private isValid: boolean;
 
     //Event handlers
     public async OnInitiated()

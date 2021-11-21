@@ -18,21 +18,27 @@
 
 import { AutoCompleteSelectBox, Component, Injectable, JSX_CreateElement, KeyDisplayValuePair } from "acfrontend";
 import { Persons } from "ame-api";
+import { PersonOverviewData } from "ame-api/dist/Persons";
 import { PersonsService } from "./PersonsService";
 
+const allSelection: PersonOverviewData = {
+    id: -1,
+    name: "All"
+};
+
 @Injectable
-export class SinglePersonSelectionComponent extends Component<{ type: Persons.PersonType, selected?: number, onSelectionChanged: (id: number) => void }>
+export class OptionalSinglePersonSelectionComponent extends Component<{ type: Persons.PersonType, onSelectionChanged: (id: number | null) => void }>
 {
     constructor(private personsService: PersonsService)
     {
         super();
 
-        this.selection = null;
+        this.selection = allSelection;
     }
-
+    
     protected Render(): RenderValue
     {
-        const selection = (this.selection === null) ? null : {
+        const selection = {
             key: this.selection.id,
             displayValue: this.selection.name
         };
@@ -41,21 +47,9 @@ export class SinglePersonSelectionComponent extends Component<{ type: Persons.Pe
     }
 
     //Private members
-    private selection: Persons.PersonOverviewData | null;
+    private selection: Persons.PersonOverviewData;
 
     //Event handlers
-    public async OnInitiated()
-    {
-        if(this.input.selected !== undefined)
-        {
-            const person = await this.personsService.QueryPerson({ personId: this.input.selected }, {});
-            this.selection = {
-                id: this.input.selected,
-                name: person.person.name
-            };
-        }
-    }
-
     private async OnLoadSuggestions(searchText: string): Promise<KeyDisplayValuePair<number>[]>
     {
         const result = await this.personsService.QueryPersons({
@@ -65,18 +59,31 @@ export class SinglePersonSelectionComponent extends Component<{ type: Persons.Pe
             type: this.input.type
         });
 
-        return result.persons.map(p => ({
+        const all = [{
+            key: allSelection.id,
+            displayValue: allSelection.name
+        }];
+
+        return all.concat(result.persons.map(p => ({
             key: p.id,
             displayValue: p.name
-        }));
+        })));
     }
 
     private OnSelectionChanged(newValue: KeyDisplayValuePair<number>)
     {
-        this.selection = {
-            id: newValue.key,
-            name: newValue.displayValue
-        };
-        this.input.onSelectionChanged(this.selection.id);
+        if(newValue.key === allSelection.id)
+        {
+            this.selection = allSelection;
+            this.input.onSelectionChanged(null);
+        }
+        else
+        {
+            this.selection = {
+                id: newValue.key,
+                name: newValue.displayValue
+            };
+            this.input.onSelectionChanged(this.selection.id);
+        }
     }
 }

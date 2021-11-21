@@ -88,7 +88,13 @@ export namespace API
 
         export interface RequestData
         {
+            formId: number | null;
+            titleFilter: string;
             composerId: number | null;
+            lyricistId: number | null;
+            singerId: number | null;
+            maqamId: number | null;
+            rhythmId: number | null;
             offset: number;
             limit: number;
         }
