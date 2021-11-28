@@ -65,49 +65,54 @@ export class ShowMusicalPieceComponent extends Component
                 <Anchor route={"/musicalpieces/edit/" + this.pieceId}><MatIcon>edit</MatIcon></Anchor>
             </h1>
             <div>
-                <div class="box" style="float: right; display: block">
-                    <table class="keyValue">
-                        <tr>
-                            <th>Form</th>
-                            <td>{this.form.name}</td>
-                        </tr>
-                        <tr>
-                            <th>Composer</th>
-                            <td><Anchor route={"/persons/" + this.piece.composerId}>{this.composer.name}</Anchor></td>
-                        </tr>
-                        <tr>
-                            <th>Release date</th>
-                            <td>{this.piece.releaseDate}</td>
-                        </tr>
-                        {this.RenderLyricalInfo()}
-                    </table>
+                <div class="row">
+                    <div class="column" style="flex-grow: 1; align-items: start;">
+                        {this.RenderLyrics()}
+                        <WikiTextComponent text={this.piece.text} />
+                    </div>
 
-                    <h4>Maqamat</h4>
-                    <table>
-                        {this.maqamat.map(m => <tr>
-                            <th><Anchor route={"/maqamat/" + m.id}>{m.name}</Anchor></th>
-                            <td>{m.explanation}</td>
-                        </tr>)}
-                    </table>
+                    <div class="box" style="float: right; display: block">
+                        <table class="keyValue">
+                            <tr>
+                                <th>Form</th>
+                                <td>{this.form.name}</td>
+                            </tr>
+                            <tr>
+                                <th>Composer</th>
+                                <td><Anchor route={"/persons/" + this.piece.composerId}>{this.composer.name}</Anchor></td>
+                            </tr>
+                            <tr>
+                                <th>Release date</th>
+                                <td>{this.piece.releaseDate}</td>
+                            </tr>
+                            {this.RenderLyricalInfo()}
+                        </table>
 
-                    <h4>Rhythms</h4>
-                    <table>
-                        {this.rhythms.map(r => <tr>
-                            <th><Anchor route={"/rhythms/" + r.id}>{r.name}</Anchor></th>
-                            <td>{r.explanation}</td>
-                        </tr>)}
-                    </table>
+                        <h4>Maqamat</h4>
+                        <table>
+                            {this.maqamat.map(m => <tr>
+                                <th><Anchor route={"/maqamat/" + m.id}>{m.name}</Anchor></th>
+                                <td>{m.explanation}</td>
+                            </tr>)}
+                        </table>
 
-                    <h4>Attachments</h4>
-                    <table>
-                        {this.piece.attachments.map(attachment => <tr>
-                            <th><a href={g_backendBaseUrl + "/musicalpieces/" + this.pieceId + "/attachments/" + attachment.attachmentId} target="_blank">{attachment.comment}</a></th>
-                        </tr>)}
-                    </table>
-                    <a onclick={this.OnAddAttachment.bind(this)}><MatIcon>add</MatIcon></a>
+                        <h4>Rhythms</h4>
+                        <table>
+                            {this.rhythms.map(r => <tr>
+                                <th><Anchor route={"/rhythms/" + r.id}>{r.name}</Anchor></th>
+                                <td>{r.explanation}</td>
+                            </tr>)}
+                        </table>
+
+                        <h4>Attachments</h4>
+                        <table>
+                            {this.piece.attachments.map(attachment => <tr>
+                                <th><a href={g_backendBaseUrl + "/musicalpieces/" + this.pieceId + "/attachments/" + attachment.attachmentId} target="_blank">{attachment.comment}</a></th>
+                            </tr>)}
+                        </table>
+                        <a onclick={this.OnAddAttachment.bind(this)}><MatIcon>add</MatIcon></a>
+                    </div>
                 </div>
-                {this.RenderLyrics()}
-                <WikiTextComponent text={this.piece.text} />
             </div>
         </fragment>;
     }
@@ -155,7 +160,7 @@ export class ShowMusicalPieceComponent extends Component
             return null;
         return <fragment>
             <h2>Lyrics</h2>
-            <p style="white-space: break-spaces;">{this.piece.lyrics.lyricsText}</p>
+            <p style="white-space: break-spaces; direction: rtl; margin-left: 1rem">{this.piece.lyrics.lyricsText}</p>
         </fragment>;
     }
 
