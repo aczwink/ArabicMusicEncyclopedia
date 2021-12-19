@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Anchor, Component, Injectable, JSX_CreateElement, MatIcon, PopupManager, ProgressSpinner, RouterState } from "acfrontend";
+import { Anchor, Component, Injectable, JSX_CreateElement, MatIcon, PopupManager, ProgressSpinner, RouterState, TitleService } from "acfrontend";
 import { Musical, MusicalPieces, Persons } from "ame-api";
 import { g_backendBaseUrl } from "../backend";
 import { MaqamatService } from "../maqamat/MaqamatService";
@@ -39,7 +39,7 @@ export class ShowMusicalPieceComponent extends Component
 {
     constructor(routerState: RouterState, private musicalPiecesService: MusicalPiecesService, private personsService: PersonsService,
         private musicalService: MusicalService, private maqamatService: MaqamatService, private rhythmsService: RhythmsService,
-        private popupManager: PopupManager)
+        private popupManager: PopupManager, private titleService: TitleService)
     {
         super();
 
@@ -174,6 +174,8 @@ export class ShowMusicalPieceComponent extends Component
     {
         const result = await this.musicalPiecesService.QueryPiece({ pieceId: this.pieceId }, {});
         this.piece = result.piece;
+
+        this.titleService.title = this.piece.name;
 
         const forms = await this.musicalService.ListForms({}, {});
         this.form = forms.forms.Values().Filter(x => x.id === result.piece.formId).First();
