@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,10 +18,9 @@
 
 import { Injectable } from "acts-util-node";
 import { DBQueryExecutor } from "acts-util-node/dist/db/DBQueryExecutor";
-import { MusicalPieces } from "ame-api";
 import { DatabaseController } from "./DatabaseController";
 
-interface MusicalPiecesFilterCriteria
+export interface MusicalPiecesFilterCriteria
 {
     formId: number | null;
     titleFilter: string;
@@ -30,6 +29,58 @@ interface MusicalPiecesFilterCriteria
     singerId: number | null;
     maqamId: number | null;
     rhythmId: number | null;
+}
+
+export interface PieceOverviewData
+{
+    id: number;
+    name: string;
+    formName: string;
+    composerId: number;
+    composerName: string;
+    releaseDate: string;
+    singerId?: number;
+    singerName: string;
+}
+
+interface PieceLyrics
+{
+    lyricistId: number;
+    singerId: number;
+    languageId: number;
+    lyricsText: string;
+}
+
+interface PieceMaqamAssociation
+{
+    maqamId: number;
+    explanation: string;
+}
+
+interface PieceRhythmAssociation
+{
+    rhythmId: number;
+    explanation: string;
+}
+
+interface PieceAttachmentAssociation
+{
+    attachmentId: number;
+    comment: string;
+}
+
+export interface PieceDetailsData
+{
+    name: string;
+    formId: number;
+    composerId: number;
+    releaseDate: string;
+    text: string;
+
+    lyrics?: PieceLyrics;
+    maqamat: PieceMaqamAssociation[];
+    rhythms: PieceRhythmAssociation[];
+    attachments: PieceAttachmentAssociation[];
 }
 
 @Injectable
@@ -51,7 +102,7 @@ export class MusicalPiecesController
         });
     }
 
-    public async AddMusicalPiece(piece: MusicalPieces.Piece)
+    public async AddMusicalPiece(piece: PieceDetailsData)
     {
         const conn = await this.dbController.GetFreeConnection();
 
@@ -71,6 +122,13 @@ export class MusicalPiecesController
         return pieceId;
     }
 
+    public async DeleteAttachment(attachmentId: number)
+    {
+        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
+
+        await conn.DeleteRows("amedb.musical_pieces_attachments", "attachmentId = ?", attachmentId);
+    }
+
     public async DeleteMusicalPieceLyrics(pieceId: number)
     {
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
@@ -88,7 +146,7 @@ export class MusicalPiecesController
         return row.content as Buffer;
     }
 
-    public async QueryMusicalPiece(pieceId: number): Promise<MusicalPieces.Piece | undefined>
+    public async QueryMusicalPiece(pieceId: number): Promise<PieceDetailsData | undefined>
     {
         const query = `
         SELECT mp.name, mp.formId, mp.composerId, mp.releaseDate, mp.text
@@ -121,7 +179,7 @@ export class MusicalPiecesController
         builder.limit = limit;
 
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const rows = await conn.Select<MusicalPieces.API.List.Piece>(builder.CreateSQLQuery(), limit, offset);
+        const rows = await conn.Select<PieceOverviewData>(builder.CreateSQLQuery(), limit, offset);
 
         return rows;
     }
@@ -143,7 +201,7 @@ export class MusicalPiecesController
         return row.count as number;
     }
 
-    public async UpdateMusicalPiece(pieceId: number, piece: MusicalPieces.Piece)
+    public async UpdateMusicalPiece(pieceId: number, piece: PieceDetailsData)
     {
         const conn = await this.dbController.GetFreeConnection();
 
@@ -162,7 +220,7 @@ export class MusicalPiecesController
         return pieceId;
     }
 
-    public async UpdateMusicalPieceLyrics(pieceId: number, data: MusicalPieces.PieceLyrics)
+    public async UpdateMusicalPieceLyrics(pieceId: number, data: PieceLyrics)
     {
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
 
@@ -352,12 +410,12 @@ export class MusicalPiecesController
         `;
 
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const rows = await conn.Select<MusicalPieces.PieceAttachmentAssociation>(query, pieceId);
+        const rows = await conn.Select<PieceAttachmentAssociation>(query, pieceId);
 
         return rows;
     }
 
-    private async QueryPieceLyrics(pieceId: number): Promise<MusicalPieces.PieceLyrics | undefined>
+    private async QueryPieceLyrics(pieceId: number): Promise<PieceLyrics | undefined>
     {
         const query = `
         SELECT mpl.languageId, mpl.lyricistId, mpl.singerId, mpl.lyrics
@@ -378,7 +436,7 @@ export class MusicalPiecesController
         };
     }
 
-    private async QueryPieceMaqamat(pieceId: number): Promise<MusicalPieces.PieceMaqamAssociation[]>
+    private async QueryPieceMaqamat(pieceId: number): Promise<PieceMaqamAssociation[]>
     {
         const query = `
         SELECT mpm.maqamId, mpm.explanation
@@ -387,12 +445,12 @@ export class MusicalPiecesController
         `;
 
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const rows = await conn.Select<MusicalPieces.PieceMaqamAssociation>(query, pieceId);
+        const rows = await conn.Select<PieceMaqamAssociation>(query, pieceId);
 
         return rows;
     }
 
-    private async QueryPieceRhythms(pieceId: number): Promise<MusicalPieces.PieceRhythmAssociation[]>
+    private async QueryPieceRhythms(pieceId: number): Promise<PieceRhythmAssociation[]>
     {
         const query = `
         SELECT mpr.rhythmId, mpr.explanation
@@ -401,12 +459,12 @@ export class MusicalPiecesController
         `;
 
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const rows = await conn.Select<MusicalPieces.PieceRhythmAssociation>(query, pieceId);
+        const rows = await conn.Select<PieceRhythmAssociation>(query, pieceId);
 
         return rows;
     }
 
-    private async SetPieceMaqamatAndRhythms(pieceId: number, maqamat: MusicalPieces.PieceMaqamAssociation[], rhythms: MusicalPieces.PieceRhythmAssociation[], conn: DBQueryExecutor)
+    private async SetPieceMaqamatAndRhythms(pieceId: number, maqamat: PieceMaqamAssociation[], rhythms: PieceRhythmAssociation[], conn: DBQueryExecutor)
     {
         await conn.DeleteRows("amedb.musical_pieces_maqamat", "pieceId = ?", pieceId);
         await conn.DeleteRows("amedb.musical_pieces_rhythms", "pieceId = ?", pieceId);

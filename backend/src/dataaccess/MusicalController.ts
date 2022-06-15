@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,8 +17,20 @@
  * */
 
 import { Injectable } from "acts-util-node";
-import { Musical } from "ame-api";
 import { DatabaseController } from "./DatabaseController";
+
+interface Form
+{
+    id: number;
+    name: string;
+    hasLyrics: boolean;
+}
+
+interface Language
+{
+    id: number;
+    name: string;
+}
 
 @Injectable
 export class MusicalController
@@ -31,7 +43,7 @@ export class MusicalController
     public async QueryLanguages()
     {
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const rows= await conn.Select<Musical.API.LanguagesAPI.List.Language>("SELECT * FROM amedb.musical_pieces_languages");
+        const rows= await conn.Select<Language>("SELECT * FROM amedb.musical_pieces_languages");
 
         return rows;
     }
@@ -39,15 +51,15 @@ export class MusicalController
     public async QueryForm(formId: number)
     {
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const row = await conn.SelectOne<Musical.API.FormsAPI.List.Form>("SELECT * FROM amedb.musical_pieces_forms WHERE id = ?", formId);
+        const row = await conn.SelectOne<Form>("SELECT * FROM amedb.musical_pieces_forms WHERE id = ?", formId);
 
         return row;
     }
 
-    public async QueryForms() : Promise<Musical.API.FormsAPI.List.Form[]>
+    public async QueryForms() : Promise<Form[]>
     {
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const rows = await conn.Select<Musical.API.FormsAPI.List.Form>("SELECT * FROM amedb.musical_pieces_forms");
+        const rows = await conn.Select<Form>("SELECT * FROM amedb.musical_pieces_forms");
 
         return rows;
     }

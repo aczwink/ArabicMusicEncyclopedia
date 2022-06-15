@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,7 +17,7 @@
  * */
 
 import { Anchor, Component, Injectable, JSX_CreateElement, MatIcon, ProgressSpinner, RouterState } from "acfrontend";
-import { Rhythms } from "ame-api";
+import { Rhythm } from "../../dist/api";
 import { MapComponent } from "../shared/MapComponent";
 import { WikiTextComponent } from "../shared/WikiTextComponent";
 import { RhythmsService } from "./RhythmsService";
@@ -66,7 +66,7 @@ export class ShowRhythmComponent extends Component
 
     //Private members
     private rhythmId: number;
-    private data: Rhythms.Rhythm | null;
+    private data: Rhythm | null;
 
     //Private methods
     private RenderAlternativeNames()
@@ -94,7 +94,7 @@ export class ShowRhythmComponent extends Component
     //Event handlers
     public async OnInitiated()
     {
-        const result = await this.rhythmsService.QueryRhythm({ rhythmId: this.rhythmId }, {});
-        this.data = result.rhythm;
+        const result = await this.rhythmsService.QueryRhythm(this.rhythmId);
+        this.data = result;
     }
 }

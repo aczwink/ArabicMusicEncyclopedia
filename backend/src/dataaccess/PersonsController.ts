@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,10 +17,30 @@
  * */
 
 import { Injectable } from "acts-util-node";
-import { Persons } from "ame-api";
 import { CountryCode } from "ame-api/dist/Locale";
-import { PersonType } from "ame-api/dist/Persons";
 import { DatabaseController } from "./DatabaseController";
+
+export enum PersonType
+{
+    Composer = 0,
+    Lyricist = 1,
+    Singer = 2
+};
+
+export interface Person
+{
+    name: string;
+    type: PersonType;
+    lifeTime: string;
+    origin: string;
+    countryCodes: CountryCode[];
+}
+
+export interface PersonOverviewData
+{
+    id: number;
+    name: string;
+}
 
 @Injectable
 export class PersonsController
@@ -30,7 +50,7 @@ export class PersonsController
     }
 
     //Public methods
-    public async AddPerson(person: Persons.Person)
+    public async AddPerson(person: Person)
     {
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
         const result = await conn.InsertRow("amedb.persons", {
@@ -48,7 +68,7 @@ export class PersonsController
     public async QueryPerson(personId: number)
     {
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const row = await conn.SelectOne<Persons.Person>("SELECT name, type, lifeTime, origin FROM amedb.persons WHERE id = ?", personId);
+        const row = await conn.SelectOne<Person>("SELECT name, type, lifeTime, origin FROM amedb.persons WHERE id = ?", personId);
         if(row === undefined)
             return undefined;
 
@@ -61,7 +81,7 @@ export class PersonsController
     public async QueryPersonImage(personId: number)
     {
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const row = await conn.SelectOne("SELECT data FROM amedb.persons_images WHERE personId = ?", personId);
+        const row = await conn.SelectOne<{ data: Buffer; }>("SELECT data FROM amedb.persons_images WHERE personId = ?", personId);
 
         if(row === undefined)
             return undefined;
@@ -78,7 +98,7 @@ export class PersonsController
         LIMIT ?
         OFFSET ?
         `;
-        const rows = await conn.Select<Persons.PersonOverviewData>(query, type, "%" + nameFilter + "%", limit, offset);
+        const rows = await conn.Select<PersonOverviewData>(query, type, "%" + nameFilter + "%", limit, offset);
 
         const row = await conn.Select("SELECT COUNT(*) AS cnt FROM amedb.persons WHERE type = ? AND name LIKE ?", type, "%" + nameFilter + "%");
 
@@ -88,7 +108,7 @@ export class PersonsController
         };
     }
 
-    public async UpdatePerson(personId: number, person: Persons.Person)
+    public async UpdatePerson(personId: number, person: Person)
     {
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
 

@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,7 +17,6 @@
  * */
 
 import { Injectable } from "acfrontend";
-import { Musical } from "ame-api";
 import { APIService } from "../shared/APIService";
 
 @Injectable
@@ -28,13 +27,13 @@ export class MusicalService
     }
 
     //Public methods
-    public ListForms(routeParams: Musical.API.FormsAPI.RouteParams, data: Musical.API.FormsAPI.List.RequestData)
+    public async ListForms()
     {
-        return this.apiService.Request<Musical.API.FormsAPI.List.ResultData>(Musical.API.FormsAPI.route, Musical.API.FormsAPI.List.method, data, routeParams);
+        return (await this.apiService.forms.get()).data;
     }
 
-    public ListLanguages(routeParams: Musical.API.LanguagesAPI.RouteParams, data: Musical.API.LanguagesAPI.List.RequestData)
+    public async ListLanguages()
     {
-        return this.apiService.Request<Musical.API.LanguagesAPI.List.ResultData>(Musical.API.LanguagesAPI.route, Musical.API.LanguagesAPI.List.method, data, routeParams);
+        return (await this.apiService.languages.get()).data;
     }
 }

@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,7 +17,6 @@
  * */
 
 import { Injectable } from "acfrontend";
-import { Wiki } from "ame-api";
 import { APIService } from "../shared/APIService";
 
 @Injectable
@@ -28,18 +27,21 @@ export class WikiService
     }
 
     //Public methods
-    public CreateArticle(routeParams: Wiki.API.RouteParams, data: Wiki.API.CreateArticle.RequestData)
+    public CreateArticle(title: string, text: string)
     {
-        return this.apiService.Request<Wiki.API.CreateArticle.ResultData>(Wiki.API.route, Wiki.API.CreateArticle.method, data, routeParams);
+        return this.apiService.articles.post({ title, text });
     }
 
-    public QueryArticle(routeParams: Wiki.API.RouteParams, data: Wiki.API.QueryArticle.RequestData)
+    public async QueryArticle(title: string)
     {
-        return this.apiService.Request<Wiki.API.QueryArticle.ResultData>(Wiki.API.route, Wiki.API.QueryArticle.method, data, routeParams);
+        const response = await this.apiService.articles.get({ title });
+        if(response.statusCode == 404)
+            return null;
+        return response.data;
     }
 
-    public UpdateArticle(routeParams: Wiki.API.RouteParams, data: Wiki.API.UpdateArticle.RequestData)
+    public UpdateArticle(title: string, text: string)
     {
-        return this.apiService.Request<Wiki.API.UpdateArticle.ResultData>(Wiki.API.route, Wiki.API.UpdateArticle.method, data, routeParams);
+        return this.apiService.articles.put({ title, text });
     }
 }

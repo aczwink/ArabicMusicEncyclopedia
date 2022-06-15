@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,39 +15,44 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
-import { HTTPEndPoint, HTTPRequest, Injectable } from "acts-util-node";
-import { HTTPResultData } from "acts-util-node/dist/http/HTTPRequestHandler";
-import { Maqamat, OctavePitch, OctavePitchToString, ParseOctavePitch } from "ame-api";
-import { ImageCacheManager } from "../../../services/ImageCacheManager";
-import { AjnasController } from "../../../dataaccess/AjnasController";
-import { MaqamPicCreator } from "../../../services/MaqamPicCreator";
-import { MaqamatController } from "../../../dataaccess/MaqamatController";
-import { IntervalsService } from "../../../services/IntervalsService";
+import { OctavePitch, OctavePitchToString, ParseOctavePitch } from "ame-api";
+import { ImageCacheManager } from "../../services/ImageCacheManager";
+import { AjnasController } from "../../dataaccess/AjnasController";
+import { MaqamPicCreator } from "../../services/MaqamPicCreator";
+import { MaqamatController } from "../../dataaccess/MaqamatController";
+import { IntervalsService } from "../../services/IntervalsService";
+import { APIController, Get, NotFound, Path, Query } from "acts-util-apilib";
 
-@Injectable
-class _api_
+@APIController("maqamat/{maqamId}/image")
+class MaqamImageAPIController
 {
     constructor(private imgCacheManager: ImageCacheManager, private ajnasController: AjnasController, private maqamPicCreator: MaqamPicCreator,
         private maqamController: MaqamatController, private intervalsService: IntervalsService)
     {
     }
 
-    @HTTPEndPoint({ method: Maqamat.API.MaqamAPI.ImageAPI.Query.method, route: Maqamat.API.MaqamAPI.ImageAPI.route })
-    public async QueryMaqamImage(request: HTTPRequest<Maqamat.API.MaqamAPI.ImageAPI.Query.RequestData, Maqamat.API.MaqamAPI.ImageAPI.RouteParams>): Promise<HTTPResultData<Maqamat.API.MaqamAPI.ImageAPI.Query.ResultData>>
+    @Get()
+    public async QueryMaqamImage(
+        @Path maqamId: number,
+        @Query basePitch: string,
+        @Query branchingJinsId: number
+    )
     {
-        const cacheName = this.CreateCacheName(request.routeParams.maqamId, request.data.basePitch, request.data.branchingJinsId);
+        const cacheName = this.CreateCacheName(maqamId, basePitch, branchingJinsId);
         let data = await this.imgCacheManager.ReadCachedImage("maqam", cacheName);
 
         if(data === undefined)
         {
-            data = await this.CreateImage(request.routeParams.maqamId, ParseOctavePitch(request.data.basePitch), request.data.branchingJinsId);
+            data = await this.CreateImage(maqamId, ParseOctavePitch(basePitch), branchingJinsId);
         }
 
-        return {
-            data
-        };
+        if(data === undefined)
+            return NotFound("a subresource was not found");
+
+        return data;
     }
 
+    //Private methods
     private CreateCacheName(maqamId: number, basePitch: string, branchingJinsId: number)
     {
         return maqamId + basePitch.toLowerCase() + branchingJinsId;
@@ -82,5 +87,3 @@ class _api_
         return created;
     }
 }
-
-export default _api_;

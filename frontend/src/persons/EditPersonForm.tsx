@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,11 +17,10 @@
  * */
 
 import { Component, FileSelect, JSX_CreateElement, LineEdit, Select } from "acfrontend";
-import { Persons } from "ame-api";
 import { CountryCode } from "ame-api/dist/Locale";
-import { PersonType } from "ame-api/dist/Persons";
+import { Person, PersonType } from "../../dist/api";
 
-export class EditPersonForm extends Component<{ person: Persons.Person; saveButtonText: string; onSave: (image?: File | null) => void }>
+export class EditPersonForm extends Component<{ person: Person; saveButtonText: string; onSave: (image?: File | null) => void }>
 {
     constructor()
     {
@@ -78,7 +77,7 @@ export class EditPersonForm extends Component<{ person: Persons.Person; saveButt
     }
 
     //Private members
-    private person: Persons.Person | null;
+    private person: Person | null;
     private thumb: File | null;
     private shouldDeleteThumb: boolean;
 

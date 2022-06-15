@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,14 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Anchor, Component, Injectable, JSX_CreateElement, MatIcon, PopupManager, ProgressSpinner, RouterState, TitleService } from "acfrontend";
-import { Musical, MusicalPieces, Persons } from "ame-api";
+import { Anchor, Component, Injectable, JSX_CreateElement, MatIcon, ProgressSpinner, RouterState, TitleService } from "acfrontend";
+import { Form, Language, Person, PieceDetailsData } from "../../dist/api";
 import { g_backendBaseUrl } from "../backend";
 import { MaqamatService } from "../maqamat/MaqamatService";
 import { PersonsService } from "../persons/PersonsService";
 import { RhythmsService } from "../rhythms/RhythmsService";
 import { WikiTextComponent } from "../shared/WikiTextComponent";
-import { AddAttachmentComponent } from "./AddAttachmentComponent";
 import { MusicalPiecesService } from "./MusicalPiecesService";
 import { MusicalService } from "./MusicalService";
 
@@ -39,7 +38,7 @@ export class ShowMusicalPieceComponent extends Component
 {
     constructor(routerState: RouterState, private musicalPiecesService: MusicalPiecesService, private personsService: PersonsService,
         private musicalService: MusicalService, private maqamatService: MaqamatService, private rhythmsService: RhythmsService,
-        private popupManager: PopupManager, private titleService: TitleService)
+        private titleService: TitleService)
     {
         super();
 
@@ -107,10 +106,9 @@ export class ShowMusicalPieceComponent extends Component
                         <h4>Attachments</h4>
                         <table>
                             {this.piece.attachments.map(attachment => <tr>
-                                <th><a href={g_backendBaseUrl + "/musicalpieces/" + this.pieceId + "/attachments/" + attachment.attachmentId} target="_blank">{attachment.comment}</a></th>
+                                <th><a href={g_backendBaseUrl + "/attachments/" + attachment.attachmentId} target="_blank">{attachment.comment}</a></th>
                             </tr>)}
                         </table>
-                        <a onclick={this.OnAddAttachment.bind(this)}><MatIcon>add</MatIcon></a>
                     </div>
                 </div>
             </div>
@@ -119,12 +117,12 @@ export class ShowMusicalPieceComponent extends Component
 
     //Private members
     private pieceId: number;
-    private piece: MusicalPieces.Piece | null;
-    private form: Musical.API.FormsAPI.List.Form | null;
-    private composer: Persons.Person | null;
-    private language: Musical.API.LanguagesAPI.List.Language | null;
-    private singer: Persons.Person | null;
-    private lyricist: Persons.Person | null;
+    private piece: PieceDetailsData | null;
+    private form: Form | null;
+    private composer: Person | null;
+    private language: Language | null;
+    private singer: Person | null;
+    private lyricist: Person | null;
     private maqamat: Association[] | null;
     private rhythms: Association[] | null;
 
@@ -165,45 +163,40 @@ export class ShowMusicalPieceComponent extends Component
     }
 
     //Event handlers
-    private OnAddAttachment()
-    {
-        this.popupManager.OpenDialog(<AddAttachmentComponent pieceId={this.pieceId} />, { title: "Upload attachment" });
-    }
-
     public async OnInitiated()
     {
-        const result = await this.musicalPiecesService.QueryPiece({ pieceId: this.pieceId }, {});
-        this.piece = result.piece;
+        const result = await this.musicalPiecesService.QueryPiece(this.pieceId);
+        this.piece = result;
 
         this.titleService.title = this.piece.name;
 
-        const forms = await this.musicalService.ListForms({}, {});
-        this.form = forms.forms.Values().Filter(x => x.id === result.piece.formId).First();
+        const forms = await this.musicalService.ListForms();
+        this.form = forms.Values().Filter(x => x.id === result.formId).First();
 
-        const composer = await this.personsService.QueryPerson({ personId: result.piece.composerId}, {});
-        this.composer = composer.person;
+        const composer = await this.personsService.QueryPerson(result.composerId);
+        this.composer = composer;
 
-        if(result.piece.lyrics)
+        if(result.lyrics)
         {
-            const languages = await this.musicalService.ListLanguages({}, {});
-            this.language = languages.languages.Values().Filter(x => x.id === result.piece.lyrics!.languageId).First();
+            const languages = await this.musicalService.ListLanguages();
+            this.language = languages.Values().Filter(x => x.id === result.lyrics!.languageId).First();
 
-            const singer = await this.personsService.QueryPerson({ personId: result.piece.lyrics.singerId}, {});
-            this.singer = singer.person;
+            const singer = await this.personsService.QueryPerson(result.lyrics.singerId);
+            this.singer = singer;
 
-            const lyricist = await this.personsService.QueryPerson({ personId: result.piece.lyrics.lyricistId}, {});
-            this.lyricist = lyricist.person;
+            const lyricist = await this.personsService.QueryPerson(result.lyrics.lyricistId);
+            this.lyricist = lyricist;
         }
 
-        this.maqamat = await result.piece.maqamat.Values().Map(async m => ({
+        this.maqamat = await result.maqamat.Values().Map(async m => ({
             id: m.maqamId,
-            name: (await this.maqamatService.QueryMaqam({ maqamId: m.maqamId }, {})).name,
+            name: (await this.maqamatService.QueryMaqam(m.maqamId)).name,
             explanation: m.explanation
         })).PromiseAll();
 
-        this.rhythms = await result.piece.rhythms.Values().Map(async r => ({
+        this.rhythms = await result.rhythms.Values().Map(async r => ({
             id: r.rhythmId,
-            name: (await this.rhythmsService.QueryRhythm({ rhythmId: r.rhythmId }, {})).rhythm.name,
+            name: (await this.rhythmsService.QueryRhythm(r.rhythmId)).name,
             explanation: r.explanation
         })).PromiseAll();
     }

@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,7 +17,7 @@
  * */
 
 import { Anchor, Component, Injectable, JSX_CreateElement, MatIcon, ProgressSpinner, RouterState } from "acfrontend";
-import { Persons } from "ame-api";
+import { Person, PersonType } from "../../dist/api";
 import { g_backendBaseUrl } from "../backend";
 import { PersonsService } from "./PersonsService";
 
@@ -67,18 +67,18 @@ export class ShowPersonComponent extends Component
 
     //Private members
     private personId: number;
-    private data: Persons.Person | null;
+    private data: Person | null;
 
     //Private methods
-    private TypeToString(type: Persons.PersonType): RenderValue
+    private TypeToString(type: PersonType): RenderValue
     {
         switch(type)
         {
-            case Persons.PersonType.Composer:
+            case PersonType.Composer:
                 return "Composer";
-            case Persons.PersonType.Lyricist:
+            case PersonType.Lyricist:
                 return "Lyricist";
-            case Persons.PersonType.Singer:
+            case PersonType.Singer:
                 return "Singer";
         }
     }
@@ -86,7 +86,7 @@ export class ShowPersonComponent extends Component
     //Event handlers
     public async OnInitiated()
     {
-        const result = await this.personsService.QueryPerson({ personId: this.personId}, {});
-        this.data = result.person;
+        const result = await this.personsService.QueryPerson(this.personId);
+        this.data = result;
     }
 }

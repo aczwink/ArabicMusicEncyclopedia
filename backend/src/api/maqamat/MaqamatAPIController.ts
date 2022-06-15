@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,26 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
+import { APIController, Get, Query } from "acts-util-apilib";
+import { MaqamatController } from "../../dataaccess/MaqamatController";
 
-import { HTTPEndPoint, HTTPRequest, Injectable } from "acts-util-node";
-import { HTTPResultData } from "acts-util-node/dist/http/HTTPRequestHandler";
-import { Ajnas } from "ame-api";
-import { AjnasController } from "../../dataaccess/AjnasController";
-
-@Injectable
-class _api_
+@APIController("maqamat")
+class MaqamatAPIController
 {
-    constructor(private ajnasController: AjnasController)
+    constructor(private maqamatController: MaqamatController)
     {
     }
 
-    @HTTPEndPoint({ method: Ajnas.API.List.method, route: Ajnas.API.route })
-    public async ListAjnas(request: HTTPRequest<Ajnas.API.List.RequestData>): Promise<HTTPResultData<Ajnas.API.List.ResultData>>
+    @Get()
+    public async ListMaqamat(
+        @Query rootJinsId?: number
+    )
     {
-        return {
-            data: await this.ajnasController.QueryAjnas()
-        };
+        return await this.maqamatController.QueryMaqamat(rootJinsId);
     }
 }
-
-export default _api_;

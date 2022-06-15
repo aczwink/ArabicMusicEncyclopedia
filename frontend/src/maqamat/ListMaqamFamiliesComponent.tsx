@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,7 +17,7 @@
  * */
 
 import { Anchor, Component, Injectable, JSX_CreateElement, ProgressSpinner } from "acfrontend";
-import { Ajnas, Maqamat } from "ame-api";
+import { Jins, MaqamOverviewData } from "../../dist/api";
 import { AjnasService } from "../ajnas/AjnasService";
 import { MaqamatService } from "./MaqamatService";
 
@@ -51,12 +51,12 @@ export class ListMaqamFamiliesComponent extends Component
     }
 
     //Private members
-    private rootAjnas: Ajnas.API.List.ResultData | null;
+    private rootAjnas: Jins[] | null;
     private selectedRootJinsId: number | null;
-    private maqamat: Maqamat.API.List.ResultData | null;
+    private maqamat: MaqamOverviewData[] | null;
 
     //Private methods
-    private RenderFamilyRow(jins: Ajnas.Jins)
+    private RenderFamilyRow(jins: Jins)
     {
         const className = (this.selectedRootJinsId === jins.id) ? "active" : "";
         return <li class={className}><a onclick={this.OnSelectionChanged.bind(this, jins.id)}>{jins.name}</a></li>;
@@ -75,7 +75,7 @@ export class ListMaqamFamiliesComponent extends Component
     //Event handlers
     public async OnInitiated()
     {
-        this.rootAjnas = await this.ajnasService.QueryAjnas({});
+        this.rootAjnas = await this.ajnasService.QueryAjnas();
         this.OnSelectionChanged(this.rootAjnas[0].id);
     }
 
@@ -83,6 +83,6 @@ export class ListMaqamFamiliesComponent extends Component
     {
         this.selectedRootJinsId = newSelection;
         this.maqamat = null;
-        this.maqamat = await this.maqamatService.QueryMaqamat({rootJinsId: newSelection});
+        this.maqamat = await this.maqamatService.QueryMaqamat(newSelection);
     }
 }

@@ -16,27 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Injectable } from "acfrontend";
-import { APIService } from "../shared/APIService";
+import { APIController, Get } from "acts-util-apilib";
+import { MusicalController } from "../../dataaccess/MusicalController";
 
-@Injectable
-export class WikiFilesService
+@APIController("languages")
+class LanguagesAPIController
 {
-    constructor(private apiService: APIService)
+    constructor(private musicalController: MusicalController)
     {
     }
-
-    //Public methods
-    public async QueryFile(title: string)
+    
+    @Get()
+    public async ListLanguages()
     {
-        const response = await this.apiService.files.get({ title });
-        if(response.statusCode == 404)
-            return null;
-        return response.data;
-    }
-
-    public async UpdateFile(fileName: string, file: File)
-    {
-        await this.apiService.files.put({ fileName, file });
+        const languages = await this.musicalController.QueryLanguages();
+        return languages;
     }
 }

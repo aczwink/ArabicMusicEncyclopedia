@@ -1,3 +1,4 @@
+import { APIController, Get } from "acts-util-apilib";
 /**
  * ArabicMusicEncyclopedia
  * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
@@ -15,28 +16,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
+import { AjnasController } from "../../dataaccess/AjnasController";
 
-import { Injectable } from "acfrontend";
-import { APIService } from "../shared/APIService";
-
-@Injectable
-export class WikiFilesService
+@APIController("ajnas")
+class AjnasAPIController
 {
-    constructor(private apiService: APIService)
+    constructor(private ajnasController: AjnasController)
     {
     }
 
-    //Public methods
-    public async QueryFile(title: string)
+    @Get()
+    public async ListAjnas()
     {
-        const response = await this.apiService.files.get({ title });
-        if(response.statusCode == 404)
-            return null;
-        return response.data;
-    }
-
-    public async UpdateFile(fileName: string, file: File)
-    {
-        await this.apiService.files.put({ fileName, file });
+        return await this.ajnasController.QueryAjnas();
     }
 }

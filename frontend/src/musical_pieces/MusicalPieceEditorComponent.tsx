@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,20 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Component, FormField, Injectable, JSX_CreateElement, LineEdit, MatIcon, ProgressSpinner, Select, Textarea } from "acfrontend";
-import { Maqamat, Musical, MusicalPieces, Rhythms } from "ame-api";
-import { PieceMaqamAssociation, PieceRhythmAssociation } from "ame-api/dist/MusicalPieces";
-import { PersonType } from "ame-api/dist/Persons";
+import { Component, FormField, Injectable, JSX_CreateElement, LineEdit, MatIcon, PopupManager, ProgressSpinner, Select, Textarea } from "acfrontend";
 import { MaqamatService } from "../maqamat/MaqamatService";
 import { RhythmsService } from "../rhythms/RhythmsService";
 import { WikiTextEditComponent } from "../shared/WikiTextEditComponent";
 import { MusicalService } from "./MusicalService";
 import { SinglePersonSelectionComponent } from "../persons/SinglePersonSelectionComponent";
+import { Form, Language, MaqamOverviewData, PersonType, PieceDetailsData, PieceMaqamAssociation, PieceRhythmAssociation, RhythmOverviewData } from "../../dist/api";
+import { Attachment, AttachmentChangesCollection } from "./MusicalPiecesService";
+import { AddAttachmentComponent } from "./AddAttachmentComponent";
 
 @Injectable
-export class MusicalPieceEditorComponent extends Component<{ piece: MusicalPieces.Piece; onValidationUpdated: (newValue: boolean) => void }>
+export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetailsData; attachments: AttachmentChangesCollection; onValidationUpdated: (newValue: boolean) => void }>
 {
-    constructor(private musicalService: MusicalService, private maqamatService: MaqamatService, private rhythmsService: RhythmsService)
+    constructor(private musicalService: MusicalService, private maqamatService: MaqamatService, private rhythmsService: RhythmsService,
+        private popupManager: PopupManager)
     {
         super();
 
@@ -105,14 +106,33 @@ export class MusicalPieceEditorComponent extends Component<{ piece: MusicalPiece
                 </table>
                 <button type="button" onclick={this.AddEntry.bind(this, piece.rhythms, { rhythmId: 1, explanation: "" })}><MatIcon>add</MatIcon></button>
             </div>
+
+            <h2>Attachments</h2>
+            <div class="row">
+                <table>
+                    <tr>
+                        <th>Attachment</th>
+                        <th>Actions</th>
+                    </tr>
+                    {this.input.attachments.existing.map ( (a, idx) => <tr>
+                        <td>{a.comment}</td>
+                        <td><a onclick={this.OnDeleteExistingAttachment.bind(this, idx)}><MatIcon>delete</MatIcon></a></td>
+                    </tr>)}
+                    {this.input.attachments.new.map( (a, idx) => <tr>
+                        <td>{a.comment}</td>
+                        <td><a onclick={this.OnDeleteNewAttachment.bind(this, idx)}><MatIcon>delete</MatIcon></a></td>
+                    </tr>)}
+                </table>
+                <button type="button" onclick={this.OnAddAttachment.bind(this)}><MatIcon>add</MatIcon></button>
+            </div>
         </fragment>;
     }
 
     //Private members
-    private forms: Musical.API.FormsAPI.List.Form[] | null;
-    private languages: Musical.API.LanguagesAPI.List.Language[] | null;
-    private maqamat: Maqamat.API.List.MaqamOverviewData[] | null;
-    private rhythms: Rhythms.RhythmOverviewData[] | null;
+    private forms: Form[] | null;
+    private languages: Language[] | null;
+    private maqamat: MaqamOverviewData[] | null;
+    private rhythms: RhythmOverviewData[] | null;
 
     //Private methods
     private AddEntry<T>(arr: T[], itemToAdd: T)
@@ -128,7 +148,7 @@ export class MusicalPieceEditorComponent extends Component<{ piece: MusicalPiece
         this.Update();
     }
 
-    private RenderLyricsPart(piece: MusicalPieces.Piece)
+    private RenderLyricsPart(piece: PieceDetailsData)
     {
         if(piece.lyrics !== undefined)
         {
@@ -155,7 +175,7 @@ export class MusicalPieceEditorComponent extends Component<{ piece: MusicalPiece
         return null;
     }
 
-    private RenderMaqamEntry(piece: MusicalPieces.Piece, maqamAssoc: PieceMaqamAssociation)
+    private RenderMaqamEntry(piece: PieceDetailsData, maqamAssoc: PieceMaqamAssociation)
     {
         const maqam = this.maqamat?.Values().Filter(m => m.id === maqamAssoc.maqamId).First();
 
@@ -170,7 +190,7 @@ export class MusicalPieceEditorComponent extends Component<{ piece: MusicalPiece
         </tr>;
     }
 
-    private RenderRhythmEntry(piece: MusicalPieces.Piece, rhythmAssoc: PieceRhythmAssociation)
+    private RenderRhythmEntry(piece: PieceDetailsData, rhythmAssoc: PieceRhythmAssociation)
     {
         return <tr>
             <td>
@@ -193,19 +213,50 @@ export class MusicalPieceEditorComponent extends Component<{ piece: MusicalPiece
     }
 
     //Event handlers
+    private OnAddAttachment()
+    {
+        this.popupManager.OpenDialog(<AddAttachmentComponent onSuccess={this.OnAttachmentAdded.bind(this)} />, { title: "Upload attachment" });
+    }
+
+    private OnAttachmentAdded(attachment: Attachment)
+    {
+        this.input.attachments.new.push(attachment);
+        this.Update();
+    }
+
+    private OnDeleteExistingAttachment(idx: number)
+    {
+        if(confirm("Are you sure that you wan't to delete this attachment?"))
+        {
+            const id = this.input.attachments.existing[idx].attachmentId;
+            this.input.attachments.existing.Remove(idx);
+            this.input.attachments.deleted.push(id);
+            this.Update();
+        }
+    }
+
+    private OnDeleteNewAttachment(idx: number)
+    {
+        if(confirm("Are you sure that you wan't to delete this attachment?"))
+        {
+            this.input.attachments.new.Remove(idx);
+            this.Update();
+        }
+    }
+
     public async OnInitiated()
     {
-        const forms = await this.musicalService.ListForms({}, {});
-        this.forms = forms.forms;
+        const forms = await this.musicalService.ListForms();
+        this.forms = forms;
 
-        const languages = await this.musicalService.ListLanguages({}, {});
-        this.languages = languages.languages;
+        const languages = await this.musicalService.ListLanguages();
+        this.languages = languages;
 
-        const maqamat = await this.maqamatService.QueryMaqamat({});
+        const maqamat = await this.maqamatService.QueryMaqamat();
         this.maqamat = maqamat;
 
-        const rhythms = await this.rhythmsService.QueryRhythms({});
-        this.rhythms = rhythms.rhythms;
+        const rhythms = await this.rhythmsService.QueryRhythms();
+        this.rhythms = rhythms;
     }
 
     private OnComposerChanged(newValue: number)

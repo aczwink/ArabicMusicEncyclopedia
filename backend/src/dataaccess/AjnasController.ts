@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,9 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 import { Injectable } from "acts-util-node";
-import { Ajnas, OctavePitch, ParseOctavePitch } from "ame-api";
+import { OctavePitch, ParseOctavePitch } from "ame-api";
 import { Interval } from "../model/Interval";
 import { DatabaseController } from "./DatabaseController";
+
+interface Jins
+{
+    id: number;
+    name: string;
+    basePitch: OctavePitch;
+    text: string;
+}
 
 export interface JinsData
 {
@@ -50,7 +58,7 @@ export class AjnasController
         };
     }
 
-    public async QueryAjnas(): Promise<Ajnas.Jins[]>
+    public async QueryAjnas(): Promise<Jins[]>
     {
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
 

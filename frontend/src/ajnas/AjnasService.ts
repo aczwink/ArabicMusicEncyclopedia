@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,7 +17,6 @@
  * */
 
 import { Injectable } from "acfrontend";
-import { Ajnas } from "ame-api";
 import { APIService } from "../shared/APIService";
 
 @Injectable
@@ -28,8 +27,8 @@ export class AjnasService
     }
 
     //Public methods
-    public QueryAjnas(data: Ajnas.API.List.RequestData)
+    public async QueryAjnas()
     {
-        return this.apiService.Request<Ajnas.API.List.ResultData>(Ajnas.API.route, Ajnas.API.List.method, data);
+        return (await this.apiService.ajnas.get()).data;
     }
 }

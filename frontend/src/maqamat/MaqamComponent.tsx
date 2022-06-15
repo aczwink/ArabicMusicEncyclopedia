@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,7 +18,7 @@
 
 import { Component, Injectable, JSX_CreateElement, ProgressSpinner, RouterState } from "acfrontend";
 import { OctavePitch, OctavePitchToString } from "ame-api";
-import { Maqam } from "ame-api/dist/Maqamat";
+import { Maqam } from "../../dist/api";
 import { g_backendBaseUrl } from "../backend";
 import { PitchSelectionComponent } from "../shared/PitchSelectionComponent";
 import { WikiTextComponent } from "../shared/WikiTextComponent";
@@ -78,6 +78,6 @@ export class MaqamComponent extends Component
     //Event handlers
     public async OnInitiated()
     {
-        this.maqam = await this.maqamatService.QueryMaqam({ maqamId: this.maqamId }, {});
+        this.maqam = await this.maqamatService.QueryMaqam(this.maqamId);
     }
 }

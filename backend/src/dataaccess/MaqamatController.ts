@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 import { Injectable } from "acts-util-node";
-import { Maqamat, ParseOctavePitch } from "ame-api";
+import { OctavePitch, ParseOctavePitch } from "ame-api";
 import { Interval } from "../model/Interval";
 import { DatabaseController } from "./DatabaseController";
 
@@ -25,6 +25,20 @@ export interface MaqamData
     rootJinsId: number;
     dominant: number;
     additionalIntervals: Interval[];
+}
+
+interface MaqamOverviewData
+{
+    id: number;
+    name: string;
+}
+
+interface Maqam
+{
+    name: string;
+    text: string;
+    basePitch: OctavePitch;
+    branchingJinsIds: number[];
 }
 
 @Injectable
@@ -55,7 +69,7 @@ export class MaqamatController
         };
     }
 
-    public async QueryMaqamInfo(maqamId: number): Promise<Maqamat.Maqam | undefined>
+    public async QueryMaqamInfo(maqamId: number): Promise<Maqam | undefined>
     {
         const query = `
         SELECT m.name, m.text, IFNULL(m.basePitchOverride, j.basePitch) AS basePitch
@@ -79,7 +93,7 @@ export class MaqamatController
         };
     }
 
-    public async QueryMaqamat(rootJinsId?: number): Promise<Maqamat.API.List.MaqamOverviewData[]>
+    public async QueryMaqamat(rootJinsId?: number): Promise<MaqamOverviewData[]>
     {
         const args = [];
         let query = "SELECT id, name FROM amedb.maqamat";
@@ -90,7 +104,7 @@ export class MaqamatController
         }
 
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const rows = await conn.Select<Maqamat.API.List.MaqamOverviewData>(query, ...args);
+        const rows = await conn.Select<MaqamOverviewData>(query, ...args);
 
         return rows;
     }

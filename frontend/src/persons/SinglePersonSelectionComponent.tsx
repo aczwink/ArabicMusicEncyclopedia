@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,11 +17,11 @@
  * */
 
 import { AutoCompleteSelectBox, Component, Injectable, JSX_CreateElement, KeyDisplayValuePair } from "acfrontend";
-import { Persons } from "ame-api";
+import { PersonOverviewData, PersonType } from "../../dist/api";
 import { PersonsService } from "./PersonsService";
 
 @Injectable
-export class SinglePersonSelectionComponent extends Component<{ type: Persons.PersonType, selected?: number, onSelectionChanged: (id: number) => void }>
+export class SinglePersonSelectionComponent extends Component<{ type: PersonType, selected?: number, onSelectionChanged: (id: number) => void }>
 {
     constructor(private personsService: PersonsService)
     {
@@ -41,29 +41,24 @@ export class SinglePersonSelectionComponent extends Component<{ type: Persons.Pe
     }
 
     //Private members
-    private selection: Persons.PersonOverviewData | null;
+    private selection: PersonOverviewData | null;
 
     //Event handlers
     public async OnInitiated()
     {
         if(this.input.selected !== undefined)
         {
-            const person = await this.personsService.QueryPerson({ personId: this.input.selected }, {});
+            const person = await this.personsService.QueryPerson(this.input.selected);
             this.selection = {
                 id: this.input.selected,
-                name: person.person.name
+                name: person.name
             };
         }
     }
 
     private async OnLoadSuggestions(searchText: string): Promise<KeyDisplayValuePair<number>[]>
     {
-        const result = await this.personsService.QueryPersons({
-            limit: 10,
-            nameFilter: searchText,
-            offset: 0,
-            type: this.input.type
-        });
+        const result = await this.personsService.QueryPersons(this.input.type, searchText, 0, 10);
 
         return result.persons.map(p => ({
             key: p.id,

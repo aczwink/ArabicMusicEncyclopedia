@@ -16,8 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 import { Injectable } from "acts-util-node";
-import { Rhythms } from "ame-api";
+import { CountryCode } from "ame-api/dist/Locale";
 import { DatabaseController } from "./DatabaseController";
+
+interface RhythmOverviewData
+{
+    id: number;
+    name: string;
+    timeSigNum: number;
+}
+
+interface RhythmCountryUsage
+{
+    countryCode: CountryCode;
+    usage: number;
+}
+
+interface Rhythm extends RhythmOverviewData
+{
+    alternativeNames: string;
+    popularity: number;
+    category: string;
+    usage: RhythmCountryUsage[];
+    usageText: string;
+    text: string;
+}
 
 @Injectable
 export class RhythmsController
@@ -27,7 +50,7 @@ export class RhythmsController
     }
 
     //Public methods
-    public async QueryRhythm(rhythmId: number): Promise<Rhythms.Rhythm | undefined>
+    public async QueryRhythm(rhythmId: number): Promise<Rhythm | undefined>
     {
         let query = `
         SELECT *
@@ -56,7 +79,7 @@ export class RhythmsController
         };
     }
 
-    public async QueryRhythms(): Promise<Rhythms.RhythmOverviewData[]>
+    public async QueryRhythms(): Promise<RhythmOverviewData[]>
     {
         let query = `
         SELECT
@@ -68,7 +91,7 @@ export class RhythmsController
         `;
 
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const rows = await conn.Select<Rhythms.RhythmOverviewData>(query);
+        const rows = await conn.Select<RhythmOverviewData>(query);
 
         return rows;
     }
@@ -93,7 +116,7 @@ export class RhythmsController
         return row.maxCount;
     }
 
-    private async QueryRhythmUsage(rhythmId: number): Promise<Rhythms.RhythmCountryUsage[]>
+    private async QueryRhythmUsage(rhythmId: number): Promise<RhythmCountryUsage[]>
     {
         let query = `
         SELECT pl.location, COUNT(*) AS count

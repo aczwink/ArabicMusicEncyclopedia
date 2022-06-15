@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,8 +17,33 @@
  * */
 
 import { Injectable } from "acfrontend";
-import { MusicalPieces } from "ame-api";
+import { PieceAttachmentAssociation, PieceDetailsData } from "../../dist/api";
 import { APIService } from "../shared/APIService";
+
+interface PieceFilterCriteria
+{
+    titleFilter: string;
+
+    formId: number | null;
+    composerId: number | null;
+    lyricistId: number | null;
+    singerId: number | null;
+    maqamId: number | null;
+    rhythmId: number | null
+}
+
+export interface Attachment
+{
+    comment: string;
+    file: File;
+}
+
+export interface AttachmentChangesCollection
+{
+    new: Attachment[];
+    existing: PieceAttachmentAssociation[];
+    deleted: number[];
+}
 
 @Injectable
 export class MusicalPiecesService
@@ -28,35 +53,55 @@ export class MusicalPiecesService
     }
 
     //Public methods
-    public AddPiece(routeParams: MusicalPieces.API.RouteParams, data: MusicalPieces.API.Add.RequestData)
+    public async AddPiece(piece: PieceDetailsData)
     {
-        return this.apiService.Request<MusicalPieces.API.Add.ResultData>(MusicalPieces.API.route, MusicalPieces.API.Add.method, data, routeParams);
+        return (await this.apiService.musicalpieces.post(piece)).data;
     }
 
     public async AddPieceAttachment(pieceId: number, comment: string, file: File)
     {
-        const fd = new FormData();
-        fd.append("comment", comment);
-        fd.append("data", file);
-
-        const routeParams: MusicalPieces.API.PieceAPI.RouteParams = {
-            pieceId
-        };        
-        await this.apiService.Request(MusicalPieces.API.PieceAPI.AttachmentsAPI.route, MusicalPieces.API.PieceAPI.AttachmentsAPI.Add.method, fd, routeParams);
+        await this.apiService.attachments.post({ pieceId, comment, file });
     }
 
-    public ListPieces(data: MusicalPieces.API.List.RequestData)
+    public async ApplyAttachmentChanges(pieceId: number, attachments: AttachmentChangesCollection)
     {
-        return this.apiService.Request<MusicalPieces.API.List.ResultData>(MusicalPieces.API.route, MusicalPieces.API.List.method, data);
+        for (const attachmentId of attachments.deleted)
+        {
+            await this.apiService.attachments_any_.delete(attachmentId);
+        }
+        for (const newAttach of attachments.new)
+        {
+            await this.AddPieceAttachment(pieceId, newAttach.comment, newAttach.file);
+        }
     }
 
-    public QueryPiece(routeParams: MusicalPieces.API.PieceAPI.RouteParams, data: MusicalPieces.API.PieceAPI.Query.RequestData)
+    public async ListPieces(fc: PieceFilterCriteria, offset: number, limit: number)
     {
-        return this.apiService.Request<MusicalPieces.API.PieceAPI.Query.ResultData>(MusicalPieces.API.PieceAPI.route, MusicalPieces.API.PieceAPI.Query.method, data, routeParams);
+        return (await this.apiService.musicalpieces.get({
+            titleFilter: fc.titleFilter,
+
+            formId: fc.formId === null ? undefined : fc.formId,
+            composerId: fc.composerId === null ? undefined : fc.composerId,
+            lyricistId: fc.lyricistId === null ? undefined : fc.lyricistId,
+            singerId: fc.singerId === null ? undefined : fc.singerId,
+            maqamId: fc.maqamId === null ? undefined : fc.maqamId,
+            rhythmId: fc.rhythmId === null ? undefined : fc.rhythmId,
+
+            offset,
+            limit
+        })).data;
     }
 
-    public SetPiece(routeParams: MusicalPieces.API.PieceAPI.RouteParams, data: MusicalPieces.API.PieceAPI.Set.RequestData)
+    public async QueryPiece(pieceId: number)
     {
-        return this.apiService.Request<MusicalPieces.API.PieceAPI.Set.ResultData>(MusicalPieces.API.PieceAPI.route, MusicalPieces.API.PieceAPI.Set.method, data, routeParams);
+        const result = await this.apiService.musicalpieces_any_.get(pieceId);
+        if(result.statusCode === 404)
+            throw new Error("todo implement me");
+        return result.data;
+    }
+
+    public async SetPiece(pieceId: number, piece: PieceDetailsData)
+    {
+        await this.apiService.musicalpieces_any_.put(pieceId, piece);
     }
 }

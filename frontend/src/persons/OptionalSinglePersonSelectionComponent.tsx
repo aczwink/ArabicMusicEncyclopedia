@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,8 +17,7 @@
  * */
 
 import { AutoCompleteSelectBox, Component, Injectable, JSX_CreateElement, KeyDisplayValuePair } from "acfrontend";
-import { Persons } from "ame-api";
-import { PersonOverviewData } from "ame-api/dist/Persons";
+import { PersonOverviewData, PersonType } from "../../dist/api";
 import { PersonsService } from "./PersonsService";
 
 const allSelection: PersonOverviewData = {
@@ -27,7 +26,7 @@ const allSelection: PersonOverviewData = {
 };
 
 @Injectable
-export class OptionalSinglePersonSelectionComponent extends Component<{ type: Persons.PersonType, onSelectionChanged: (id: number | null) => void }>
+export class OptionalSinglePersonSelectionComponent extends Component<{ type: PersonType, onSelectionChanged: (id: number | null) => void }>
 {
     constructor(private personsService: PersonsService)
     {
@@ -47,17 +46,12 @@ export class OptionalSinglePersonSelectionComponent extends Component<{ type: Pe
     }
 
     //Private members
-    private selection: Persons.PersonOverviewData;
+    private selection: PersonOverviewData;
 
     //Event handlers
     private async OnLoadSuggestions(searchText: string): Promise<KeyDisplayValuePair<number>[]>
     {
-        const result = await this.personsService.QueryPersons({
-            limit: 10,
-            nameFilter: searchText,
-            offset: 0,
-            type: this.input.type
-        });
+        const result = await this.personsService.QueryPersons(this.input.type, searchText, 0, 10);
 
         const all = [{
             key: allSelection.id,

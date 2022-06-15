@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,34 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-export namespace API
+import { APIController, Get } from "acts-util-apilib";
+import { MusicalController } from "../../dataaccess/MusicalController";
+
+@APIController("forms")
+class FormsAPIController
 {
-    export const route = "/files";
-
-    export interface RouteParams
+    constructor(private musicalController: MusicalController)
     {
     }
-
-    export namespace QueryFile
+    
+    @Get()
+    public async ListForms()
     {
-        export const method = "GET";
-
-        export interface RequestData
-        {
-            title: string;
-        }
-    }
-
-    export namespace UpdateFile
-    {
-        export const method = "PUT";
-
-        export interface RequestData
-        {
-        }
-
-        export interface ResultData
-        {
-        }
+        const forms = await this.musicalController.QueryForms();
+        return forms;
     }
 }

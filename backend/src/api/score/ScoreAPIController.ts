@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,43 +17,45 @@
  * */
 import crypto from "crypto";
 
-import { HTTPEndPoint, HTTPRequest, HTTPResultData, Injectable } from "acts-util-node";
-import { ParseOctavePitch, Score } from "ame-api";
+import { ParseOctavePitch } from "ame-api";
 import { ImageCacheManager } from "../../services/ImageCacheManager";
 import { LilypondImageCreator } from "../../services/LilypondImageCreator";
 import { IntervalsService } from "../../services/IntervalsService";
 import { MaqamPicCreator } from "../../services/MaqamPicCreator";
+import { APIController, Get, Query } from "acts-util-apilib";
 
-@Injectable
-class _api_
+type ScoreType = "maqam" | "rhythm" | "rhythm2";
+
+@APIController("score")
+class ScoreAPIController
 {
     constructor(private imgCacheManager: ImageCacheManager, private lilypondImageCreator: LilypondImageCreator, private intervalsService: IntervalsService,
         private maqamPicCreator: MaqamPicCreator)
     {
     }
 
-    @HTTPEndPoint({ method: Score.API.ImageAPI.Query.method, route: Score.API.ImageAPI.route })
-    public async QueryScoreImage(request: HTTPRequest<Score.API.ImageAPI.Query.RequestData>): Promise<HTTPResultData<Score.API.ImageAPI.Query.ResultData>>
+    @Get("image")
+    public async QueryScoreImage(
+        @Query type: ScoreType,
+        @Query data: string
+    )
     {
-        const text = request.data.data.trim();
+        const text = data.trim();
 
         const cacheName = crypto.createHash('md5').update(text).digest('hex');
-        let data = await this.imgCacheManager.ReadCachedImage(request.data.type, cacheName);
+        let imgData = await this.imgCacheManager.ReadCachedImage(type, cacheName);
 
-        if(data === undefined)
+        if(imgData === undefined)
         {
-            data = await this.CreateImage(request.data.type, text);
-            if(data !== undefined)
-                this.imgCacheManager.StoreImage(request.data.type, cacheName, data);
+            imgData = await this.CreateImage(type, text);
+            this.imgCacheManager.StoreImage(type, cacheName, imgData);
         }
 
-        return {
-            data
-        };
+        return imgData;
     }
 
     //Private methods
-    private CreateImage(type: Score.ScoreType, text: string)
+    private CreateImage(type: ScoreType, text: string)
     {
         switch(type)
         {
@@ -96,5 +98,3 @@ class _api_
         return this.lilypondImageCreator.CreateImage(completeText);
     }
 }
-
-export default _api_;

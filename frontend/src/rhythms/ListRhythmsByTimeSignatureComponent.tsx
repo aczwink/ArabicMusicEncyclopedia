@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,8 +17,7 @@
  * */
 
 import { Anchor, Component, Injectable, JSX_CreateElement, ProgressSpinner } from "acfrontend";
-import { Rhythms } from "ame-api";
-import { KeyValuePair } from "../../../../ACFrontEnd/node_modules/acts-util-core/dist/KeyValuePair";
+import { RhythmOverviewData } from "../../dist/api";
 import { RhythmsService } from "./RhythmsService";
 
 @Injectable
@@ -40,10 +39,10 @@ export class ListRhythmsByTimeSignatureComponent extends Component
     }
 
     //Private members
-    private data: Map<number, Rhythms.RhythmOverviewData[]> | null;
+    private data: Map<number, RhythmOverviewData[]> | null;
 
     //Private methods
-    private RenderRhythmSection(rhyhtmSection: Rhythms.RhythmOverviewData[])
+    private RenderRhythmSection(rhyhtmSection: RhythmOverviewData[])
     {
         return <fragment>
             <h2>{rhyhtmSection[0].timeSigNum}</h2>
@@ -56,9 +55,9 @@ export class ListRhythmsByTimeSignatureComponent extends Component
     //Event handlers
     public async OnInitiated()
     {
-        const data = await this.rhythmsService.QueryRhythms({});
-        const m = new Map<number, Rhythms.RhythmOverviewData[]>();
-        for (const rhythm of data.rhythms)
+        const data = await this.rhythmsService.QueryRhythms();
+        const m = new Map<number, RhythmOverviewData[]>();
+        for (const rhythm of data)
         {
             const timeSig = rhythm.timeSigNum;
             if(m.has(timeSig))

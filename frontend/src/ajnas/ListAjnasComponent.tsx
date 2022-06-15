@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,7 +17,8 @@
  * */
 
 import { Component, Injectable, JSX_CreateElement, ProgressSpinner } from "acfrontend";
-import { Ajnas, OctavePitch, OctavePitchToString } from "ame-api";
+import { OctavePitch, OctavePitchToString } from "ame-api";
+import { Jins } from "../../dist/api";
 import { g_backendBaseUrl } from "../backend";
 import { PitchSelectionComponent } from "../shared/PitchSelectionComponent";
 import { WikiTextComponent } from "../shared/WikiTextComponent";
@@ -53,12 +54,12 @@ export class ListAjnasComponent extends Component
     }
 
     //Private members
-    private data: Ajnas.API.List.ResultData | null;
-    private selectedJins: Ajnas.Jins | null;
+    private data: Jins[] | null;
+    private selectedJins: Jins | null;
     private selectedPitch: OctavePitch | null;
 
     //Private methods
-    private RenderJinsRow(jins: Ajnas.Jins)
+    private RenderJinsRow(jins: Jins)
     {
         const className = (this.selectedJins === jins) ? "active" : "";
         return <li class={className}><a onclick={this.OnSelectionChanged.bind(this, jins)}>{jins.name}</a></li>;
@@ -82,11 +83,11 @@ export class ListAjnasComponent extends Component
     //Event handlers
     public async OnInitiated()
     {
-        this.data = await this.ajnasService.QueryAjnas({});
+        this.data = await this.ajnasService.QueryAjnas();
         this.OnSelectionChanged(this.data[0]);
     }
 
-    private OnSelectionChanged(newSelection: Ajnas.Jins)
+    private OnSelectionChanged(newSelection: Jins)
     {
         this.selectedJins = newSelection;
         this.selectedPitch = newSelection.basePitch;

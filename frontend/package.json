@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/app.js",
   "scripts": {
-    "compile": "tsc",
+    "compile": "npx acts-util-apilib api ../backend/dist/openapi.json ./dist/api.ts && tsc",
     "build-debug": "npx webpack --config webpack.debug.config.js",
     "build-themes": "sass ./design/main.scss dist/site.css",
     "deploy": "ln -s ../index.htm dist/ && ln -s ../node_modules/acts-util-core/dist/acts-util-core.js dist/ && ln -s ../node_modules/acfrontend/dist/acfrontend.js dist/ && ln -s ../node_modules/acfrontend/dist/clean.css dist/ && ln -s ../emmentaler-26.woff dist/ && ln -s ../images dist/"
@@ -20,6 +20,7 @@
     "ts-loader": "^9.2.5"
   },
   "devDependencies": {
+    "acts-util-apilib": "*",
     "typescript": "^4.4.3",
     "webpack": "^5.52.1",
     "webpack-cli": "^4.8.0"

@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,7 +17,6 @@
  * */
 
 import { Injectable } from "acfrontend";
-import { Rhythms } from "ame-api";
 import { APIService } from "../shared/APIService";
 
 @Injectable
@@ -28,13 +27,16 @@ export class RhythmsService
     }
 
     //Public methods
-    public QueryRhythm(routeParams: Rhythms.API.RhythmAPI.RouteParams, data: Rhythms.API.RhythmAPI.Query.RequestData)
+    public async QueryRhythm(rhythmId: number)
     {
-        return this.apiService.Request<Rhythms.API.RhythmAPI.Query.ResultData>(Rhythms.API.RhythmAPI.route, Rhythms.API.RhythmAPI.Query.method, data, routeParams);
+        const result = await this.apiService.rhythms_any_.get(rhythmId);
+        if(result.statusCode === 404)
+            throw new Error("TODO: implement me");
+        return result.data;
     }
 
-    public QueryRhythms(data: Rhythms.API.List.RequestData)
+    public async QueryRhythms()
     {
-        return this.apiService.Request<Rhythms.API.List.ResultData>(Rhythms.API.route, Rhythms.API.List.method, data);
+        return (await this.apiService.rhythms.get()).data;
     }
 }

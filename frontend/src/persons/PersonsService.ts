@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,7 +17,7 @@
  * */
 
 import { Injectable } from "acfrontend";
-import { Persons } from "ame-api";
+import { Person, PersonType } from "../../dist/api";
 import { APIService } from "../shared/APIService";
 
 @Injectable
@@ -28,42 +28,34 @@ export class PersonsService
     }
 
     //Public methods
-    public AddPerson(routeParams: undefined, data: Persons.API.AddPerson.RequestData)
+    public async AddPerson(person: Person)
     {
-        return this.apiService.Request<Persons.API.AddPerson.ResultData>(Persons.API.route, Persons.API.AddPerson.method, data, routeParams);
+        return (await this.apiService.persons.post(person)).data;
     }
 
-    public EditPerson(routeParams: Persons.API.PersonAPI.RouteParams, data: Persons.API.PersonAPI.EditPerson.RequestData)
+    public async EditPerson(personId: number, person: Person)
     {
-        return this.apiService.Request<Persons.API.PersonAPI.EditPerson.ResultData>(Persons.API.PersonAPI.route, Persons.API.PersonAPI.EditPerson.method, data, routeParams);
+        await this.apiService.persons_any_.put(personId, person);
     }
 
-    public QueryPerson(routeParams: Persons.API.PersonAPI.RouteParams, data: Persons.API.PersonAPI.QueryPerson.RequestData)
+    public async QueryPerson(personId: number)
     {
-        return this.apiService.Request<Persons.API.PersonAPI.QueryPerson.ResultData>(Persons.API.PersonAPI.route, Persons.API.PersonAPI.QueryPerson.method, data, routeParams);
+        const result = await this.apiService.persons_any_.get(personId);
+        if(result.statusCode === 404)
+            throw new Error("Person not found");
+        return result.data;
     }
 
-    public QueryPersons(data: Persons.API.List.RequestData)
+    public async QueryPersons(type: PersonType, nameFilter: string, offset: number, limit: number)
     {
-        return this.apiService.Request<Persons.API.List.ResultData>(Persons.API.route, Persons.API.List.method, data);
+        return (await this.apiService.persons.get({ type, nameFilter, offset, limit })).data;
     }
 
     public async UpdatePersonImage(personId: number, image: File | null)
     {
-        const routeParams: Persons.API.PersonAPI.ImageAPI.RouteParams = {
-            personId
-        };
-
         if(image === null)
-        {
-            await this.apiService.Request(Persons.API.PersonAPI.ImageAPI.route, Persons.API.PersonAPI.ImageAPI.Delete.method, undefined, routeParams);
-        }
+            await this.apiService.persons_any_image.delete(personId);
         else
-        {
-            const fd = new FormData();
-            fd.append("image", image);
-
-            await this.apiService.Request(Persons.API.PersonAPI.ImageAPI.route, Persons.API.PersonAPI.ImageAPI.Update.method, fd, routeParams);
-        }
+            await this.apiService.persons_any_image.put(personId, { file: image });
     }
 }

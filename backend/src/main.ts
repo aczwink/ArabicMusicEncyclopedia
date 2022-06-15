@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,34 +15,33 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
+import fs from "fs";
 import http from "http";
 import os from "os";
-import multer from "multer";
 
-import { Factory, GlobalInjector, HTTP_APILoader } from "acts-util-node";
+import { Factory, GlobalInjector, HTTP, ModuleLoader, OpenAPI } from "acts-util-node";
+import { APIRegistry } from "acts-util-apilib";
 import { DatabaseController } from "./dataaccess/DatabaseController";
 
+const frontEndPort = 8082;
 const port = 8083;
 
 async function SetupServer()
 {
-    const frontEndPort = 8082;
-    const requestHandler = Factory.CreateHTTPRequestHandler({
-        trustedOrigins: [
-            "http://localhost:" + frontEndPort,
-            "http://" + os.hostname() + ":" + frontEndPort
-        ]
-    });;
-    requestHandler.RegisterUpload(multer({
-        storage: multer.memoryStorage() 
-    }));
+    const requestHandlerChain = Factory.CreateRequestHandlerChain();
+    requestHandlerChain.AddCORSHandler([
+        "http://localhost:" + frontEndPort,
+        "http://" + os.hostname() + ":" + frontEndPort
+    ]);
+    requestHandlerChain.AddBodyParser();
 
-    const server = http.createServer(requestHandler.requestListener);
-
-    const apiLoader = new HTTP_APILoader;
+    const apiLoader = new ModuleLoader;
     await apiLoader.LoadDirectory(__dirname + "/api/");
+    const openAPIDef: OpenAPI.Root = JSON.parse(await fs.promises.readFile("openapi.json", "utf-8"));
+    const backendStructure = JSON.parse(await fs.promises.readFile("openapi-structure.json", "utf-8"));
+    requestHandlerChain.AddRequestHandler(new HTTP.RouterRequestHandler(openAPIDef, backendStructure, APIRegistry.endPointTargets));
 
-    requestHandler.RegisterRouteSetups(apiLoader.GetEndPointSetups());
+    const server = http.createServer(requestHandlerChain.requestListener);
 
     server.listen(port, () => {
         console.log("Server is running...");

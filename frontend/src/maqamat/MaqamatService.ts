@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,7 +17,6 @@
  * */
 
 import { Injectable } from "acfrontend";
-import { Maqamat } from "ame-api";
 import { APIService } from "../shared/APIService";
 
 @Injectable
@@ -28,13 +27,16 @@ export class MaqamatService
     }
 
     //Public methods
-    public QueryMaqam(routeParams: Maqamat.API.MaqamAPI.RouteParams, data: Maqamat.API.MaqamAPI.Query.RequestData)
+    public async QueryMaqam(maqamId: number)
     {
-        return this.apiService.Request<Maqamat.API.MaqamAPI.Query.ResultData>(Maqamat.API.MaqamAPI.route, Maqamat.API.MaqamAPI.Query.method, data, routeParams);
+        const result = await this.apiService.maqamat_any_.get(maqamId);
+        if(result.statusCode === 404)
+            throw new Error("todo implement me");
+        return result.data;
     }
     
-    public QueryMaqamat(data: Maqamat.API.List.RequestData)
+    public async QueryMaqamat(rootJinsId?: number)
     {
-        return this.apiService.Request<Maqamat.API.List.ResultData>(Maqamat.API.route, Maqamat.API.List.method, data);
+        return (await this.apiService.maqamat.get({ rootJinsId })).data;
     }
 }

@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Component, FileSelect, Injectable, JSX_CreateElement, Router, RouterState } from "acfrontend";
-import { Persons } from "ame-api";
+import { Component, Injectable, JSX_CreateElement, Router, RouterState } from "acfrontend";
+import { Person } from "../../dist/api";
 import { EditPersonForm } from "./EditPersonForm";
 import { PersonsService } from "./PersonsService";
 
@@ -52,14 +52,14 @@ export class AddPersonComponent extends Component
     }
 
     //Private members
-    private person: Persons.Person;
+    private person: Person;
 
     //Event handlers
     private async OnAdd(image?: File | null)
     {
-        const result = await this.personsService.AddPerson(undefined, { person: this.person });
+        const personId = await this.personsService.AddPerson(this.person);
         if(image)
-            await this.personsService.UpdatePersonImage(result.personId, image);
-        this.router.RouteTo("/persons/" + result.personId);
+            await this.personsService.UpdatePersonImage(personId, image);
+        this.router.RouteTo("/persons/" + personId);
     }
 }

@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,28 +15,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
+import { APIController, Get, NotFound, Path } from "acts-util-apilib";
+import { RhythmsController } from "../../dataaccess/RhythmsController";
 
-const mainRoute = "/score";
-
-export type ScoreType = "maqam" | "rhythm" | "rhythm2";
-
-export namespace API
+@APIController("rhythms")
+class RhythmsAPIController
 {
-    export namespace ImageAPI
+    constructor(private rhythmsController: RhythmsController)
     {
-        export const route = mainRoute + "/image";
+    }
 
-        export namespace Query
-        {
-            export const method = "GET";
+    @Get()
+    public async ListRhythms()
+    {
+        return await this.rhythmsController.QueryRhythms();
+    }
 
-            export interface RequestData
-            {
-                type: ScoreType;
-                data: string;
-            }
-    
-            export type ResultData = any;
-        }
+    @Get("{rhythmId}")
+    public async QueryRhythm(
+        @Path rhythmId: number
+    )
+    {
+        const rhythm = await this.rhythmsController.QueryRhythm(rhythmId);
+        if(rhythm === undefined)
+            return NotFound("rhythm does not exist");
+        return rhythm;
     }
 }

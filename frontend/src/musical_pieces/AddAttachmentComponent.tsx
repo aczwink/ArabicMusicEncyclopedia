@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,12 +17,12 @@
  * */
 
 import { Component, DialogRef, FileSelect, Injectable, JSX_CreateElement, LineEdit } from "acfrontend";
-import { MusicalPiecesService } from "./MusicalPiecesService";
+import { Attachment } from "./MusicalPiecesService";
 
 @Injectable
-export class AddAttachmentComponent extends Component<{ pieceId: number; }>
+export class AddAttachmentComponent extends Component<{ onSuccess: (attachment: Attachment) => void }>
 {
-    constructor(private dialogRef: DialogRef, private musicalPiecesService: MusicalPiecesService)
+    constructor(private dialogRef: DialogRef)
     {
         super();
 
@@ -68,7 +68,10 @@ export class AddAttachmentComponent extends Component<{ pieceId: number; }>
     {
         this.dialogRef.waiting.Set(true);
 
-        await this.musicalPiecesService.AddPieceAttachment(this.input.pieceId, this.comment, this.file!);
+        this.input.onSuccess({
+            comment: this.comment,
+            file: this.file!
+        });
         
         this.dialogRef.Close();
     }

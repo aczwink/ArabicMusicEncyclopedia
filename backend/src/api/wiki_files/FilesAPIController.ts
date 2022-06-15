@@ -16,27 +16,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Injectable } from "acfrontend";
-import { APIService } from "../shared/APIService";
+import { APIController, FormField, Get, NotFound, Put, Query } from "acts-util-apilib";
+import { HTTP } from "acts-util-node";
+import { FilesController } from "../../dataaccess/FilesController";
 
-@Injectable
-export class WikiFilesService
+@APIController("files")
+class FilesAPIController
 {
-    constructor(private apiService: APIService)
+    constructor(private filesController: FilesController)
     {
     }
 
-    //Public methods
-    public async QueryFile(title: string)
+    @Get()
+    public async QueryFile(
+        @Query title: string
+    )
     {
-        const response = await this.apiService.files.get({ title });
-        if(response.statusCode == 404)
-            return null;
-        return response.data;
+        const result = await this.filesController.QueryFile(title);
+        if(result === null)
+            return NotFound("file does not exist");
+        return result;
     }
 
-    public async UpdateFile(fileName: string, file: File)
+    @Put()
+    public async UpdateFile(
+        @FormField fileName: string,
+        @FormField file: HTTP.UploadedFile
+    )
     {
-        await this.apiService.files.put({ fileName, file });
+        await this.filesController.UpdateFile(fileName, file.buffer);
     }
 }

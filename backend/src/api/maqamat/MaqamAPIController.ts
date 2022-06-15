@@ -15,28 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
+import { APIController, Get, NotFound, Path } from "acts-util-apilib";
+import { MaqamatController } from "../../dataaccess/MaqamatController";
 
-import { Injectable } from "acfrontend";
-import { APIService } from "../shared/APIService";
-
-@Injectable
-export class WikiFilesService
+@APIController("maqamat/{maqamId}")
+class MaqamAPIController
 {
-    constructor(private apiService: APIService)
+    constructor(private maqamatController: MaqamatController)
     {
     }
 
-    //Public methods
-    public async QueryFile(title: string)
+    @Get()
+    public async QueryMaqam(
+        @Path maqamId: number
+    )
     {
-        const response = await this.apiService.files.get({ title });
-        if(response.statusCode == 404)
-            return null;
-        return response.data;
-    }
-
-    public async UpdateFile(fileName: string, file: File)
-    {
-        await this.apiService.files.put({ fileName, file });
+        const maqam = await this.maqamatController.QueryMaqamInfo(maqamId);
+        if(maqam === undefined)
+            return NotFound("maqam not found");
+        return maqam;
     }
 }

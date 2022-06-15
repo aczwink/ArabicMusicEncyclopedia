@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,11 +17,11 @@
  * */
 
 import { Anchor, Component, Injectable, JSX_CreateElement, LineEdit, MatIcon, PaginationComponent, ProgressSpinner, RouterButton } from "acfrontend";
-import { Persons } from "ame-api";
+import { PersonOverviewData, PersonType } from "../../dist/api";
 import { PersonsService } from "./PersonsService";
 
 @Injectable
-export class ListPersonsComponent extends Component<{ type: Persons.PersonType }>
+export class ListPersonsComponent extends Component<{ type: PersonType }>
 {
     constructor(private personsService: PersonsService)
     {
@@ -53,7 +53,7 @@ export class ListPersonsComponent extends Component<{ type: Persons.PersonType }
     }
 
     //Private members
-    private data: Persons.PersonOverviewData[];
+    private data: PersonOverviewData[];
     private loading: boolean;
     private nameFilter: string;
     private count: number;
@@ -64,12 +64,7 @@ export class ListPersonsComponent extends Component<{ type: Persons.PersonType }
     private async ExecuteSearch()
     {
         this.loading = true;
-        const result = await this.personsService.QueryPersons({
-            type: this.input.type,
-            limit: this.size,
-            nameFilter: this.nameFilter,
-            offset: this.offset
-        });
+        const result = await this.personsService.QueryPersons(this.input.type, this.nameFilter, this.offset, this.size);
         this.data = result.persons;
         this.count = result.totalCount;
         this.loading = false;
@@ -119,7 +114,7 @@ export class ListComposersComponent extends Component
 {
     protected Render(): RenderValue
     {
-        return <ListPersonsComponent type={Persons.PersonType.Composer} />;
+        return <ListPersonsComponent type={PersonType.Composer} />;
     }
 }
 
@@ -127,7 +122,7 @@ export class ListLyricistsComponent extends Component
 {
     protected Render(): RenderValue
     {
-        return <ListPersonsComponent type={Persons.PersonType.Lyricist} />;
+        return <ListPersonsComponent type={PersonType.Lyricist} />;
     }
 }
 
@@ -135,6 +130,6 @@ export class ListSingersComponent extends Component
 {
     protected Render(): RenderValue
     {
-        return <ListPersonsComponent type={Persons.PersonType.Singer} />;
+        return <ListPersonsComponent type={PersonType.Singer} />;
     }
 }

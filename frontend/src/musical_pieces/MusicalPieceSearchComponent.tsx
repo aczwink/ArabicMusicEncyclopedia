@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,8 +17,7 @@
  * */
 
 import { Component, FormField, Injectable, JSX_CreateElement, LineEdit, PaginationComponent, ProgressSpinner, Select } from "acfrontend";
-import { Maqamat, Musical, MusicalPieces, Rhythms } from "ame-api";
-import { PersonType } from "ame-api/dist/Persons";
+import { Form, MaqamOverviewData, PersonType, PieceOverviewData, RhythmOverviewData } from "../../dist/api";
 import { MaqamatService } from "../maqamat/MaqamatService";
 import { OptionalSinglePersonSelectionComponent } from "../persons/OptionalSinglePersonSelectionComponent";
 import { RhythmsService } from "../rhythms/RhythmsService";
@@ -108,10 +107,10 @@ export class MusicalPieceSearchComponent extends Component
     private maqamId: number | null;
     private rhythmId: number | null;
 
-    private forms: Musical.API.FormsAPI.List.Form[] | null;
-    private maqamat: Maqamat.API.List.MaqamOverviewData[] | null;
-    private rhythms: Rhythms.RhythmOverviewData[] | null;
-    private pieces: MusicalPieces.API.List.Piece[];
+    private forms: Form[] | null;
+    private maqamat: MaqamOverviewData[] | null;
+    private rhythms: RhythmOverviewData[] | null;
+    private pieces: PieceOverviewData[];
     private totalCount: number;
 
     //Private methods
@@ -126,9 +125,7 @@ export class MusicalPieceSearchComponent extends Component
             singerId: this.singerId,
             maqamId: this.maqamId,
             rhythmId: this.rhythmId,
-            offset: this.offset,
-            limit: this.size
-        });
+        }, this.offset, this.size);
         this.pieces = result.pieces;
         this.totalCount = result.totalCount;
         this.loading = false;
@@ -149,14 +146,14 @@ export class MusicalPieceSearchComponent extends Component
     //Event handlers
     public async OnInitiated()
     {
-        const forms = await this.musicalService.ListForms({}, {});
-        this.forms = forms.forms;
+        const forms = await this.musicalService.ListForms();
+        this.forms = forms;
 
-        const maqamat = await this.maqamatService.QueryMaqamat({});
+        const maqamat = await this.maqamatService.QueryMaqamat();
         this.maqamat = maqamat;
 
-        const rhythms = await this.rhythmsService.QueryRhythms({});
-        this.rhythms = rhythms.rhythms;
+        const rhythms = await this.rhythmsService.QueryRhythms();
+        this.rhythms = rhythms;
     }
 
     private OnOffsetChanged(newValue: number)

@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 import { Anchor, Component, JSX_CreateElement, MatIcon, RouterButton } from "acfrontend";
-import { MusicalPieces } from "ame-api";
+import { PieceOverviewData } from "../../dist/api";
 
-export class MusicalPiecesListComponent extends Component<{ pieces: MusicalPieces.API.List.Piece[] }>
+export class MusicalPiecesListComponent extends Component<{ pieces: PieceOverviewData[] }>
 {
     protected Render(): RenderValue
     {
@@ -38,7 +38,7 @@ export class MusicalPiecesListComponent extends Component<{ pieces: MusicalPiece
     }
 
     //Private methods
-    private RenderPiece(piece: MusicalPieces.API.List.Piece)
+    private RenderPiece(piece: PieceOverviewData)
     {
         return <tr>
             <td>{piece.formName}</td>

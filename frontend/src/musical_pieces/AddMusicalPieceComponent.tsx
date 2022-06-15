@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,9 +17,9 @@
  * */
 
 import { Component, Injectable, JSX_CreateElement, Router } from "acfrontend";
-import { MusicalPieces } from "ame-api";
+import { PieceDetailsData } from "../../dist/api";
 import { MusicalPieceEditorComponent } from "./MusicalPieceEditorComponent";
-import { MusicalPiecesService } from "./MusicalPiecesService";
+import { AttachmentChangesCollection, MusicalPiecesService } from "./MusicalPiecesService";
 
 @Injectable
 export class AddMusicalPieceComponent extends Component
@@ -38,6 +38,11 @@ export class AddMusicalPieceComponent extends Component
             rhythms: [],
             text: "",
         };
+        this.attachments = {
+            new: [],
+            existing: [],
+            deleted: []
+        };
         this.isValid = false;
     }
 
@@ -45,19 +50,21 @@ export class AddMusicalPieceComponent extends Component
     {
         return <fragment>
             <h1>Add musical piece</h1>
-            <MusicalPieceEditorComponent piece={this.piece} onValidationUpdated={newValue => this.isValid = newValue} />
+            <MusicalPieceEditorComponent piece={this.piece} attachments={this.attachments} onValidationUpdated={newValue => this.isValid = newValue} />
             <button type="button" onclick={this.OnCreate.bind(this)} disabled={!this.isValid}>Add</button>
         </fragment>;
     }
 
     //Private members
-    private piece: MusicalPieces.Piece;
+    private piece: PieceDetailsData;
+    private attachments: AttachmentChangesCollection;
     private isValid: boolean;
 
     //Event handlers
     private async OnCreate()
     {
-        const result = await this.musicalPiecesService.AddPiece({}, { piece: this.piece });
-        this.router.RouteTo("/musicalpieces/" + result.pieceId);
+        const pieceId = await this.musicalPiecesService.AddPiece(this.piece);
+        await this.musicalPiecesService.ApplyAttachmentChanges(pieceId, this.attachments);
+        this.router.RouteTo("/musicalpieces/" + pieceId);
     }
 }

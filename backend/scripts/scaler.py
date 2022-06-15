@@ -348,4 +348,4 @@ for note in notes:
 		
 out.save();
 
-subprocess.call(["inkscape", name + ".svg", "-e", name + ".png", "--without-gui"]);
+subprocess.call(["inkscape", name + ".svg", "-o", name + ".png"]);
