@@ -18,7 +18,15 @@
 
 import { Injectable } from "acts-util-node";
 import { DBQueryExecutor } from "acts-util-node/dist/db/DBQueryExecutor";
+import { AttachmentContentType } from "../services/AttachmentTypeService";
 import { DatabaseController } from "./DatabaseController";
+
+interface FullAttachmentData
+{
+    comment: string;
+    contentType: AttachmentContentType;
+    content: Buffer;
+}
 
 export interface MusicalPiecesFilterCriteria
 {
@@ -67,6 +75,7 @@ interface PieceAttachmentAssociation
 {
     attachmentId: number;
     comment: string;
+    isRenderable: boolean;
 }
 
 export interface PieceDetailsData
@@ -91,13 +100,14 @@ export class MusicalPiecesController
     }
 
     //Public methods
-    public async AddAttachment(pieceId: number, comment: string, data: Buffer)
+    public async AddAttachment(pieceId: number, comment: string, contentType: string, data: Buffer)
     {
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
 
         await conn.InsertRow("amedb.musical_pieces_attachments", {
             pieceId,
             comment,
+            contentType,
             content: data
         });
     }
@@ -139,11 +149,11 @@ export class MusicalPiecesController
     public async QueryAttachment(attachmentId: number)
     {
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const row = await conn.SelectOne("SELECT content FROM amedb.musical_pieces_attachments WHERE attachmentId = ?", attachmentId);
+        const row = await conn.SelectOne<FullAttachmentData>("SELECT comment, contentType, content FROM amedb.musical_pieces_attachments WHERE attachmentId = ?", attachmentId);
 
         if(row === undefined)
             return undefined;
-        return row.content as Buffer;
+        return row;
     }
 
     public async QueryMusicalPiece(pieceId: number): Promise<PieceDetailsData | undefined>
@@ -404,7 +414,7 @@ export class MusicalPiecesController
     private async QueryPieceAttachments(pieceId: number)
     {
         const query = `
-        SELECT mpa.attachmentId, mpa.comment
+        SELECT mpa.attachmentId, mpa.comment, (mpa.contentType = "text/x-lilypond") AS isRenderable
         FROM amedb.musical_pieces_attachments mpa
         WHERE mpa.pieceId = ?
         `;

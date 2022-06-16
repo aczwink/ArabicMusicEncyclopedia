@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Anchor, Component, Injectable, JSX_CreateElement, MatIcon, ProgressSpinner, RouterState, TitleService } from "acfrontend";
+import { Anchor, Component, Injectable, JSX_CreateElement, MatIcon, PopupManager, ProgressSpinner, RouterState, TitleService } from "acfrontend";
 import { Form, Language, Person, PieceDetailsData } from "../../dist/api";
 import { g_backendBaseUrl } from "../backend";
 import { MaqamatService } from "../maqamat/MaqamatService";
@@ -25,6 +25,7 @@ import { RhythmsService } from "../rhythms/RhythmsService";
 import { WikiTextComponent } from "../shared/WikiTextComponent";
 import { MusicalPiecesService } from "./MusicalPiecesService";
 import { MusicalService } from "./MusicalService";
+import { RenderedAttachmentDownloader } from "./RenderedAttachmentDownloader";
 
 interface Association
 {
@@ -38,7 +39,7 @@ export class ShowMusicalPieceComponent extends Component
 {
     constructor(routerState: RouterState, private musicalPiecesService: MusicalPiecesService, private personsService: PersonsService,
         private musicalService: MusicalService, private maqamatService: MaqamatService, private rhythmsService: RhythmsService,
-        private titleService: TitleService)
+        private titleService: TitleService, private popupManager: PopupManager)
     {
         super();
 
@@ -105,8 +106,18 @@ export class ShowMusicalPieceComponent extends Component
 
                         <h4>Attachments</h4>
                         <table>
+                            <tr>
+                                <th>Name</th>
+                                <th>Actions</th>
+                            </tr>
                             {this.piece.attachments.map(attachment => <tr>
-                                <th><a href={g_backendBaseUrl + "/attachments/" + attachment.attachmentId} target="_blank">{attachment.comment}</a></th>
+                                <td>{attachment.comment}</td>
+                                <td>
+                                    <a href={g_backendBaseUrl + "/attachments/" + attachment.attachmentId} target="_blank"><MatIcon>download</MatIcon></a>
+                                    {attachment.isRenderable ?
+                                        <a onclick={this.OnDownloadRenderedAttachment.bind(this, attachment.attachmentId)}><MatIcon>picture_as_pdf</MatIcon></a>
+                                    : null}
+                                </td>
                             </tr>)}
                         </table>
                     </div>
@@ -163,6 +174,11 @@ export class ShowMusicalPieceComponent extends Component
     }
 
     //Event handlers
+    private OnDownloadRenderedAttachment(attachmentId: number)
+    {
+        this.popupManager.OpenDialog(<RenderedAttachmentDownloader attachmentId={attachmentId} />, { title: "Download as PDF" });
+    }
+
     public async OnInitiated()
     {
         const result = await this.musicalPiecesService.QueryPiece(this.pieceId);

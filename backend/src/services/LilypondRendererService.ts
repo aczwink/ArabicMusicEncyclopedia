@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,27 +21,32 @@ import os from "os";
 import path from "path";
 
 import { Injectable } from "acts-util-node";
-import { Accidental, NaturalNote, OctavePitch } from "ame-api";
+import { OctavePitch } from "ame-api";
 import { ChordType } from "./ChordDetectionService";
+import { LilypondNoteService } from "./LilypondNoteService";
 
 @Injectable
-export class LilypondImageCreator
+export class LilypondRendererService
 {
+    constructor(private lilypondNoteService: LilypondNoteService)
+    {
+    }
+
     //Public methods
     public async CreateChordImage(chords: (ChordType | undefined)[], pitches: OctavePitch[])
     {
-        return this.CreateImage(this.ChordsToLilypondText(chords, pitches));
+        return this.Render(this.ChordsToLilypondText(chords, pitches), "png");
     }
 
-    public async CreateImage(text: string)
+    public async Render(text: string, outputFormat: "pdf" | "png")
     {
         const dir = await fs.promises.mkdtemp(`${os.tmpdir()}${path.sep}ame`, "utf-8");
 
         const inputPath = path.join(dir, "_input");
         await fs.promises.writeFile(inputPath, text, "utf-8");
-        await this.CallLilypond(dir, inputPath);
+        await this.CallLilypond(dir, inputPath, outputFormat);
 
-        const outputPath = path.join(dir, "_output.png");
+        const outputPath = path.join(dir, "_output." + outputFormat);
         const data = await fs.promises.readFile(outputPath);
 
         await fs.promises.rmdir(dir, { recursive: true});
@@ -50,10 +55,10 @@ export class LilypondImageCreator
     }
 
     //Private methods
-    private async CallLilypond(inputDir: string, inputPath: string)
+    private async CallLilypond(inputDir: string, inputPath: string, outputFormat: "pdf" | "png")
     {
         const promise = new Promise<void>( (resolve, reject) => {
-            child_process.exec("lilypond --png " + inputPath, {
+            child_process.exec("lilypond --" + outputFormat + " " + inputPath, {
                 cwd: inputDir,
             }, (err, _stdout, _stderr) => {
                 if(err)
@@ -64,14 +69,21 @@ export class LilypondImageCreator
         });
         await promise;
 
-        const child2 = child_process.exec("convert -trim " + inputPath + ".png" + " _output.png", {
-            cwd: inputDir,
-        });
-
-        await new Promise( (resolve, reject) => {
-            child2.on("exit", resolve);
-            child2.on("error", reject);
-        });
+        if(outputFormat === "pdf")
+        {
+            await fs.promises.rename(inputPath + ".pdf", path.join(inputDir, "_output.pdf"));
+        }
+        else if(outputFormat === "png")
+        {
+            const child2 = child_process.exec("convert -trim " + inputPath + ".png" + " _output.png", {
+                cwd: inputDir,
+            });
+    
+            await new Promise( (resolve, reject) => {
+                child2.on("exit", resolve);
+                child2.on("error", reject);
+            });
+        }
     }
 
     private ChordsToLilypondText(chords: (ChordType | undefined)[], pitches: OctavePitch[])
@@ -84,7 +96,7 @@ export class LilypondImageCreator
             if(chord === undefined)
                 continue;
             const notes = this.NotesFromChord(chord, pitches.slice(index));
-            const lilypondNotes = notes.map(this.ToLilypondNote.bind(this));
+            const lilypondNotes = notes.map(n => this.lilypondNoteService.ToLilypondNote(n, "italian"));
             lilyChordsAsNotes.push("<" + lilypondNotes.join(" ") + ">1");
             lilyChords.push(this.ToLilypondChord(pitches[index], chord));
         }
@@ -169,51 +181,6 @@ export class LilypondImageCreator
             }
         }
 
-        return this.ToLilypondNote(pitch) + "1" + ChordTypeToString(chord);
-    }
-
-    private ToLilypondNote(pitch: OctavePitch)
-    {
-        function AccidentalToString(acc: Accidental)
-        {
-            switch(acc)
-            {
-                case Accidental.Flat:
-                    return "b";
-                case Accidental.HalfFlat:
-                    return "sb";
-                case Accidental.Natural:
-                    return "";
-                case Accidental.HalfSharp:
-                    return "sd";
-                case Accidental.Sharp:
-                    return "d";
-                default:
-                    throw new Error("NOT IMPLEMENTED: " + acc);
-            }
-        }
-
-        function NoteNameToString(note: NaturalNote)
-        {
-            switch(note)
-            {
-                case NaturalNote.A:
-                    return "la";
-                case NaturalNote.B:
-                    return "si";
-                case NaturalNote.C:
-                    return "do";
-                case NaturalNote.D:
-                    return "re";
-                case NaturalNote.E:
-                    return "mi";
-                case NaturalNote.F:
-                    return "fa";
-                case NaturalNote.G:
-                    return "sol";
-            }
-        }
-
-        return NoteNameToString(pitch.baseNote) + AccidentalToString(pitch.accidental);
+        return this.lilypondNoteService.ToLilypondNote(pitch, "italian") + "1" + ChordTypeToString(chord);
     }
 }

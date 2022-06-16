@@ -1,8 +1,8 @@
--- MySQL dump 10.19  Distrib 10.3.31-MariaDB, for debian-linux-gnu (x86_64)
+-- MariaDB dump 10.19  Distrib 10.5.12-MariaDB, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: amedb
 -- ------------------------------------------------------
--- Server version	10.3.31-MariaDB-0ubuntu0.20.04.1
+-- Server version	10.5.12-MariaDB-1build1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -45,7 +45,7 @@ CREATE TABLE `articles` (
   `text` text NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `title` (`title`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -133,6 +133,7 @@ CREATE TABLE `musical_pieces_attachments` (
   `attachmentId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pieceId` int(10) unsigned NOT NULL,
   `comment` text NOT NULL,
+  `contentType` varchar(100) NOT NULL,
   `content` longblob NOT NULL,
   PRIMARY KEY (`attachmentId`),
   KEY `musical_pieces_attachments_pieceId` (`pieceId`),
@@ -318,4 +319,4 @@ CREATE TABLE `rhythms_timeSigs` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-11-09 22:16:28
+-- Dump completed on 2022-06-16 13:10:45

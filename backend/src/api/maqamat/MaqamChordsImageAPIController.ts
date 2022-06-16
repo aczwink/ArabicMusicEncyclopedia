@@ -21,7 +21,7 @@ import { AjnasController } from "../../dataaccess/AjnasController";
 import { MaqamatController } from "../../dataaccess/MaqamatController";
 import { IntervalsService } from "../../services/IntervalsService";
 import { ChordDetectionService } from "../../services/ChordDetectionService";
-import { LilypondImageCreator } from "../../services/LilypondImageCreator";
+import { LilypondRendererService } from "../../services/LilypondRendererService";
 import { APIController, Get, NotFound, Path, Query } from "acts-util-apilib";
 
 @APIController("maqamat/{maqamId}/chordsImage")
@@ -29,7 +29,7 @@ class MaqamChordsImageAPIController
 {
     constructor(private imgCacheManager: ImageCacheManager, private ajnasController: AjnasController,
         private maqamController: MaqamatController, private intervalsService: IntervalsService, private chordDetectionService: ChordDetectionService,
-        private lilypondImageCreator: LilypondImageCreator)
+        private lilypondImageCreator: LilypondRendererService)
     {
     }
 

@@ -19,7 +19,7 @@ import crypto from "crypto";
 
 import { ParseOctavePitch } from "ame-api";
 import { ImageCacheManager } from "../../services/ImageCacheManager";
-import { LilypondImageCreator } from "../../services/LilypondImageCreator";
+import { LilypondRendererService } from "../../services/LilypondRendererService";
 import { IntervalsService } from "../../services/IntervalsService";
 import { MaqamPicCreator } from "../../services/MaqamPicCreator";
 import { APIController, Get, Query } from "acts-util-apilib";
@@ -29,7 +29,7 @@ type ScoreType = "maqam" | "rhythm" | "rhythm2";
 @APIController("score")
 class ScoreAPIController
 {
-    constructor(private imgCacheManager: ImageCacheManager, private lilypondImageCreator: LilypondImageCreator, private intervalsService: IntervalsService,
+    constructor(private imgCacheManager: ImageCacheManager, private lilypondImageCreator: LilypondRendererService, private intervalsService: IntervalsService,
         private maqamPicCreator: MaqamPicCreator)
     {
     }
@@ -85,7 +85,7 @@ class ScoreAPIController
         ${text}
         }}
         `;
-        return this.lilypondImageCreator.CreateImage(completeText);
+        return this.lilypondImageCreator.Render(completeText, "png");
     }
 
     private CreateRhythm2Image(text: string)
@@ -95,6 +95,6 @@ class ScoreAPIController
         ${text}
         }}
         `;
-        return this.lilypondImageCreator.CreateImage(completeText);
+        return this.lilypondImageCreator.Render(completeText, "png");
     }
 }
