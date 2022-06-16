@@ -30,7 +30,7 @@ export class LilypondTransposer
     //Public methods
     public TransposeTo(source: string, targetPitch: OctavePitch)
     {
-        const keyMatches = Array.from(source.matchAll(/\\key[ \t]+([a-z]+)[ \t]+/));
+        const keyMatches = Array.from(source.matchAll(/\\key[ \t]+([a-z]+)[ \t]+/g));
         if(keyMatches.length !== 1)
             throw new Error("no key or too many found");
         const stringKey = keyMatches[0][1];
