@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -47,7 +47,7 @@ export class MaqamPicCreator
         const dir = await fs.promises.mkdtemp(`${os.tmpdir()}${path.sep}ame`, "utf-8");
 
         await fs.promises.writeFile(this.GetInputFilePath(dir), inputData, "utf-8");
-        //await fs.promises.symlink(path.join(this.GetScriptDir(), "emmentaler-26.otf"), path.join(dir, "emmentaler-26.otf"))
+        await fs.promises.symlink(path.join(this.GetScriptDir(), "emmentaler-26.otf"), path.join(dir, "emmentaler-26.otf"))
         await this.CallScript(dir);
         const result = await fs.promises.readFile(this.GetOutputFilePath(dir));
 
