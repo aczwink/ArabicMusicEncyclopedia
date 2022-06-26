@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/app.js",
   "scripts": {
-    "compile": "npx acts-util-apilib api ../backend/dist/openapi.json ./dist/api.ts && tsc",
+    "compile": "npx acts-util-apilib && tsc",
     "build-debug": "npx webpack --config webpack.debug.config.js",
     "build-themes": "sass ./design/main.scss dist/site.css",
     "deploy": "ln -s ../index.htm dist/ && ln -s ../node_modules/acts-util-core/dist/acts-util-core.js dist/ && ln -s ../node_modules/acfrontend/dist/acfrontend.js dist/ && ln -s ../node_modules/acfrontend/dist/clean.css dist/ && ln -s ../emmentaler-26.woff dist/ && ln -s ../images dist/"

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 import { APIServiceBase, HTTPService, Injectable } from "acfrontend";
-import { g_backendAuthority, g_backendProtocol } from "../backend";
+import { g_backendHostname, g_backendPort, g_backendProtocol } from "../backend";
 import { API } from "../../dist/api";
 
 @Injectable
@@ -24,9 +24,9 @@ export class APIService extends API
 {
     constructor(httpService: HTTPService)
     {
-        super( req => this.base.IssueRequest(req) );
+        super( req => this.base.SendRequest(req) );
 
-        this.base = new APIServiceBase(httpService, g_backendAuthority, g_backendProtocol);
+        this.base = new APIServiceBase(httpService, g_backendHostname, g_backendPort, g_backendProtocol);
     }
 
     //Private variables

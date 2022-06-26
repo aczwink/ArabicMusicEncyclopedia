@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && npx acts-util-apilib openapi ./src/api ./dist/openapi",
+    "build": "npx acts-util-apilib && tsc",
     "run": "(cd dist && node main.js)"
   },
   "keywords": [],
