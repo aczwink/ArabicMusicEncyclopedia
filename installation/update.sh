@@ -42,6 +42,7 @@ cd ..
 cd frontend
 npm run compile
 npm run build-debug
+npm run build-themes
 cd ..
 
 cd ..
