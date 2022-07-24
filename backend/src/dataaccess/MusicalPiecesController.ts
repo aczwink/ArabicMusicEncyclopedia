@@ -420,9 +420,10 @@ export class MusicalPiecesController
         `;
 
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const rows = await conn.Select<PieceAttachmentAssociation>(query, pieceId);
+        const rows = await conn.Select(query, pieceId);
+        rows.forEach(row => row.isRenderable = row.isRenderable > 0);
 
-        return rows;
+        return rows as PieceAttachmentAssociation[];
     }
 
     private async QueryPieceLyrics(pieceId: number): Promise<PieceLyrics | undefined>
