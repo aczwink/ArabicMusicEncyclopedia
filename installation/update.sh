@@ -11,6 +11,10 @@ cd node
 npm run build
 cd ..
 
+cd apilib
+npm run build
+cd ..
+
 cd ..
 
 #acfrontend
