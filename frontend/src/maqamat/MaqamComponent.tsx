@@ -52,10 +52,10 @@ export class MaqamComponent extends Component
             Transpose: <PitchSelectionComponent selection={pitch} onChanged={newValue => this.selectedPitch = newValue} />
 
             <h2>Forms</h2>
-            <div class="row justify-content-evenly">{this.maqam.branchingJinsIds.map(this.RenderForm.bind(this, pitch))}</div>
+            <div className="row justify-content-evenly">{this.maqam.branchingJinsIds.map(this.RenderForm.bind(this, pitch))}</div>
 
             <h2>Chords</h2>
-            <div class="row justify-content-evenly">{this.maqam.branchingJinsIds.map(this.RenderChords.bind(this, pitch))}</div>
+            <div className="row justify-content-evenly">{this.maqam.branchingJinsIds.map(this.RenderChords.bind(this, pitch))}</div>
         </div>;
     }
 
@@ -67,14 +67,14 @@ export class MaqamComponent extends Component
     //Private methods
     private RenderChords(pitch: OctavePitch, branchingJinsId: number)
     {
-        return <div class="col-auto">
+        return <div className="col-auto">
             <img src={g_backendBaseUrl + "/maqamat/" + this.maqamId + "/chordsImage?basePitch=" + OctavePitchToString(pitch) + "&branchingJinsId=" + branchingJinsId} />
         </div>;
     }
 
     private RenderForm(pitch: OctavePitch, branchingJinsId: number)
     {
-        return <div class="col-auto">
+        return <div className="col-auto">
             <img src={g_backendBaseUrl + "/maqamat/" + this.maqamId + "/image?basePitch=" + OctavePitchToString(pitch) + "&branchingJinsId=" + branchingJinsId} />
         </div>;
     }

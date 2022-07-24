@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -41,12 +41,12 @@ export const blockFormatters: RegExFormatter[] = [
         mapper: (matched: RegExpExecArray) => {
             const data = matched[1];
             const entries = data.split("\n").filter(line => line.trim().length > 0).map(line => line.split("|")).map(x => <li>
-                <div class="column">
+                <div className="column">
                     <fragment>{WikiTextFormatter.FormatWikiText(x[0])}</fragment>
                     {x[1]}
                 </div>
             </li>);
-            return <ul class="horzList">{entries}</ul>;
+            return <ul className="horzList">{entries}</ul>;
         }
     },
     {
@@ -78,8 +78,8 @@ export const inlineFormatters = [
                 const inner = <FileReferenceComponent fileName={parts[0]} />;
                 if(parts.length == 1)
                     return inner;
-                return <div class="box">
-                    <div class="column">
+                return <div className="box">
+                    <div className="column">
                         {inner}
                         {parts[1]}
                     </div>

@@ -51,7 +51,7 @@ export class AddMusicalPieceComponent extends Component
         return <fragment>
             <h1>Add musical piece</h1>
             <MusicalPieceEditorComponent piece={this.piece} attachments={this.attachments} onValidationUpdated={newValue => this.isValid = newValue} />
-            <button type="button" onclick={this.OnCreate.bind(this)} disabled={!this.isValid}>Add</button>
+            <button className="btn btn-primary" type="button" onclick={this.OnCreate.bind(this)} disabled={!this.isValid}>Add</button>
         </fragment>;
     }
 

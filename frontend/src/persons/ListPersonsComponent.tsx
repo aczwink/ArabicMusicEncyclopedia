@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Anchor, Component, FormField, Injectable, JSX_CreateElement, LineEdit, MatIcon, PaginationComponent, ProgressSpinner, RouterButton } from "acfrontend";
+import { Anchor, Component, Injectable, JSX_CreateElement, LineEdit, MatIcon, PaginationComponent, ProgressSpinner, RouterButton } from "acfrontend";
 import { PersonOverviewData, PersonType } from "../../dist/api";
 import { PersonsService } from "./PersonsService";
 
@@ -41,20 +41,20 @@ export class ListPersonsComponent extends Component<{ type: PersonType }>
             return <ProgressSpinner />;
 
         return <fragment>
-            <div class="box">
+            <div className="box">
                 <form onsubmit={this.OnSubmit.bind(this)}>
-                    <div class="row justify-content-center">
-                        <div class="col-4">
+                    <div className="row justify-content-center">
+                        <div className="col-4">
                         <LineEdit value={this.nameFilter} onChanged={newValue => this.nameFilter = newValue} />
                         </div>
-                        <div class="col-auto">
-                        <button class="btn btn-primary" type="submit">Search</button>
+                        <div className="col-auto">
+                        <button className="btn btn-primary" type="submit">Search</button>
                         </div>
                     </div>
                 </form>
             </div>
             {this.RenderResultList()}
-            <RouterButton class="btn btn-primary" route={"/persons/add/" + this.input.type}><MatIcon>add</MatIcon></RouterButton>
+            <RouterButton className="btn btn-primary" route={"/persons/add/" + this.input.type}><MatIcon>add</MatIcon></RouterButton>
         </fragment>;
     }
 
@@ -84,13 +84,17 @@ export class ListPersonsComponent extends Component<{ type: PersonType }>
             return null;
             
         return <fragment>
-            <table>
-                <tr>
-                    <th>Name</th>
-                </tr>
+            <table className="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody>
                 {this.data.map(row => <tr>
                     <td><Anchor route={"/persons/" + row.id}>{row.name}</Anchor></td>
                 </tr>)}
+                </tbody>
             </table>
             <PaginationComponent count={this.count} offset={this.offset} size={this.size} onOffsetChanged={this.OnOffsetChanged.bind(this)} onSizeChanged={this.OnSizeChanged.bind(this)} />
         </fragment>;

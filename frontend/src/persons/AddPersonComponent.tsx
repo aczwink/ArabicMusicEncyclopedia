@@ -42,11 +42,11 @@ export class AddPersonComponent extends Component
     {
         return <fragment>
             <h1>Add person</h1>
-            <div class="row">
-                <div class="column">
+            <div className="row">
+                <div className="column">
                     <EditPersonForm person={this.person} saveButtonText="Add" onSave={this.OnAdd.bind(this)} />
                 </div>
-                <div class="column">
+                <div className="column">
                 </div>
             </div>
         </fragment>;

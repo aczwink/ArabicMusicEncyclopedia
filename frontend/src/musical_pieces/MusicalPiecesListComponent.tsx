@@ -23,15 +23,17 @@ export class MusicalPiecesListComponent extends Component<{ pieces: PieceOvervie
     protected Render(): RenderValue
     {
         return <fragment>
-                <table>
-                <tr>
-                    <th>Form</th>
-                    <th>Title</th>
-                    <th>Composer</th>
-                    <th>Release date</th>
-                    <th>Singer</th>
-                </tr>
-                {this.input.pieces.map(this.RenderPiece.bind(this))}
+            <table className="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Form</th>
+                        <th>Title</th>
+                        <th>Composer</th>
+                        <th>Release date</th>
+                        <th>Singer</th>
+                    </tr>
+                </thead>
+                <tbody>{this.input.pieces.map(this.RenderPiece.bind(this))}</tbody>
             </table>
         </fragment>;
     }

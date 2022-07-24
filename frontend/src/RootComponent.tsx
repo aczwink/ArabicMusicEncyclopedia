@@ -24,24 +24,24 @@ export class RootComponent extends Component
     {
         return <fragment>
             <Navigation>
-                <ul class="nav nav-pills">
+                <ul className="nav nav-pills">
                     <NavItem route="/ajnas">Ajnas</NavItem>
                     <NavItem route="/maqamat/families">Maqam families</NavItem>
                     <NavItem route="/rhythms">Rhythms</NavItem>
                 </ul>
-                <ul class="nav nav-pills">
+                <ul className="nav nav-pills">
                     <NavItem route="/persons/composers">Composers</NavItem>
                     <NavItem route="/persons/lyricists">Lyricists</NavItem>
                     <NavItem route="/persons/singers">Singers</NavItem>
                 </ul>
-                <ul class="nav nav-pills">
+                <ul className="nav nav-pills">
                     <NavItem route="/musicalpieces">Musical pieces</NavItem>
                 </ul>
-                <ul class="nav nav-pills">
+                <ul className="nav nav-pills">
                     <NavItem route="/wiki">Wiki</NavItem>
                 </ul>
             </Navigation>
-            <div class="container-fluid">
+            <div className="container-fluid">
                 <RouterComponent />
             </div>
         </fragment>;

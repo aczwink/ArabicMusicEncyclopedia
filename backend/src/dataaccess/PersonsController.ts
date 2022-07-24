@@ -102,7 +102,7 @@ export class PersonsController
         `;
         const rows = await conn.Select<PersonOverviewData>(query, type, "%" + nameFilter + "%", limit, offset);
 
-        const row = await conn.Select("SELECT COUNT(*) AS cnt FROM amedb.persons WHERE type = ? AND name LIKE ?", type, "%" + nameFilter + "%");
+        const row = await conn.SelectOne("SELECT COUNT(*) AS cnt FROM amedb.persons WHERE type = ? AND name LIKE ?", type, "%" + nameFilter + "%");
 
         return {
             persons: rows,

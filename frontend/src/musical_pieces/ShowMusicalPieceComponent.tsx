@@ -65,14 +65,14 @@ export class ShowMusicalPieceComponent extends Component
                 <Anchor route={"/musicalpieces/edit/" + this.pieceId}><MatIcon>edit</MatIcon></Anchor>
             </h1>
             <div>
-                <div class="row">
-                    <div class="column" style="flex-grow: 1; align-items: start;">
+                <div className="row">
+                    <div className="column" style="flex-grow: 1; align-items: start;">
                         {this.RenderLyrics()}
                         <WikiTextComponent text={this.piece.text} />
                     </div>
 
-                    <div class="box" style="float: right; display: block">
-                        <table class="keyValue">
+                    <div className="box" style="float: right; display: block">
+                        <table className="keyValue">
                             <tr>
                                 <th>Form</th>
                                 <td>{this.form.name}</td>

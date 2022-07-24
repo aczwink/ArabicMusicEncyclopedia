@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,12 +26,15 @@ export class AccidentalComponent extends Component<{ accidental: Accidental; }>
         switch(this.input.accidental)
         {
             case Accidental.Flat:
+                return <EmmentalerComponent glyph={"Flat"} />;
             case Accidental.HalfFlat:
                 return <EmmentalerComponent glyph={"HalfFlat"} />;
             case Accidental.Natural:
+                return <EmmentalerComponent glyph={"Natural"} />;
             case Accidental.HalfSharp:
                 return <EmmentalerComponent glyph={"HalfSharp"} />
             case Accidental.Sharp:
+                return <EmmentalerComponent glyph={"Sharp"} />
         }
     }
 }

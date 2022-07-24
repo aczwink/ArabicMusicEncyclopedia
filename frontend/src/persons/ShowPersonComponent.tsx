@@ -45,10 +45,10 @@ export class ShowPersonComponent extends Component
                 <Anchor route={"/persons/edit/" + this.personId}><MatIcon>edit</MatIcon></Anchor>
             </h1>
             <div>
-                <div class="box" style="float: right; display: block">
+                <div className="box" style="float: right; display: block">
                     <img src={g_backendBaseUrl + "/persons/" + this.personId + "/image"} style="max-width: 25rem" />
                 </div>
-                <table class="keyValue">
+                <table className="keyValue">
                     <tr>
                         <th>Type</th>
                         <td>{this.TypeToString(this.data.type)}</td>

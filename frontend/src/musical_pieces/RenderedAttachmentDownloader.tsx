@@ -41,7 +41,7 @@ export class RenderedAttachmentDownloader extends Component<{ attachmentId: numb
             <FormField title="Transpose">
                 <Switch checked={this.transpose} onChanged={newValue => this.transpose = newValue} />
             </FormField>
-            {this.transpose ? <div class="row">Target key: <PitchSelectionComponent selection={this.selectedPitch} onChanged={newValue => this.selectedPitch = newValue} /></div> : null}
+            {this.transpose ? <div className="row">Target key: <PitchSelectionComponent selection={this.selectedPitch} onChanged={newValue => this.selectedPitch = newValue} /></div> : null}
         </fragment>;
     }
 

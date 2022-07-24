@@ -58,36 +58,56 @@ export class MusicalPieceSearchComponent extends Component
             return <ProgressSpinner />;
 
         return <fragment>
-            <div class="box">
+            <div className="box">
                 <form onsubmit={this.OnSubmit.bind(this)}>
-                    <FormField title="Form">
-                        <Select onChanged={newValue => this.formId = parseInt(newValue[0])}>
-                            {this.forms.map(form => <option value={form.id.toString()} selected={this.formId === form.id}>{form.name}</option>)}
-                        </Select>
-                    </FormField>
-                    <FormField title="Title">
-                        <LineEdit value={this.titleFilter} onChanged={newValue => this.titleFilter = newValue} />
-                    </FormField>
-                    <FormField title="Composer">
-                        <OptionalSinglePersonSelectionComponent type={PersonType.Composer} onSelectionChanged={newValue => this.composerId = newValue} />
-                    </FormField>
-                    <FormField title="Lyricist">
-                        <OptionalSinglePersonSelectionComponent type={PersonType.Lyricist} onSelectionChanged={newValue => this.lyricistId = newValue} />
-                    </FormField>
-                    <FormField title="Singer">
-                        <OptionalSinglePersonSelectionComponent type={PersonType.Singer} onSelectionChanged={newValue => this.singerId = newValue} />
-                    </FormField>
-                    <FormField title="Maqam">
-                        <Select onChanged={newValue => this.maqamId = parseInt(newValue[0])}>
-                            {this.maqamat.map(form => <option value={form.id.toString()} selected={this.maqamId === form.id}>{form.name}</option>)}
-                        </Select>
-                    </FormField>
-                    <FormField title="Rhythm">
-                        <Select onChanged={newValue => this.rhythmId = parseInt(newValue[0])}>
-                            {this.rhythms.map(form => <option value={form.id.toString()} selected={this.rhythmId === form.id}>{form.name}</option>)}
-                        </Select>
-                    </FormField>
-                    <button type="submit">Search</button>
+                    <div className="row">
+                        <div className="col">
+                            <FormField title="Form">
+                                <Select onChanged={newValue => this.formId = parseInt(newValue[0])}>
+                                    {this.forms.map(form => <option value={form.id.toString()} selected={this.formId === form.id}>{form.name}</option>)}
+                                </Select>
+                            </FormField>
+                        </div>
+                        <div className="col">
+                            <FormField title="Title">
+                                <LineEdit value={this.titleFilter} onChanged={newValue => this.titleFilter = newValue} />
+                            </FormField>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col">
+                            <FormField title="Composer">
+                                <OptionalSinglePersonSelectionComponent type={PersonType.Composer} onSelectionChanged={newValue => this.composerId = newValue} />
+                            </FormField>
+                        </div>
+                        <div className="col">
+                            <FormField title="Lyricist">
+                                <OptionalSinglePersonSelectionComponent type={PersonType.Lyricist} onSelectionChanged={newValue => this.lyricistId = newValue} />
+                            </FormField>
+                        </div>
+                        <div className="col">
+                            <FormField title="Singer">
+                                <OptionalSinglePersonSelectionComponent type={PersonType.Singer} onSelectionChanged={newValue => this.singerId = newValue} />
+                            </FormField>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col">
+                            <FormField title="Maqam">
+                                <Select onChanged={newValue => this.maqamId = parseInt(newValue[0])}>
+                                    {this.maqamat.map(form => <option value={form.id.toString()} selected={this.maqamId === form.id}>{form.name}</option>)}
+                                </Select>
+                            </FormField>
+                        </div>
+                        <div className="col">
+                            <FormField title="Rhythm">
+                                <Select onChanged={newValue => this.rhythmId = parseInt(newValue[0])}>
+                                    {this.rhythms.map(form => <option value={form.id.toString()} selected={this.rhythmId === form.id}>{form.name}</option>)}
+                                </Select>
+                            </FormField>
+                        </div>
+                    </div>
+                    <button className="btn btn-primary" type="submit">Search</button>
                 </form>
             </div>
             {this.RenderResultList()}
@@ -136,11 +156,11 @@ export class MusicalPieceSearchComponent extends Component
         if(this.loading)
             return <ProgressSpinner />;
         if(this.pieces.length === 0)
-            return <RouterButton class="btn btn-primary" route={"/musicalpieces/add"}><MatIcon>add</MatIcon></RouterButton>;
+            return <RouterButton className="btn btn-primary" route={"/musicalpieces/add"}><MatIcon>add</MatIcon></RouterButton>;
         return <fragment>
             <MusicalPiecesListComponent pieces={this.pieces} />
             <PaginationComponent count={this.totalCount} offset={this.offset} size={this.size} onOffsetChanged={this.OnOffsetChanged.bind(this)} onSizeChanged={this.OnSizeChanged.bind(this)} />
-            <RouterButton class="btn btn-primary" route={"/musicalpieces/add"}><MatIcon>add</MatIcon></RouterButton>
+            <RouterButton className="btn btn-primary" route={"/musicalpieces/add"}><MatIcon>add</MatIcon></RouterButton>
         </fragment>;
     }
 

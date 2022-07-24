@@ -38,13 +38,13 @@ export class ListMaqamFamiliesComponent extends Component
         if(this.rootAjnas === null)
             return <ProgressSpinner />;
 
-        return <div class="row">
-            <div class="col-1">
-                <ul class="nav nav-pills flex-column">
+        return <div className="row">
+            <div className="col-1">
+                <ul className="nav nav-pills flex-column">
                 {this.rootAjnas.map(this.RenderFamilyRow.bind(this))}
                 </ul>
             </div>
-            <div class="col">{this.RenderMaqamList()}</div>
+            <div className="col">{this.RenderMaqamList()}</div>
         </div>;
     }
 
@@ -57,7 +57,7 @@ export class ListMaqamFamiliesComponent extends Component
     private RenderFamilyRow(jins: Jins)
     {
         const className = "nav-link" + ((this.selectedRootJinsId === jins.id) ? " active" : "");
-        return <li><a class={className} onclick={this.OnSelectionChanged.bind(this, jins.id)}>{jins.name}</a></li>;
+        return <li><a className={className} onclick={this.OnSelectionChanged.bind(this, jins.id)}>{jins.name}</a></li>;
     }
 
     private RenderMaqamList()

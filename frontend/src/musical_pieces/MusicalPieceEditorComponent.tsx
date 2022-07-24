@@ -82,7 +82,7 @@ export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetails
             <WikiTextEditComponent text={piece.text} onChanged={newValue => piece.text = newValue} />
 
             <h2>Maqamat</h2>
-            <div class="row">
+            <div className="row">
                 <table>
                     <tr>
                         <th>Maqam</th>
@@ -91,11 +91,11 @@ export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetails
                     </tr>
                     {piece.maqamat.map(this.RenderMaqamEntry.bind(this, piece))}
                 </table>
-                <button type="button" onclick={this.AddEntry.bind(this, piece.maqamat, { maqamId: 1, explanation: "" })}><MatIcon>add</MatIcon></button>
+                <button className="btn btn-primary" type="button" onclick={this.AddEntry.bind(this, piece.maqamat, { maqamId: 1, explanation: "" })}><MatIcon>add</MatIcon></button>
             </div>
 
             <h2>Rhythms</h2>
-            <div class="row">
+            <div className="row">
                 <table>
                     <tr>
                         <th>Rhythm</th>
@@ -104,11 +104,11 @@ export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetails
                     </tr>
                     {piece.rhythms.map(this.RenderRhythmEntry.bind(this, piece))}
                 </table>
-                <button type="button" onclick={this.AddEntry.bind(this, piece.rhythms, { rhythmId: 1, explanation: "" })}><MatIcon>add</MatIcon></button>
+                <button className="btn btn-primary" type="button" onclick={this.AddEntry.bind(this, piece.rhythms, { rhythmId: 1, explanation: "" })}><MatIcon>add</MatIcon></button>
             </div>
 
             <h2>Attachments</h2>
-            <div class="row">
+            <div className="row">
                 <table>
                     <tr>
                         <th>Attachment</th>
@@ -123,7 +123,7 @@ export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetails
                         <td><a onclick={this.OnDeleteNewAttachment.bind(this, idx)}><MatIcon>delete</MatIcon></a></td>
                     </tr>)}
                 </table>
-                <button type="button" onclick={this.OnAddAttachment.bind(this)}><MatIcon>add</MatIcon></button>
+                <button className="btn btn-primary" type="button" onclick={this.OnAddAttachment.bind(this)}><MatIcon>add</MatIcon></button>
             </div>
         </fragment>;
     }

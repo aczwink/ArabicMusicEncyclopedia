@@ -62,7 +62,7 @@ export class EditPersonForm extends Component<{ person: Person; saveButtonText: 
             <FormField title="Text">
                 <WikiTextEditComponent text={p.text} onChanged={newValue => p.text = newValue} />
             </FormField>
-            <button class="btn btn-primary" type="submit" disabled={!this.IsValid()}>{this.input.saveButtonText}</button>
+            <button className="btn btn-primary" type="submit" disabled={!this.IsValid()}>{this.input.saveButtonText}</button>
         </form>;
     }
 
@@ -90,9 +90,9 @@ export class EditPersonForm extends Component<{ person: Person; saveButtonText: 
 
         return allCodes.map(code => {
             const checked = this.person!.countryCodes.Contains(code);
-            return <div class="form-check">
-                <input class="form-check-input" type="checkbox" checked={checked} onclick={this.OnLocationChanged.bind(this, code, checked)} />
-                <label class="form-check-label">{code}</label>
+            return <div className="form-check">
+                <input className="form-check-input" type="checkbox" checked={checked} onclick={this.OnLocationChanged.bind(this, code, checked)} />
+                <label className="form-check-label">{code}</label>
             </div>;          
         });
     }

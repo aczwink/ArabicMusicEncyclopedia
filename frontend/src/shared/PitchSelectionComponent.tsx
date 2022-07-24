@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Component, JSX_CreateElement, Select } from "acfrontend";
+import { Component, JSX_CreateElement, Select, SingleSelect } from "acfrontend";
 import { Accidental, NaturalNote, OctavePitch } from "ame-api";
 import { AccidentalComponent } from "./AccidentalComponent";
 
@@ -44,20 +44,19 @@ export class PitchSelectionComponent extends Component<{
 {
     protected Render(): RenderValue
     {
-        return <div class="row">
-            <div class="col">
+        return <div className="row">
+            <div className="col">
                 <Select onChanged={newValue => this.input.onChanged({ accidental: this.input.selection.accidental, baseNote: this.ParseNote(newValue[0]) })}>
                     {naturalNotes.Entries().Map( kv =>
                         <option selected={kv.value === this.input.selection.baseNote}>{kv.key}</option>
                         ).ToArray()}
                 </Select>
             </div>
-            <div class="col">
-                <Select onChanged={newValue => this.input.onChanged({ accidental: parseInt(newValue[0])!, baseNote: this.input.selection.baseNote })}>
-                    {accidentals.map( acc =>
-                        <option value={acc.toString()} selected={acc === this.input.selection.accidental}><AccidentalComponent accidental={acc} /></option>
-                        )}
-                </Select>
+            <div className="col">
+                <SingleSelect selectedIndex={accidentals.indexOf(this.input.selection.accidental)}
+                    onSelectionChanged={newIndex => this.input.onChanged({ accidental: accidentals[newIndex], baseNote: this.input.selection.baseNote })}>
+                    {...accidentals.map( acc => <AccidentalComponent accidental={acc} /> )}
+                </SingleSelect>
             </div>
         </div>;
     }

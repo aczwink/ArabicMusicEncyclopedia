@@ -44,8 +44,8 @@ export class ShowRhythmComponent extends Component
                 <Anchor route={"/rhythms/edit/" + this.rhythmId}><MatIcon>edit</MatIcon></Anchor>
             </h1>
             <div>
-                <div class="box" style="float: right; display: block">
-                    <table class="keyValue">
+                <div className="box" style="float: right; display: block">
+                    <table className="keyValue">
                         {this.RenderAlternativeNames()}
                         <tr>
                             <th>Popularity</th>
