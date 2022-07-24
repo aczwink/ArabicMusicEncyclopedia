@@ -19,6 +19,7 @@
 import { Anchor, Component, Injectable, JSX_CreateElement, MatIcon, ProgressSpinner, RouterState } from "acfrontend";
 import { Person, PersonType } from "../../dist/api";
 import { g_backendBaseUrl } from "../backend";
+import { WikiTextComponent } from "../shared/WikiTextComponent";
 import { PersonsService } from "./PersonsService";
 
 
@@ -61,6 +62,7 @@ export class ShowPersonComponent extends Component
                         <td>{this.data.origin}</td>
                     </tr>
                 </table>
+                <WikiTextComponent text={this.data.text} />
             </div>
         </fragment>;
     }

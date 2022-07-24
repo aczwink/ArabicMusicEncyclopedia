@@ -19,7 +19,8 @@ import fs from "fs";
 import http from "http";
 import os from "os";
 
-import { Factory, GlobalInjector, HTTP, ModuleLoader, OpenAPI } from "acts-util-node";
+import { OpenAPI } from "acts-util-core";
+import { Factory, GlobalInjector, HTTP, ModuleLoader } from "acts-util-node";
 import { APIRegistry } from "acts-util-apilib";
 import { DatabaseController } from "./dataaccess/DatabaseController";
 

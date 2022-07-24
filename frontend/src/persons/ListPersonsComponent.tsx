@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Anchor, Component, Injectable, JSX_CreateElement, LineEdit, MatIcon, PaginationComponent, ProgressSpinner, RouterButton } from "acfrontend";
+import { Anchor, Component, FormField, Injectable, JSX_CreateElement, LineEdit, MatIcon, PaginationComponent, ProgressSpinner, RouterButton } from "acfrontend";
 import { PersonOverviewData, PersonType } from "../../dist/api";
 import { PersonsService } from "./PersonsService";
 
@@ -42,13 +42,19 @@ export class ListPersonsComponent extends Component<{ type: PersonType }>
 
         return <fragment>
             <div class="box">
-                <LineEdit value={this.nameFilter} onChanged={newValue => this.nameFilter = newValue} />
                 <form onsubmit={this.OnSubmit.bind(this)}>
-                    <button type="submit">Search</button>
+                    <div class="row justify-content-center">
+                        <div class="col-4">
+                        <LineEdit value={this.nameFilter} onChanged={newValue => this.nameFilter = newValue} />
+                        </div>
+                        <div class="col-auto">
+                        <button class="btn btn-primary" type="submit">Search</button>
+                        </div>
+                    </div>
                 </form>
             </div>
             {this.RenderResultList()}
-            <RouterButton route={"/persons/add/" + this.input.type}><MatIcon>add</MatIcon></RouterButton>
+            <RouterButton class="btn btn-primary" route={"/persons/add/" + this.input.type}><MatIcon>add</MatIcon></RouterButton>
         </fragment>;
     }
 

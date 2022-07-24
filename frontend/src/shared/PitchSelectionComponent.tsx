@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -44,18 +44,22 @@ export class PitchSelectionComponent extends Component<{
 {
     protected Render(): RenderValue
     {
-        return <fragment>
-            <Select onChanged={newValue => this.input.onChanged({ accidental: this.input.selection.accidental, baseNote: this.ParseNote(newValue[0]) })}>
-                {naturalNotes.Entries().Map( kv =>
-                    <option selected={kv.value === this.input.selection.baseNote}>{kv.key}</option>
-                    ).ToArray()}
-            </Select>
-            <Select onChanged={newValue => this.input.onChanged({ accidental: parseInt(newValue[0])!, baseNote: this.input.selection.baseNote })}>
-                {accidentals.map( acc =>
-                    <option value={acc.toString()} selected={acc === this.input.selection.accidental}><AccidentalComponent accidental={acc} /></option>
-                    )}
-            </Select>
-        </fragment>;
+        return <div class="row">
+            <div class="col">
+                <Select onChanged={newValue => this.input.onChanged({ accidental: this.input.selection.accidental, baseNote: this.ParseNote(newValue[0]) })}>
+                    {naturalNotes.Entries().Map( kv =>
+                        <option selected={kv.value === this.input.selection.baseNote}>{kv.key}</option>
+                        ).ToArray()}
+                </Select>
+            </div>
+            <div class="col">
+                <Select onChanged={newValue => this.input.onChanged({ accidental: parseInt(newValue[0])!, baseNote: this.input.selection.baseNote })}>
+                    {accidentals.map( acc =>
+                        <option value={acc.toString()} selected={acc === this.input.selection.accidental}><AccidentalComponent accidental={acc} /></option>
+                        )}
+                </Select>
+            </div>
+        </div>;
     }
 
     //Private methods

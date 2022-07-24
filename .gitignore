@@ -2,6 +2,7 @@ api/dist/
 api/node_modules/
 backend/dist/
 backend/node_modules/
+frontend/.sass-cache/
 frontend/dist/
 frontend/node_modules/
 backend/package-lock.json

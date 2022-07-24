@@ -41,15 +41,13 @@ export class ListAjnasComponent extends Component
         if(this.data === null)
             return <ProgressSpinner />;
 
-        return <div>
-            <div class="vertNav">
-                <ul>
-                    {this.data.map(this.RenderJinsRow.bind(this))}
+        return <div class="row">
+            <div class="col-1">
+                <ul class="nav nav-pills flex-column">
+                {this.data.map(this.RenderJinsRow.bind(this))}
                 </ul>
             </div>
-            <div class="stack">
-                {this.RenderSelectedJins()}
-            </div>
+            <div class="col">{this.RenderSelectedJins()}</div>
         </div>;
     }
 
@@ -61,8 +59,8 @@ export class ListAjnasComponent extends Component
     //Private methods
     private RenderJinsRow(jins: Jins)
     {
-        const className = (this.selectedJins === jins) ? "active" : "";
-        return <li class={className}><a onclick={this.OnSelectionChanged.bind(this, jins)}>{jins.name}</a></li>;
+        const className = "nav-link" + ((this.selectedJins === jins) ? " active" : "");
+        return <li><a class={className} onclick={this.OnSelectionChanged.bind(this, jins)}>{jins.name}</a></li>;
     }
 
     private RenderSelectedJins()
@@ -72,8 +70,12 @@ export class ListAjnasComponent extends Component
 
         const pitch = this.selectedPitch === null ? this.selectedJins.basePitch : this.selectedPitch;
         return <fragment>
-            <div class="column">
-                <img src={g_backendBaseUrl + "/ajnas/" + this.selectedJins.id + "/image?basePitch=" + OctavePitchToString(pitch)} />
+            <div class="col">
+                <div class="row justify-content-center">
+                    <div class="col-auto">
+                        <img src={g_backendBaseUrl + "/ajnas/" + this.selectedJins.id + "/image?basePitch=" + OctavePitchToString(pitch)} />
+                    </div>
+                </div>
                 <div class="row">Transpose: <PitchSelectionComponent selection={pitch} onChanged={newValue => this.selectedPitch = newValue} /></div>
             </div>
             <WikiTextComponent text={this.selectedJins.text} />

@@ -33,6 +33,7 @@ export interface Person
     type: PersonType;
     lifeTime: string;
     origin: string;
+    text: string;
     countryCodes: CountryCode[];
 }
 
@@ -57,7 +58,8 @@ export class PersonsController
             name: person.name,
             type: person.type,
             lifeTime: person.lifeTime,
-            origin: person.origin
+            origin: person.origin,
+            text: person.text,
         });
 
         await this.UpdatePersonLocations(result.insertId, person.countryCodes);
@@ -68,7 +70,7 @@ export class PersonsController
     public async QueryPerson(personId: number)
     {
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const row = await conn.SelectOne<Person>("SELECT name, type, lifeTime, origin FROM amedb.persons WHERE id = ?", personId);
+        const row = await conn.SelectOne<Person>("SELECT name, type, lifeTime, origin, text FROM amedb.persons WHERE id = ?", personId);
         if(row === undefined)
             return undefined;
 
@@ -116,7 +118,8 @@ export class PersonsController
             name: person.name,
             type: person.type,
             lifeTime: person.lifeTime,
-            origin: person.origin
+            origin: person.origin,
+            text: person.text
         }, "id = ?", personId);
 
         await this.UpdatePersonLocations(personId, person.countryCodes);

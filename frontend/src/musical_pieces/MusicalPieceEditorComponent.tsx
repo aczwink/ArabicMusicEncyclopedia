@@ -63,18 +63,18 @@ export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetails
 
         const piece = this.CreateDataBindingProxy(this.input.piece);
         return <fragment>
-            <FormField hint="Name">
+            <FormField title="Name">
                 <LineEdit value={piece.name} onChanged={newValue => piece.name = newValue} />
             </FormField>
-            <FormField hint="Form">
+            <FormField title="Form">
                 <Select onChanged={newValue => piece.formId = parseInt(newValue[0])}>
                     {this.forms.map(form => <option value={form.id.toString()} selected={piece.formId === form.id}>{form.name}</option>)}
                 </Select>
             </FormField>
-            <FormField hint="Composer">
+            <FormField title="Composer">
                 <SinglePersonSelectionComponent type={PersonType.Composer} selected={piece.composerId === 0 ? undefined : piece.composerId} onSelectionChanged={this.OnComposerChanged.bind(this)} />
             </FormField>
-            <FormField hint="Release date">
+            <FormField title="Release date">
                 <LineEdit value={piece.releaseDate} onChanged={newValue => piece.releaseDate = newValue} />
             </FormField>
             {this.RenderLyricsPart(piece)}
@@ -155,18 +155,18 @@ export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetails
             const lyrics = piece.lyrics;
 
             return <fragment>
-                <FormField hint="Language">
+                <FormField title="Language">
                     <Select onChanged={newValue => lyrics.languageId = parseInt(newValue[0])}>
                         {this.languages!.map(language => <option value={language.id} selected={language.id === lyrics.languageId}>{language.name}</option>)}
                     </Select>
                 </FormField>
-                <FormField hint="Singer">
+                <FormField title="Singer">
                     <SinglePersonSelectionComponent type={PersonType.Singer} selected={lyrics.singerId === 0 ? undefined : lyrics.singerId} onSelectionChanged={this.OnSingerChanged.bind(this)} />
                 </FormField>
-                <FormField hint="Songwriter">
+                <FormField title="Songwriter">
                     <SinglePersonSelectionComponent type={PersonType.Lyricist} selected={lyrics.lyricistId === 0 ? undefined : lyrics.lyricistId} onSelectionChanged={this.OnSongWriterChanged.bind(this)} />
                 </FormField>
-                <FormField hint="Lyrics">
+                <FormField title="Lyrics">
                     <Textarea value={lyrics.lyricsText} onChanged={newValue => lyrics.lyricsText = newValue} />
                 </FormField>
             </fragment>;

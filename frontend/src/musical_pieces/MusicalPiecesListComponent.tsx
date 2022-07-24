@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
-import { Anchor, Component, JSX_CreateElement, MatIcon, RouterButton } from "acfrontend";
+import { Anchor, Component, JSX_CreateElement } from "acfrontend";
 import { PieceOverviewData } from "../../dist/api";
 
 export class MusicalPiecesListComponent extends Component<{ pieces: PieceOverviewData[] }>
@@ -33,7 +33,6 @@ export class MusicalPiecesListComponent extends Component<{ pieces: PieceOvervie
                 </tr>
                 {this.input.pieces.map(this.RenderPiece.bind(this))}
             </table>
-            <RouterButton route={"/musicalpieces/add"}><MatIcon>add</MatIcon></RouterButton>
         </fragment>;
     }
 

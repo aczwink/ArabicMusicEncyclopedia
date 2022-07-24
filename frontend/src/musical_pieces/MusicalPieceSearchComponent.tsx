@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Component, FormField, Injectable, JSX_CreateElement, LineEdit, PaginationComponent, ProgressSpinner, Select } from "acfrontend";
+import { Component, FormField, Injectable, JSX_CreateElement, LineEdit, MatIcon, PaginationComponent, ProgressSpinner, RouterButton, Select } from "acfrontend";
 import { Form, MaqamOverviewData, PersonType, PieceOverviewData, RhythmOverviewData } from "../../dist/api";
 import { MaqamatService } from "../maqamat/MaqamatService";
 import { OptionalSinglePersonSelectionComponent } from "../persons/OptionalSinglePersonSelectionComponent";
@@ -60,29 +60,29 @@ export class MusicalPieceSearchComponent extends Component
         return <fragment>
             <div class="box">
                 <form onsubmit={this.OnSubmit.bind(this)}>
-                    <FormField hint="Form">
+                    <FormField title="Form">
                         <Select onChanged={newValue => this.formId = parseInt(newValue[0])}>
                             {this.forms.map(form => <option value={form.id.toString()} selected={this.formId === form.id}>{form.name}</option>)}
                         </Select>
                     </FormField>
-                    <FormField hint="Title">
+                    <FormField title="Title">
                         <LineEdit value={this.titleFilter} onChanged={newValue => this.titleFilter = newValue} />
                     </FormField>
-                    <FormField hint="Composer">
+                    <FormField title="Composer">
                         <OptionalSinglePersonSelectionComponent type={PersonType.Composer} onSelectionChanged={newValue => this.composerId = newValue} />
                     </FormField>
-                    <FormField hint="Lyricist">
+                    <FormField title="Lyricist">
                         <OptionalSinglePersonSelectionComponent type={PersonType.Lyricist} onSelectionChanged={newValue => this.lyricistId = newValue} />
                     </FormField>
-                    <FormField hint="Singer">
+                    <FormField title="Singer">
                         <OptionalSinglePersonSelectionComponent type={PersonType.Singer} onSelectionChanged={newValue => this.singerId = newValue} />
                     </FormField>
-                    <FormField hint="Maqam">
+                    <FormField title="Maqam">
                         <Select onChanged={newValue => this.maqamId = parseInt(newValue[0])}>
                             {this.maqamat.map(form => <option value={form.id.toString()} selected={this.maqamId === form.id}>{form.name}</option>)}
                         </Select>
                     </FormField>
-                    <FormField hint="Rhythm">
+                    <FormField title="Rhythm">
                         <Select onChanged={newValue => this.rhythmId = parseInt(newValue[0])}>
                             {this.rhythms.map(form => <option value={form.id.toString()} selected={this.rhythmId === form.id}>{form.name}</option>)}
                         </Select>
@@ -136,10 +136,11 @@ export class MusicalPieceSearchComponent extends Component
         if(this.loading)
             return <ProgressSpinner />;
         if(this.pieces.length === 0)
-            return null;
+            return <RouterButton class="btn btn-primary" route={"/musicalpieces/add"}><MatIcon>add</MatIcon></RouterButton>;
         return <fragment>
             <MusicalPiecesListComponent pieces={this.pieces} />
             <PaginationComponent count={this.totalCount} offset={this.offset} size={this.size} onOffsetChanged={this.OnOffsetChanged.bind(this)} onSizeChanged={this.OnSizeChanged.bind(this)} />
+            <RouterButton class="btn btn-primary" route={"/musicalpieces/add"}><MatIcon>add</MatIcon></RouterButton>
         </fragment>;
     }
 

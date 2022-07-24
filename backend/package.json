@@ -12,6 +12,7 @@
   "license": "AGPL-3.0",
   "dependencies": {
     "@types/multer": "^1.4.7",
+    "acts-util-core": "*",
     "acts-util-node": "*",
     "acts-util-apilib": "*",
     "multer": "^1.4.3",

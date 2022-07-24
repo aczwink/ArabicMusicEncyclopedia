@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Anchor, Component, JSX_CreateElement, Navigation, NavigationGroup, RouterComponent } from "acfrontend";
+import { Component, JSX_CreateElement, Navigation, NavItem, RouterComponent } from "acfrontend";
 
 export class RootComponent extends Component
 {
@@ -24,24 +24,26 @@ export class RootComponent extends Component
     {
         return <fragment>
             <Navigation>
-                <NavigationGroup>
-                    <Anchor route="/ajnas">Ajnas</Anchor>
-                    <Anchor route="/maqamat/families">Maqam families</Anchor>
-                    <Anchor route="/rhythms">Rhythms</Anchor>
-                </NavigationGroup>
-                <NavigationGroup>
-                    <Anchor route="/persons/composers">Composers</Anchor>
-                    <Anchor route="/persons/lyricists">Lyricists</Anchor>
-                    <Anchor route="/persons/singers">Singers</Anchor>
-                </NavigationGroup>
-                <NavigationGroup>
-                    <Anchor route="/musicalpieces">Musical pieces</Anchor>
-                </NavigationGroup>
-                <NavigationGroup>
-                    <Anchor route="/wiki">Wiki</Anchor>
-                </NavigationGroup>
+                <ul class="nav nav-pills">
+                    <NavItem route="/ajnas">Ajnas</NavItem>
+                    <NavItem route="/maqamat/families">Maqam families</NavItem>
+                    <NavItem route="/rhythms">Rhythms</NavItem>
+                </ul>
+                <ul class="nav nav-pills">
+                    <NavItem route="/persons/composers">Composers</NavItem>
+                    <NavItem route="/persons/lyricists">Lyricists</NavItem>
+                    <NavItem route="/persons/singers">Singers</NavItem>
+                </ul>
+                <ul class="nav nav-pills">
+                    <NavItem route="/musicalpieces">Musical pieces</NavItem>
+                </ul>
+                <ul class="nav nav-pills">
+                    <NavItem route="/wiki">Wiki</NavItem>
+                </ul>
             </Navigation>
-            <RouterComponent />
+            <div class="container-fluid">
+                <RouterComponent />
+            </div>
         </fragment>;
     }
 }

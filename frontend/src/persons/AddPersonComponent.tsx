@@ -32,6 +32,7 @@ export class AddPersonComponent extends Component
             name: "",
             lifeTime: "",
             origin: "",
+            text: "",
             type: parseInt(routerState.routeParams.type!),
             countryCodes: []
         };
