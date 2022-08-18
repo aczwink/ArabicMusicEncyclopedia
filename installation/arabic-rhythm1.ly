@@ -1,5 +1,9 @@
 \version "2.18.2"
 
+%%%%%%%%%%%%%%%%%%
+%%%%%% Doms %%%%%%
+%%%%%%%%%%%%%%%%%%
+
 dom =
 {
 	\override Stem.direction = #DOWN
@@ -46,6 +50,16 @@ du =
 	\override Stem.direction = #DOWN
 	b'16
 }
+du_noBeam =
+{
+	\override Stem.direction = #DOWN
+	b'16\noBeam
+}
+
+
+%%%%%%%%%%%%%%%%%%
+%%%%%% Taks %%%%%%
+%%%%%%%%%%%%%%%%%%
 
 
 tak =
@@ -86,6 +100,97 @@ ti =
 	b'16
 }
 
+tif =
+{
+	\override Stem.direction = #UP
+	b'32
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%% Taks with fingerings %%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tak_i =
+{
+	\override Stem.direction = #UP
+	b'4-1
+}
+tak_iii =
+{
+	\override Stem.direction = #UP
+	b'4-3
+}
+
+ta_i =
+{
+	\override Stem.direction = #UP
+	b'8-1
+}
+ta_i_closeBeam =
+{
+	\override Stem.direction = #UP
+	b'8-1]
+}
+
+ta_iii =
+{
+	\override Stem.direction = #UP
+	b'8-3
+}
+ta_iii_closeBeam =
+{
+	\override Stem.direction = #UP
+	b'8-3]
+}
+
+ti_i =
+{
+	\override Stem.direction = #UP
+	b'16-1
+}
+ti_i_closeBeam =
+{
+	\override Stem.direction = #UP
+	b'16-1]
+}
+
+ti_iii =
+{
+	\override Stem.direction = #UP
+	b'16-3
+}
+
+tif_i =
+{
+	\override Stem.direction = #UP
+	b'32-1
+}
+tif_iii =
+{
+	\override Stem.direction = #UP
+	b'32-3
+}
+
+
+tiff_i =
+{
+	\override Stem.direction = #UP
+	b'64-1
+}
+tiff_iii =
+{
+	\override Stem.direction = #UP
+	b'64-3
+}
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%
+%%%%%% Saks %%%%%%
+%%%%%%%%%%%%%%%%%%
+
 
 sak =
 {
@@ -102,12 +207,24 @@ sa =
 	\revert NoteHead.style
 }
 
-sep =
+
+
+%%%%%%%%%%%%%%%%%%
+%%%%%% Baqs %%%%%%
+%%%%%%%%%%%%%%%%%%
+ba =
 {
-	\bar "!"
+	\override Stem.direction = #UP
+	\override NoteHead.style = #'harmonic
+	b'8
+	\revert NoteHead.style
 }
 
 
+
+%%%%%%%%%%%%%%%%%%%
+%%%%% Special %%%%%
+%%%%%%%%%%%%%%%%%%%
 
 
 hak =
@@ -120,26 +237,21 @@ hak =
 
 
 
-
-
-\header {
-	tagline = ##f
-}
-\paper {
-	raggedright = ##t
-	raggedbottom = ##t
-	indent = 0\mm
+sep =
+{
+	\bar "!"
 }
 
-\score{
-	\layout
-	{
-	    #(layout-set-staff-size 26)
-	}
-	\new Staff{
 
+
+
+
+
+setupArabicRhythmStaff =
+{
 	\pointAndClickOff
 	\override Staff.Clef.stencil = ##f
 	\numericTimeSignature
 
 	\override Staff.StaffSymbol.line-count = #1
+}

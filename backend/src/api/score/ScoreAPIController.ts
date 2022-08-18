@@ -82,8 +82,27 @@ class ScoreAPIController
     {
         const completeText = `
         \\include "arabic-rhythm1.ly"
-        ${text}
-        }}
+
+        \\header {
+            tagline = ##f
+        }
+        \\paper {
+            raggedright = ##t
+            raggedbottom = ##t
+            indent = 0\\mm
+        }
+
+        \\score{
+            \\layout
+            {
+                #(layout-set-staff-size 26)
+            }
+            \\new Staff
+            {
+                \\setupArabicRhythmStaff
+                ${text}
+            }
+        }
         `;
         return this.lilypondImageCreator.Render(completeText, "png");
     }
