@@ -18,8 +18,6 @@
 import { Injectable } from "acts-util-node";
 import { LilypondRendererService } from "./LilypondRendererService";
 
-import { promises } from "fs";
-
 const linesPerPage = 48;
 
 @Injectable
@@ -67,7 +65,6 @@ export class LyricsRendererService
     }
 }
         `;
-        promises.writeFile("/home/amir/Schreibtisch/text.ly", lilypondText, "utf-8");
         return await this.lilypondRendererService.Render(lilypondText, "pdf");
     }
 
