@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Anchor, Component, Injectable, JSX_CreateElement, MatIcon, PopupManager, ProgressSpinner, RouterState, TitleService } from "acfrontend";
+import { Anchor, BootstrapIcon, Component, Injectable, JSX_CreateElement, MatIcon, PopupManager, ProgressSpinner, RouterState, TitleService } from "acfrontend";
 import { Form, Language, Person, PieceDetailsData } from "../../dist/api";
 import { g_backendBaseUrl } from "../backend";
 import { MaqamatService } from "../maqamat/MaqamatService";
@@ -66,12 +66,11 @@ export class ShowMusicalPieceComponent extends Component
             </h1>
             <div>
                 <div className="row">
-                    <div className="column" style="flex-grow: 1; align-items: start;">
+                    <div className="col">
                         {this.RenderLyrics()}
-                        <WikiTextComponent text={this.piece.text} />
                     </div>
 
-                    <div className="box" style="float: right; display: block">
+                    <div className="col-auto border">
                         <table className="keyValue">
                             <tr>
                                 <th>Form</th>
@@ -88,6 +87,7 @@ export class ShowMusicalPieceComponent extends Component
                             {this.RenderLyricalInfo()}
                         </table>
 
+                        <hr />
                         <h4>Maqamat</h4>
                         <table>
                             {this.maqamat.map(m => <tr>
@@ -96,6 +96,7 @@ export class ShowMusicalPieceComponent extends Component
                             </tr>)}
                         </table>
 
+                        <hr />
                         <h4>Rhythms</h4>
                         <table>
                             {this.rhythms.map(r => <tr>
@@ -104,6 +105,7 @@ export class ShowMusicalPieceComponent extends Component
                             </tr>)}
                         </table>
 
+                        <hr />
                         <h4>Attachments</h4>
                         <table>
                             <tr>
@@ -122,6 +124,8 @@ export class ShowMusicalPieceComponent extends Component
                         </table>
                     </div>
                 </div>
+                <hr />
+                <WikiTextComponent text={this.piece.text} />
             </div>
         </fragment>;
     }
@@ -168,7 +172,7 @@ export class ShowMusicalPieceComponent extends Component
         if(this.piece?.lyrics === undefined)
             return null;
         return <fragment>
-            <h2>Lyrics</h2>
+            <h2>Lyrics <a href={g_backendBaseUrl + "/musicalpieces/" + this.pieceId + "/renderedtext"} target="_blank"><BootstrapIcon>filetype-pdf</BootstrapIcon></a></h2>
             <p style="white-space: break-spaces; direction: rtl; margin-left: 1rem">{this.piece.lyrics.lyricsText}</p>
         </fragment>;
     }
