@@ -53,7 +53,7 @@ class MusicalPieceAPIController
 
         const composer = await this.personsController.QueryPerson(piece.composerId);
 
-        const fileName = piece.name + "_lyrics.pdf";
+        const fileName = encodeURI(piece.name + "_lyrics.pdf");
         const result = await this.lyricsRendererService.Render(piece.name, composer!.name, piece.lyrics.lyricsText);
         return Ok(result, {
             "Content-Disposition": 'attachment; filename="' + fileName + '"'
