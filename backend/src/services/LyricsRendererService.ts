@@ -109,8 +109,12 @@ export class LyricsRendererService
 
     private DoLayoutComputation(blocks: string[][])
     {
+        /*
+        TODO: find out what looks good
+        26 is actually quite small
+        */
         const ranges = [
-            { nLines: 0, fontSize: 26, twoColumns: false },
+            { nLines: 0, fontSize: 36, twoColumns: false },
             { nLines: Number.MAX_SAFE_INTEGER, fontSize: 26, twoColumns: true }
         ];
         const nLines = this.CalcNumberOfLinesOfBlocks(blocks);
