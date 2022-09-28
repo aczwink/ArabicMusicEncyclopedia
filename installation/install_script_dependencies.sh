@@ -1,2 +1,2 @@
 sudo apt install python3-svgwrite
-sudo apt  install inkscape
+sudo apt install inkscape

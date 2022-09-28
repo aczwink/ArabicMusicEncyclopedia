@@ -41,6 +41,17 @@ export class LyricsRendererService
         const lilypondText = `
 \\version "2.22.1"
 
+\\paper
+{
+    myStaffSize = #${fontSize}
+    #(define fonts
+      (make-pango-font-tree "Noto Naskh Arabic"
+                            "Noto Sans Arabic"
+                            "Noto Kufi Arabic"
+                             (/ myStaffSize 20)))
+  }
+
+
 #(set-global-staff-size ${fontSize})
 
 \\header
