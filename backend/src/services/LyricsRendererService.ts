@@ -32,12 +32,16 @@ export class LyricsRendererService
     {
         const blocks = this.SplitIntoBlocks(lyrics);
 
-        const splitIdx = Math.round(blocks.length / 2);
+        const { twoColumns, fontSize } = this.DoLayoutComputation(blocks);
+
+        const splitIdx = Math.round(blocks.length / (twoColumns ? 2 : 1));
         const col1Text = this.BlocksToLilypondLines(blocks.slice(0, splitIdx));
         const col2Text = this.BlocksToLilypondLines(blocks.slice(splitIdx));
 
         const lilypondText = `
 \\version "2.22.1"
+
+#(set-global-staff-size ${fontSize})
 
 \\header
 {
@@ -77,6 +81,25 @@ export class LyricsRendererService
     private BlocksToLilypondLines(blocks: string[][])
     {
         return blocks.map(this.BlockToLilypondLines.bind(this)).map(x => x.join("\n")).join("\\line {\\null}");
+    }
+
+    private CalcNumberOfLinesOfBlocks(blocks: string[][])
+    {
+        const nSpaceLines = blocks.length - 1;
+        return blocks.Values().Map(x => x.length).Sum() + nSpaceLines;
+    }
+
+    private DoLayoutComputation(blocks: string[][])
+    {
+        const ranges = [
+            { nLines: 0, fontSize: 26, twoColumns: false },
+            { nLines: Number.MAX_SAFE_INTEGER, fontSize: 26, twoColumns: true }
+        ];
+        const nLines = this.CalcNumberOfLinesOfBlocks(blocks);
+        console.log(nLines);
+        const possibleRanges = ranges.Values().Filter(r => r.nLines < nLines).ToArray();
+
+        return possibleRanges[possibleRanges.length - 1];
     }
 
     private SplitIntoBlocks(lyrics: string)
