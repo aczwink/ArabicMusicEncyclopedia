@@ -43,40 +43,47 @@ export class LyricsRendererService
 
 \\paper
 {
-    myStaffSize = #${fontSize}
+    myStaffSize = #20
     #(define fonts
       (make-pango-font-tree "Noto Naskh Arabic"
                             "Noto Sans Arabic"
                             "Noto Kufi Arabic"
                              (/ myStaffSize 20)))
-  }
+}
 
 
 #(set-global-staff-size ${fontSize})
 
+
+\\markup naskh_bold = \\markup \\override #'((font-name . "Noto Naskh Arabic Bold") (font-size . 6)) \\etc
+\\markup naskh_composer = \\markup \\override #'((font-name . "Noto Naskh Arabic") (font-size . 0.5)) \\etc
+
 \\header
 {
-    title = "${pieceName}"
-    composer = "${composerName}"
+    title = \\markup \\naskh_bold "${pieceName}"
+    composer = \\markup \\naskh_composer "${composerName}"
 }
 
 \\markup
 {
-    \\override #'(text-direction . -1)
-	\\huge
-	\\fill-line
-	{
-		\\hspace #1
-		\\column
-		{
-            ${col1Text}
+    \\override #'(font-name . "Noto Naskh Arabic")
+    {
+        \\override #'(text-direction . -1)
+        \\huge
+        \\fill-line
+        {
+            \\hspace #1
+            \\column
+            {
+                ${col1Text}
+            }
+            \\hspace #2
+            \\column
+            {
+                ${col2Text}
+            }
+            \\hspace #1
         }
-        \\hspace #2
-		\\column
-		{
-            ${col2Text}
-        }
-		\\hspace #1
     }
 }
         `;
