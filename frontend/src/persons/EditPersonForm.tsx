@@ -86,7 +86,7 @@ export class EditPersonForm extends Component<{ person: Person; saveButtonText: 
 
     private RenderLocations()
     {
-        const allCodes: CountryCode[] = ["eg", "lb", "sy", "tr"];
+        const allCodes: CountryCode[] = ["eg", "iq", "lb", "sy", "tr"];
 
         return allCodes.map(code => {
             const checked = this.person!.countryCodes.Contains(code);

@@ -25,6 +25,7 @@ import { SinglePersonSelectionComponent } from "../persons/SinglePersonSelection
 import { Form, Language, MaqamOverviewData, PersonType, PieceDetailsData, PieceMaqamAssociation, PieceRhythmAssociation, RhythmOverviewData } from "../../dist/api";
 import { Attachment, AttachmentChangesCollection } from "./MusicalPiecesService";
 import { AddAttachmentComponent } from "./AddAttachmentComponent";
+import { RhythmSelectionComponent } from "../shared/RhythmSelectionComponent";
 
 @Injectable
 export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetailsData; attachments: AttachmentChangesCollection; onValidationUpdated: (newValue: boolean) => void }>
@@ -37,13 +38,13 @@ export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetails
         this.forms = null;
         this.languages = null;
         this.maqamat = null;
-        this.rhythms = null;
+        this.rhythmGroups = null;
     }
     
     protected Render(): RenderValue
     {
         if(
-            (this.forms === null) || (this.languages === null) || (this.maqamat === null) || (this.rhythms === null)
+            (this.forms === null) || (this.languages === null) || (this.maqamat === null) || (this.rhythmGroups === null)
         )
             return <ProgressSpinner />;
 
@@ -132,7 +133,7 @@ export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetails
     private forms: Form[] | null;
     private languages: Language[] | null;
     private maqamat: MaqamOverviewData[] | null;
-    private rhythms: RhythmOverviewData[] | null;
+    private rhythmGroups: RhythmOverviewData[][] | null;
 
     //Private methods
     private AddEntry<T>(arr: T[], itemToAdd: T)
@@ -194,9 +195,7 @@ export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetails
     {
         return <tr>
             <td>
-                <Select onChanged={newValue => rhythmAssoc.rhythmId = parseInt(newValue[0])}>
-                    {this.rhythms?.map(r => <option value={r.id} selected={r.id === rhythmAssoc.rhythmId}>{r.name}</option>)}
-                </Select>
+                <RhythmSelectionComponent rhythmGroups={this.rhythmGroups!} rhythmId={rhythmAssoc.rhythmId} onSelectionChanged={newValue => rhythmAssoc.rhythmId = newValue} />
             </td>
             <td><LineEdit value={rhythmAssoc.explanation} onChanged={newValue => rhythmAssoc.explanation = newValue} /></td>
             <td><a onclick={this.RemoveEntry.bind(this, piece.rhythms, rhythmAssoc)}><MatIcon>delete</MatIcon></a></td>
@@ -255,8 +254,8 @@ export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetails
         const maqamat = await this.maqamatService.QueryMaqamat();
         this.maqamat = maqamat;
 
-        const rhythms = await this.rhythmsService.QueryRhythms();
-        this.rhythms = rhythms;
+        const rhythms = await this.rhythmsService.QueryRhythmsGroupedByTimeSigNumerator();
+        this.rhythmGroups = rhythms;
     }
 
     private OnComposerChanged(newValue: number)

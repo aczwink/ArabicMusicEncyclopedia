@@ -17,10 +17,10 @@
  * */
 
 import { Component, FormField, Injectable, JSX_CreateElement, LineEdit, MatIcon, PaginationComponent, ProgressSpinner, RouterButton, Select } from "acfrontend";
-import { Form, MaqamOverviewData, PersonType, PieceOverviewData, RhythmOverviewData } from "../../dist/api";
+import { Form, MaqamOverviewData, PersonType, PieceOverviewData } from "../../dist/api";
 import { MaqamatService } from "../maqamat/MaqamatService";
 import { OptionalSinglePersonSelectionComponent } from "../persons/OptionalSinglePersonSelectionComponent";
-import { RhythmsService } from "../rhythms/RhythmsService";
+import { FullRhythmSelectionComponent } from "../shared/RhythmSelectionComponent";
 import { MusicalPiecesListComponent } from "./MusicalPiecesListComponent";
 import { MusicalPiecesService } from "./MusicalPiecesService";
 import { MusicalService } from "./MusicalService";
@@ -29,7 +29,7 @@ import { MusicalService } from "./MusicalService";
 export class MusicalPieceSearchComponent extends Component
 {
     constructor(private musicalPiecesService: MusicalPiecesService, private musicalService: MusicalService,
-        private maqamatService: MaqamatService, private rhythmsService: RhythmsService)
+        private maqamatService: MaqamatService)
     {
         super();
 
@@ -47,14 +47,13 @@ export class MusicalPieceSearchComponent extends Component
 
         this.forms = null;
         this.maqamat = null;
-        this.rhythms = null;
         this.pieces = [];
         this.totalCount = 0;
     }
 
     protected Render(): RenderValue
     {
-        if( (this.forms === null) || (this.maqamat === null) || (this.rhythms === null) )
+        if( (this.forms === null) || (this.maqamat === null) )
             return <ProgressSpinner />;
 
         return <fragment>
@@ -101,9 +100,7 @@ export class MusicalPieceSearchComponent extends Component
                         </div>
                         <div className="col">
                             <FormField title="Rhythm">
-                                <Select onChanged={newValue => this.rhythmId = parseInt(newValue[0])}>
-                                    {this.rhythms.map(form => <option value={form.id.toString()} selected={this.rhythmId === form.id}>{form.name}</option>)}
-                                </Select>
+                                <FullRhythmSelectionComponent rhythmId={this.rhythmId} onSelectionChanged={newValue => this.rhythmId = newValue} />
                             </FormField>
                         </div>
                     </div>
@@ -129,7 +126,6 @@ export class MusicalPieceSearchComponent extends Component
 
     private forms: Form[] | null;
     private maqamat: MaqamOverviewData[] | null;
-    private rhythms: RhythmOverviewData[] | null;
     private pieces: PieceOverviewData[];
     private totalCount: number;
 
@@ -172,9 +168,6 @@ export class MusicalPieceSearchComponent extends Component
 
         const maqamat = await this.maqamatService.QueryMaqamat();
         this.maqamat = maqamat;
-
-        const rhythms = await this.rhythmsService.QueryRhythms();
-        this.rhythms = rhythms;
     }
 
     private OnOffsetChanged(newValue: number)

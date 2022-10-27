@@ -35,12 +35,12 @@ export class PersonsService
 
     public async EditPerson(personId: number, person: Person)
     {
-        await this.apiService.persons_any_.put(personId, person);
+        await this.apiService.persons._any_.put(personId, person);
     }
 
     public async QueryPerson(personId: number)
     {
-        const result = await this.apiService.persons_any_.get(personId);
+        const result = await this.apiService.persons._any_.get(personId);
         if(result.statusCode === 404)
             throw new Error("Person not found");
         return result.data;
@@ -54,8 +54,8 @@ export class PersonsService
     public async UpdatePersonImage(personId: number, image: File | null)
     {
         if(image === null)
-            await this.apiService.persons_any_image.delete(personId);
+            await this.apiService.persons._any_.image.delete(personId);
         else
-            await this.apiService.persons_any_image.put(personId, { file: image });
+            await this.apiService.persons._any_.image.put(personId, { file: image });
     }
 }

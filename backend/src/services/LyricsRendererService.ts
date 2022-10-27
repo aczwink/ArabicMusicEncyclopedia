@@ -110,7 +110,8 @@ export class LyricsRendererService
     private DoLayoutComputation(blocks: string[][])
     {
         /*
-        TODO: find out what looks good
+        36 is a good max size
+        TODO: find good min size
         26 is actually quite small
         */
         const ranges = [

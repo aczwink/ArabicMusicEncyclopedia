@@ -73,7 +73,7 @@ export class ListAjnasComponent extends Component
             <div className="col">
                 <div className="row justify-content-center">
                     <div className="col-auto">
-                        <img src={g_backendBaseUrl + "/ajnas/" + this.selectedJins.id + "/image?basePitch=" + OctavePitchToString(pitch)} />
+                        <img src={g_backendBaseUrl + "/ajnas/" + this.selectedJins.id + "/image?basePitch=" + encodeURIComponent(OctavePitchToString(pitch))} />
                     </div>
                 </div>
                 <div className="row">Transpose: <PitchSelectionComponent selection={pitch} onChanged={newValue => this.selectedPitch = newValue} /></div>

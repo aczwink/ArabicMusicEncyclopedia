@@ -107,6 +107,10 @@ export class MaqamPicCreator
                     return "hb";
                 case Accidental.Natural:
                     return "n";
+                case Accidental.HalfSharp:
+                    return "h#";
+                case Accidental.Sharp:
+                    return "#";
                 default:
                         throw new Error("NOT IMPLEMENTED: " + acc);
             }

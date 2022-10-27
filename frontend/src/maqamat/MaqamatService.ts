@@ -29,7 +29,7 @@ export class MaqamatService
     //Public methods
     public async QueryMaqam(maqamId: number)
     {
-        const result = await this.apiService.maqamat_any_.get(maqamId);
+        const result = await this.apiService.maqamat._any_.get(maqamId);
         if(result.statusCode === 404)
             throw new Error("todo implement me");
         return result.data;

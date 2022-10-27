@@ -67,7 +67,7 @@ export class MusicalPiecesService
     {
         for (const attachmentId of attachments.deleted)
         {
-            await this.apiService.attachments_any_.delete(attachmentId);
+            await this.apiService.attachments._any_.delete(attachmentId);
         }
         for (const newAttach of attachments.new)
         {
@@ -94,7 +94,7 @@ export class MusicalPiecesService
 
     public async QueryPiece(pieceId: number)
     {
-        const result = await this.apiService.musicalpieces_any_.get(pieceId);
+        const result = await this.apiService.musicalpieces._any_.get(pieceId);
         if(result.statusCode === 404)
             throw new Error("todo implement me");
         return result.data;
@@ -102,6 +102,6 @@ export class MusicalPiecesService
 
     public async SetPiece(pieceId: number, piece: PieceDetailsData)
     {
-        await this.apiService.musicalpieces_any_.put(pieceId, piece);
+        await this.apiService.musicalpieces._any_.put(pieceId, piece);
     }
 }

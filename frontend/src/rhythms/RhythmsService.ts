@@ -29,7 +29,7 @@ export class RhythmsService
     //Public methods
     public async QueryRhythm(rhythmId: number)
     {
-        const result = await this.apiService.rhythms_any_.get(rhythmId);
+        const result = await this.apiService.rhythms._any_.get(rhythmId);
         if(result.statusCode === 404)
             throw new Error("TODO: implement me");
         return result.data;
@@ -38,5 +38,12 @@ export class RhythmsService
     public async QueryRhythms()
     {
         return (await this.apiService.rhythms.get()).data;
+    }
+
+    public async QueryRhythmsGroupedByTimeSigNumerator()
+    {
+        const rhythms = await this.QueryRhythms();
+
+        return rhythms.Values().GroupBy(x => x.timeSigNum).Map(x => x.value).ToArray();
     }
 }

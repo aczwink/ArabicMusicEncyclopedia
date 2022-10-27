@@ -46,6 +46,7 @@ export class MapComponent extends Component<{ usages: RhythmCountryUsage[] }>
         {
             const codesToPathsMap = {
                 "eg": "path4341",
+                "iq": "path4635",
                 "lb": "path4547",
                 "sy": "path4439",
                 "tr": "path4419",

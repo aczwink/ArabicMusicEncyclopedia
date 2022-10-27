@@ -35,11 +35,11 @@ export class ListRhythmsByTimeSignatureComponent extends Component
         if(this.data === null)
             return <ProgressSpinner />;
 
-        return this.data.Entries().Map(kv => kv.value).Map(this.RenderRhythmSection.bind(this)).ToArray();
+        return this.data.map(this.RenderRhythmSection.bind(this));
     }
 
     //Private members
-    private data: Map<number, RhythmOverviewData[]> | null;
+    private data: RhythmOverviewData[][] | null;
 
     //Private methods
     private RenderRhythmSection(rhyhtmSection: RhythmOverviewData[])
@@ -55,16 +55,7 @@ export class ListRhythmsByTimeSignatureComponent extends Component
     //Event handlers
     public async OnInitiated()
     {
-        const data = await this.rhythmsService.QueryRhythms();
-        const m = new Map<number, RhythmOverviewData[]>();
-        for (const rhythm of data)
-        {
-            const timeSig = rhythm.timeSigNum;
-            if(m.has(timeSig))
-                m.get(timeSig)!.push(rhythm);
-            else
-                m.set(timeSig, [rhythm]);
-        }
-        this.data = m;
+        const data = await this.rhythmsService.QueryRhythmsGroupedByTimeSigNumerator();
+        this.data = data;
     }
 }
