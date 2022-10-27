@@ -19,6 +19,7 @@
 import { Anchor, Component, Injectable, JSX_CreateElement, MatIcon, ProgressSpinner, RouterState } from "acfrontend";
 import { Rhythm } from "../../dist/api";
 import { MapComponent } from "../shared/MapComponent";
+import { PopularityComponent } from "../shared/PopularityComponent";
 import { WikiTextComponent } from "../shared/WikiTextComponent";
 import { RhythmsService } from "./RhythmsService";
 
@@ -49,7 +50,7 @@ export class ShowRhythmComponent extends Component
                         {this.RenderAlternativeNames()}
                         <tr>
                             <th>Popularity</th>
-                            <td>{this.RenderPopularity(this.data.popularity)}</td>
+                            <td><PopularityComponent popularity={this.data.popularity} /></td>
                         </tr>
                         <tr>
                             <th>Category</th>
@@ -78,17 +79,6 @@ export class ShowRhythmComponent extends Component
             </tr>
 
         return null;
-    }
-
-    private RenderPopularity(popularity: number): RenderValue
-    {
-        if(popularity > 0.75)
-            return "very popular";
-        if(popularity > 0.5)
-            return "popular";
-        if(popularity > 0.25)
-            return "infrequently used";
-        return "very rarely used";
     }
 
     //Event handlers

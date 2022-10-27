@@ -17,8 +17,15 @@
  * */
 import { Injectable } from "acts-util-node";
 import { OctavePitch, ParseOctavePitch } from "ame-api";
+import { CountryCode } from "ame-api/dist/Locale";
 import { Interval } from "../model/Interval";
 import { DatabaseController } from "./DatabaseController";
+
+interface MaqamCountryUsage
+{
+    countryCode: CountryCode;
+    usage: number;
+}
 
 export interface MaqamData
 {
@@ -39,6 +46,8 @@ interface Maqam
     text: string;
     basePitch: OctavePitch;
     branchingJinsIds: number[];
+    popularity: number;
+    usage: MaqamCountryUsage[];
 }
 
 @Injectable
@@ -85,11 +94,16 @@ export class MaqamatController
 
         if(row === undefined)
             return undefined;
+
+        const usageData = await this.QueryMaqamUsage(maqamId);
         return {
             name: row.name,
             text: row.text,
             basePitch: ParseOctavePitch(row.basePitch),
-            branchingJinsIds: rows.map(row => row.branchingJinsId)
+            branchingJinsIds: rows.map(row => row.branchingJinsId),
+
+            popularity: usageData.Values().Map(x => x.usage).Sum() / usageData.length,
+            usage: usageData  
         };
     }
 
@@ -107,5 +121,48 @@ export class MaqamatController
         const rows = await conn.Select<MaqamOverviewData>(query, ...args);
 
         return rows;
+    }
+
+    //Private methods
+    private async QueryMaqamUsage(maqamId: number): Promise<MaqamCountryUsage[]>
+    {
+        let query = `
+        SELECT pl.location, COUNT(*) AS count
+        FROM amedb.musical_pieces_maqamat mpm
+        INNER JOIN amedb.musical_pieces mp
+            ON mp.id = mpm.pieceId
+        INNER JOIN amedb.persons_locations pl
+            ON pl.personId = mp.composerId
+        WHERE mpm.maqamId = ?
+        GROUP BY pl.location
+        `;
+
+        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
+        const rows = await conn.Select(query, maqamId);
+
+        const maxCount = await this.QueryMaxMaqamUsage();
+        return rows.map(row => ({
+            countryCode: row.location,
+            usage: row.count / maxCount
+        }));
+    }
+
+    private async QueryMaxMaqamUsage(): Promise<number>
+    {
+        let query = `
+        SELECT MAX(maqamUsageCounts.count) AS maxCount
+        FROM (
+            SELECT mpm.maqamId, COUNT(mpm.pieceId) AS count
+            FROM amedb.musical_pieces_maqamat mpm
+            GROUP BY mpm.maqamId
+        ) AS maqamUsageCounts
+        `;
+
+        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
+        const row = await conn.SelectOne(query);
+
+        if(row === undefined)
+            return 1;
+        return row.maxCount;
     }
 }

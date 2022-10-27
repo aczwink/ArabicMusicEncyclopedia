@@ -20,7 +20,9 @@ import { Component, Injectable, JSX_CreateElement, ProgressSpinner, RouterState 
 import { OctavePitch, OctavePitchToString } from "ame-api";
 import { Maqam } from "../../dist/api";
 import { g_backendBaseUrl } from "../backend";
+import { MapComponent } from "../shared/MapComponent";
 import { PitchSelectionComponent } from "../shared/PitchSelectionComponent";
+import { PopularityComponent } from "../shared/PopularityComponent";
 import { WikiTextComponent } from "../shared/WikiTextComponent";
 import { MaqamatService } from "./MaqamatService";
 
@@ -44,6 +46,16 @@ export class MaqamComponent extends Component
         const pitch = this.selectedPitch === null ? this.maqam.basePitch : this.selectedPitch;
         return <div>
             <h1>Maqam {this.maqam.name}</h1>
+
+            <div className="box" style="float: right; display: block">
+                <table className="keyValue">
+                    <tr>
+                        <th>Popularity</th>
+                        <td><PopularityComponent popularity={this.maqam.popularity} /></td>
+                    </tr>
+                </table>
+                <MapComponent usages={this.maqam.usage} />
+            </div>
 
             <p>
                 <WikiTextComponent text={this.maqam.text} />
