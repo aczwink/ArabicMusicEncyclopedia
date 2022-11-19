@@ -18,7 +18,7 @@
 
 import { Component, FileSelect, FormField, JSX_CreateElement, LineEdit, Select } from "acfrontend";
 import { CountryCode } from "ame-api/dist/Locale";
-import { Person, PersonType } from "../../dist/api";
+import { Person } from "../../dist/api";
 import { WikiTextEditComponent } from "../shared/WikiTextEditComponent";
 
 export class EditPersonForm extends Component<{ person: Person; saveButtonText: string; onSave: (image?: File | null) => void }>
@@ -39,13 +39,6 @@ export class EditPersonForm extends Component<{ person: Person; saveButtonText: 
         return <form onsubmit={this.OnSave.bind(this)}>
             <FormField title="Name">
                 <LineEdit value={p.name} onChanged={newValue => p.name = newValue} />
-            </FormField>
-            <FormField title="Type">
-                <Select onChanged={newValue => p.type = parseInt(newValue[0])}>
-                    <option value={PersonType.Composer} selected={p.type === PersonType.Composer}>Composer</option>
-                    <option value={PersonType.Lyricist} selected={p.type === PersonType.Lyricist}>Lyricist</option>
-                    <option value={PersonType.Singer} selected={p.type === PersonType.Singer}>Singer</option>
-                </Select>
             </FormField>
             <FormField title="Origin">
                 <LineEdit value={p.origin} onChanged={newValue => p.origin = newValue} />

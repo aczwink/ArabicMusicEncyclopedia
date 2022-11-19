@@ -30,9 +30,7 @@ export class RootComponent extends Component
                     <NavItem route="/rhythms">Rhythms</NavItem>
                 </ul>
                 <ul className="nav nav-pills">
-                    <NavItem route="/persons/composers">Composers</NavItem>
-                    <NavItem route="/persons/lyricists">Lyricists</NavItem>
-                    <NavItem route="/persons/singers">Singers</NavItem>
+                    <NavItem route="/persons">Composers / Lyricists / Singers</NavItem>
                 </ul>
                 <ul className="nav nav-pills">
                     <NavItem route="/musicalpieces">Musical pieces</NavItem>

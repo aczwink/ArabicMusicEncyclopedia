@@ -20,7 +20,7 @@ import http from "http";
 import os from "os";
 
 import { OpenAPI } from "acts-util-core";
-import { Factory, GlobalInjector, HTTP, ModuleLoader } from "acts-util-node";
+import { Factory, GlobalInjector, HTTP } from "acts-util-node";
 import { APIRegistry } from "acts-util-apilib";
 import { DatabaseController } from "./dataaccess/DatabaseController";
 
@@ -36,8 +36,8 @@ async function SetupServer()
     ]);
     requestHandlerChain.AddBodyParser();
 
-    const apiLoader = new ModuleLoader;
-    await apiLoader.LoadDirectory(__dirname + "/api/");
+    await import("./__http_registry");
+
     const openAPIDef: OpenAPI.Root = JSON.parse(await fs.promises.readFile("openapi.json", "utf-8"));
     const backendStructure = JSON.parse(await fs.promises.readFile("openapi-structure.json", "utf-8"));
     requestHandlerChain.AddRequestHandler(new HTTP.RouterRequestHandler(openAPIDef, backendStructure, APIRegistry.endPointTargets));

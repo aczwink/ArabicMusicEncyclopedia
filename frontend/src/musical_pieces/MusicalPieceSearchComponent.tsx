@@ -17,7 +17,7 @@
  * */
 
 import { Component, FormField, Injectable, JSX_CreateElement, LineEdit, MatIcon, PaginationComponent, ProgressSpinner, RouterButton, Select } from "acfrontend";
-import { Form, MaqamOverviewData, PersonType, PieceOverviewData } from "../../dist/api";
+import { Form, MaqamOverviewData, PieceOverviewData } from "../../dist/api";
 import { MaqamatService } from "../maqamat/MaqamatService";
 import { OptionalSinglePersonSelectionComponent } from "../persons/OptionalSinglePersonSelectionComponent";
 import { FullRhythmSelectionComponent } from "../shared/RhythmSelectionComponent";
@@ -76,17 +76,17 @@ export class MusicalPieceSearchComponent extends Component
                     <div className="row">
                         <div className="col">
                             <FormField title="Composer">
-                                <OptionalSinglePersonSelectionComponent type={PersonType.Composer} onSelectionChanged={newValue => this.composerId = newValue} />
+                                <OptionalSinglePersonSelectionComponent onSelectionChanged={newValue => this.composerId = newValue} />
                             </FormField>
                         </div>
                         <div className="col">
                             <FormField title="Lyricist">
-                                <OptionalSinglePersonSelectionComponent type={PersonType.Lyricist} onSelectionChanged={newValue => this.lyricistId = newValue} />
+                                <OptionalSinglePersonSelectionComponent onSelectionChanged={newValue => this.lyricistId = newValue} />
                             </FormField>
                         </div>
                         <div className="col">
                             <FormField title="Singer">
-                                <OptionalSinglePersonSelectionComponent type={PersonType.Singer} onSelectionChanged={newValue => this.singerId = newValue} />
+                                <OptionalSinglePersonSelectionComponent onSelectionChanged={newValue => this.singerId = newValue} />
                             </FormField>
                         </div>
                     </div>

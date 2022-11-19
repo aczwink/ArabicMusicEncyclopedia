@@ -17,7 +17,7 @@
  * */
 
 import { Anchor, Component, Injectable, JSX_CreateElement, MatIcon, ProgressSpinner, RouterState } from "acfrontend";
-import { Person, PersonType } from "../../dist/api";
+import { Person } from "../../dist/api";
 import { g_backendBaseUrl } from "../backend";
 import { WikiTextComponent } from "../shared/WikiTextComponent";
 import { PersonsService } from "./PersonsService";
@@ -50,10 +50,6 @@ export class ShowPersonComponent extends Component
                 </div>
                 <table className="keyValue">
                     <tr>
-                        <th>Type</th>
-                        <td>{this.TypeToString(this.data.type)}</td>
-                    </tr>
-                    <tr>
                         <th>Lifetime</th>
                         <td>{this.data.lifeTime}</td>
                     </tr>
@@ -70,20 +66,6 @@ export class ShowPersonComponent extends Component
     //Private members
     private personId: number;
     private data: Person | null;
-
-    //Private methods
-    private TypeToString(type: PersonType): RenderValue
-    {
-        switch(type)
-        {
-            case PersonType.Composer:
-                return "Composer";
-            case PersonType.Lyricist:
-                return "Lyricist";
-            case PersonType.Singer:
-                return "Singer";
-        }
-    }
 
     //Event handlers
     public async OnInitiated()

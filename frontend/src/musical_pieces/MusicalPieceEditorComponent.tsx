@@ -22,7 +22,7 @@ import { RhythmsService } from "../rhythms/RhythmsService";
 import { WikiTextEditComponent } from "../shared/WikiTextEditComponent";
 import { MusicalService } from "./MusicalService";
 import { SinglePersonSelectionComponent } from "../persons/SinglePersonSelectionComponent";
-import { Form, Language, MaqamOverviewData, PersonType, PieceDetailsData, PieceMaqamAssociation, PieceRhythmAssociation, RhythmOverviewData } from "../../dist/api";
+import { Form, Language, MaqamOverviewData, PieceDetailsData, PieceMaqamAssociation, PieceRhythmAssociation, RhythmOverviewData } from "../../dist/api";
 import { Attachment, AttachmentChangesCollection } from "./MusicalPiecesService";
 import { AddAttachmentComponent } from "./AddAttachmentComponent";
 import { RhythmSelectionComponent } from "../shared/RhythmSelectionComponent";
@@ -73,7 +73,7 @@ export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetails
                 </Select>
             </FormField>
             <FormField title="Composer">
-                <SinglePersonSelectionComponent type={PersonType.Composer} selected={piece.composerId === 0 ? undefined : piece.composerId} onSelectionChanged={this.OnComposerChanged.bind(this)} />
+                <SinglePersonSelectionComponent selected={piece.composerId === 0 ? undefined : piece.composerId} onSelectionChanged={this.OnComposerChanged.bind(this)} />
             </FormField>
             <FormField title="Release date">
                 <LineEdit value={piece.releaseDate} onChanged={newValue => piece.releaseDate = newValue} />
@@ -162,10 +162,10 @@ export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetails
                     </Select>
                 </FormField>
                 <FormField title="Singer">
-                    <SinglePersonSelectionComponent type={PersonType.Singer} selected={lyrics.singerId === 0 ? undefined : lyrics.singerId} onSelectionChanged={this.OnSingerChanged.bind(this)} />
+                    <SinglePersonSelectionComponent selected={lyrics.singerId === 0 ? undefined : lyrics.singerId} onSelectionChanged={this.OnSingerChanged.bind(this)} />
                 </FormField>
                 <FormField title="Songwriter">
-                    <SinglePersonSelectionComponent type={PersonType.Lyricist} selected={lyrics.lyricistId === 0 ? undefined : lyrics.lyricistId} onSelectionChanged={this.OnSongWriterChanged.bind(this)} />
+                    <SinglePersonSelectionComponent selected={lyrics.lyricistId === 0 ? undefined : lyrics.lyricistId} onSelectionChanged={this.OnSongWriterChanged.bind(this)} />
                 </FormField>
                 <FormField title="Lyrics">
                     <Textarea value={lyrics.lyricsText} onChanged={newValue => lyrics.lyricsText = newValue} />

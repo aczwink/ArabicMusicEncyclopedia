@@ -17,11 +17,11 @@
  * */
 
 import { AutoCompleteSelectBox, Component, Injectable, JSX_CreateElement, KeyDisplayValuePair } from "acfrontend";
-import { PersonOverviewData, PersonType } from "../../dist/api";
+import { PersonOverviewData } from "../../dist/api";
 import { PersonsService } from "./PersonsService";
 
 @Injectable
-export class SinglePersonSelectionComponent extends Component<{ type: PersonType, selected?: number, onSelectionChanged: (id: number) => void }>
+export class SinglePersonSelectionComponent extends Component<{ selected?: number, onSelectionChanged: (id: number) => void }>
 {
     constructor(private personsService: PersonsService)
     {
@@ -58,7 +58,7 @@ export class SinglePersonSelectionComponent extends Component<{ type: PersonType
 
     private async OnLoadSuggestions(searchText: string): Promise<KeyDisplayValuePair<number>[]>
     {
-        const result = await this.personsService.QueryPersons(this.input.type, searchText, 0, 10);
+        const result = await this.personsService.QueryPersons(searchText, 0, 10);
 
         return result.persons.map(p => ({
             key: p.id,

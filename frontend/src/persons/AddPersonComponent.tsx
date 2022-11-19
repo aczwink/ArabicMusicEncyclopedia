@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Component, Injectable, JSX_CreateElement, Router, RouterState } from "acfrontend";
+import { Component, Injectable, JSX_CreateElement, Router } from "acfrontend";
 import { Person } from "../../dist/api";
 import { EditPersonForm } from "./EditPersonForm";
 import { PersonsService } from "./PersonsService";
@@ -24,7 +24,7 @@ import { PersonsService } from "./PersonsService";
 @Injectable
 export class AddPersonComponent extends Component
 {
-    constructor(routerState: RouterState, private personsService: PersonsService, private router: Router)
+    constructor(private personsService: PersonsService, private router: Router)
     {
         super();
 
@@ -33,7 +33,6 @@ export class AddPersonComponent extends Component
             lifeTime: "",
             origin: "",
             text: "",
-            type: parseInt(routerState.routeParams.type!),
             countryCodes: []
         };
     }

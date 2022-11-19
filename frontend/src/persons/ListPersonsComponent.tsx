@@ -17,11 +17,11 @@
  * */
 
 import { Anchor, Component, Injectable, JSX_CreateElement, LineEdit, MatIcon, PaginationComponent, ProgressSpinner, RouterButton } from "acfrontend";
-import { PersonOverviewData, PersonType } from "../../dist/api";
+import { PersonOverviewData } from "../../dist/api";
 import { PersonsService } from "./PersonsService";
 
 @Injectable
-export class ListPersonsComponent extends Component<{ type: PersonType }>
+export class ListPersonsComponent extends Component
 {
     constructor(private personsService: PersonsService)
     {
@@ -54,7 +54,7 @@ export class ListPersonsComponent extends Component<{ type: PersonType }>
                 </form>
             </div>
             {this.RenderResultList()}
-            <RouterButton className="btn btn-primary" route={"/persons/add/" + this.input.type}><MatIcon>add</MatIcon></RouterButton>
+            <RouterButton className="btn btn-primary" route={"/persons/add"}><MatIcon>add</MatIcon></RouterButton>
         </fragment>;
     }
 
@@ -70,7 +70,7 @@ export class ListPersonsComponent extends Component<{ type: PersonType }>
     private async ExecuteSearch()
     {
         this.loading = true;
-        const result = await this.personsService.QueryPersons(this.input.type, this.nameFilter, this.offset, this.size);
+        const result = await this.personsService.QueryPersons(this.nameFilter, this.offset, this.size);
         this.data = result.persons;
         this.count = result.totalCount;
         this.loading = false;
@@ -117,29 +117,5 @@ export class ListPersonsComponent extends Component<{ type: PersonType }>
     {
         event.preventDefault();
         this.ExecuteSearch();
-    }
-}
-
-export class ListComposersComponent extends Component
-{
-    protected Render(): RenderValue
-    {
-        return <ListPersonsComponent type={PersonType.Composer} />;
-    }
-}
-
-export class ListLyricistsComponent extends Component
-{
-    protected Render(): RenderValue
-    {
-        return <ListPersonsComponent type={PersonType.Lyricist} />;
-    }
-}
-
-export class ListSingersComponent extends Component
-{
-    protected Render(): RenderValue
-    {
-        return <ListPersonsComponent type={PersonType.Singer} />;
     }
 }

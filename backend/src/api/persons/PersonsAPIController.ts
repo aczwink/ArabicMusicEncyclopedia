@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 import { APIController, Body, Get, Post, Query } from "acts-util-apilib";
-import { Person, PersonOverviewData, PersonsController, PersonType } from "../../dataaccess/PersonsController";
+import { Person, PersonOverviewData, PersonsController } from "../../dataaccess/PersonsController";
 
 interface ResultData
 {
@@ -42,13 +42,12 @@ class PersonsAPIController
 
     @Get()
     public async QueryPersons(
-        @Query type: PersonType,
         @Query nameFilter: string,
         @Query offset: number,
         @Query limit: number,
     ): Promise<ResultData>
     {
-        const result = await this.personsController.QueryPersons(type, nameFilter, offset, limit);
+        const result = await this.personsController.QueryPersons(nameFilter, offset, limit);
         return {
             persons: result.persons,
             totalCount: result.totalCount,

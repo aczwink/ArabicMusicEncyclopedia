@@ -17,7 +17,7 @@
  * */
 
 import { Injectable } from "acfrontend";
-import { Person, PersonType } from "../../dist/api";
+import { Person } from "../../dist/api";
 import { APIService } from "../shared/APIService";
 
 @Injectable
@@ -46,9 +46,9 @@ export class PersonsService
         return result.data;
     }
 
-    public async QueryPersons(type: PersonType, nameFilter: string, offset: number, limit: number)
+    public async QueryPersons(nameFilter: string, offset: number, limit: number)
     {
-        return (await this.apiService.persons.get({ type, nameFilter, offset, limit })).data;
+        return (await this.apiService.persons.get({ nameFilter, offset, limit })).data;
     }
 
     public async UpdatePersonImage(personId: number, image: File | null)

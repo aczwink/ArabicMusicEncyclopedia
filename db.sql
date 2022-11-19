@@ -2,7 +2,7 @@
 --
 -- Host: localhost    Database: amedb
 -- ------------------------------------------------------
--- Server version	10.6.7-MariaDB-2ubuntu1
+-- Server version	10.6.7-MariaDB-2ubuntu1.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -240,7 +240,6 @@ DROP TABLE IF EXISTS `persons`;
 CREATE TABLE `persons` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` text NOT NULL,
-  `type` tinyint(3) unsigned NOT NULL,
   `lifeTime` text NOT NULL,
   `origin` text NOT NULL,
   `text` text NOT NULL,
@@ -320,4 +319,4 @@ CREATE TABLE `rhythms_timeSigs` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-07-24 12:22:30
+-- Dump completed on 2022-11-19 15:54:43

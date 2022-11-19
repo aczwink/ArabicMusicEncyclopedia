@@ -20,17 +20,9 @@ import { Injectable } from "acts-util-node";
 import { CountryCode } from "ame-api/dist/Locale";
 import { DatabaseController } from "./DatabaseController";
 
-export enum PersonType
-{
-    Composer = 0,
-    Lyricist = 1,
-    Singer = 2
-};
-
 export interface Person
 {
     name: string;
-    type: PersonType;
     lifeTime: string;
     origin: string;
     text: string;
@@ -56,7 +48,6 @@ export class PersonsController
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
         const result = await conn.InsertRow("amedb.persons", {
             name: person.name,
-            type: person.type,
             lifeTime: person.lifeTime,
             origin: person.origin,
             text: person.text,
@@ -90,19 +81,19 @@ export class PersonsController
         return row.data;
     }
 
-    public async QueryPersons(type: PersonType, nameFilter: string, offset: number, limit: number)
+    public async QueryPersons(nameFilter: string, offset: number, limit: number)
     {
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
         const query = `
         SELECT id, name
         FROM amedb.persons
-        WHERE type = ? AND name LIKE ?
+        WHERE name LIKE ?
         LIMIT ?
         OFFSET ?
         `;
-        const rows = await conn.Select<PersonOverviewData>(query, type, "%" + nameFilter + "%", limit, offset);
+        const rows = await conn.Select<PersonOverviewData>(query, "%" + nameFilter + "%", limit, offset);
 
-        const row = await conn.SelectOne("SELECT COUNT(*) AS cnt FROM amedb.persons WHERE type = ? AND name LIKE ?", type, "%" + nameFilter + "%");
+        const row = await conn.SelectOne("SELECT COUNT(*) AS cnt FROM amedb.persons WHERE name LIKE ?", "%" + nameFilter + "%");
 
         return {
             persons: rows,
@@ -116,7 +107,6 @@ export class PersonsController
 
         await conn.UpdateRows("amedb.persons", {
             name: person.name,
-            type: person.type,
             lifeTime: person.lifeTime,
             origin: person.origin,
             text: person.text
