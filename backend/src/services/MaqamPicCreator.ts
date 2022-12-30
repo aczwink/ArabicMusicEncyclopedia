@@ -81,8 +81,7 @@ export class MaqamPicCreator
 
     private GetScriptDir()
     {
-        const rootDir = path.dirname(path.dirname(require.main!.filename));
-        return path.join(rootDir, "scripts");
+        return path.resolve(process.env.SCRIPTDIR!);
     }
 
     private OctavePitchToString(basePitch: OctavePitch)

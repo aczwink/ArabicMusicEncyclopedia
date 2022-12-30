@@ -17,7 +17,7 @@
  * */
 
 export const g_backendHostname = "localhost";
-export const g_backendPort = 8083;
+export const g_backendPort = 8080;
 const g_backendAuthority = g_backendHostname + ":" + g_backendPort;
 export const g_backendProtocol = "http";
 export const g_backendBaseUrl = g_backendProtocol + "://" + g_backendAuthority;

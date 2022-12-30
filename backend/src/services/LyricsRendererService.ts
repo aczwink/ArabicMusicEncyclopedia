@@ -39,7 +39,7 @@ export class LyricsRendererService
         const col2Text = this.BlocksToLilypondLines(blocks.slice(splitIdx));
 
         const lilypondText = `
-\\version "2.22.1"
+\\version "2.22.0"
 
 \\paper
 {

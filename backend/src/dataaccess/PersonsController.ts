@@ -61,7 +61,7 @@ export class PersonsController
     public async QueryPerson(personId: number)
     {
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const row = await conn.SelectOne<Person>("SELECT name, type, lifeTime, origin, text FROM amedb.persons WHERE id = ?", personId);
+        const row = await conn.SelectOne<Person>("SELECT name, lifeTime, origin, text FROM amedb.persons WHERE id = ?", personId);
         if(row === undefined)
             return undefined;
 

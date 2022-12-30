@@ -25,7 +25,7 @@ import { APIRegistry } from "acts-util-apilib";
 import { DatabaseController } from "./dataaccess/DatabaseController";
 
 const frontEndPort = 8082;
-const port = 8083;
+const port = 8080;
 
 async function SetupServer()
 {

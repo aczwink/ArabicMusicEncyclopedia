@@ -1,1 +1,1 @@
-sudo mysqldump amedb --no-data > db.sql
+sudo mysqldump amedb --no-data | sed 's/ AUTO_INCREMENT=[0-9]*\b//'  > db.sql

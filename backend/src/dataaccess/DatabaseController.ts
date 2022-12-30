@@ -65,8 +65,8 @@ export class DatabaseController
 
             this.pool = await factory.CreateConnectionPool({
                 type: "mysql",
-                host: "localhost",
-                username: "phpmyadmin",
+                host: process.env.DB_HOST!,
+                username: "amedb",
                 password: "phpmyadmin"
             });
         }

@@ -6,7 +6,8 @@
   "scripts": {
     "build": "npx acts-util-apilib && tsc",
     "build-release-package": "npx webpack",
-    "run": "(cd dist && node main.js)"
+    "build-docker-image": "docker build . -t aczwink/ame-backend",
+    "run": "(cd dist && SCRIPTDIR=../scripts node main.js)"
   },
   "keywords": [],
   "author": "Amir Czwink",
