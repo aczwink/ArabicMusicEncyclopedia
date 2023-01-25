@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-export const g_backendHostname = "localhost";
-export const g_backendPort = 8080;
+export const g_backendHostname = process.env.AME_BACKEND_HOSTNAME!;
+export const g_backendPort = parseInt(process.env.AME_BACKEND_PORT!);
 const g_backendAuthority = g_backendHostname + ":" + g_backendPort;
 export const g_backendProtocol = "http";
 export const g_backendBaseUrl = g_backendProtocol + "://" + g_backendAuthority;

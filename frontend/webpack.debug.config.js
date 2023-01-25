@@ -1,3 +1,5 @@
+const Dotenv = require('dotenv-webpack');
+
 module.exports = {
     mode: "development",
 
@@ -14,6 +16,10 @@ module.exports = {
         // Add '.ts' and '.tsx' as resolvable extensions.
         extensions: [".ts", ".tsx", ".js"]
     },
+
+    plugins: [
+        new Dotenv()
+    ],
 
     module: {
         rules: [

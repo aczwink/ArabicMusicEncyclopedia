@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "acts-util-apilib": "*",
+    "dotenv-webpack": "^8.0.1",
     "typescript": "^4.4.3",
     "webpack": "^5.52.1",
     "webpack-cli": "^4.8.0"

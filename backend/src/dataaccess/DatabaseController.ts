@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -65,9 +65,9 @@ export class DatabaseController
 
             this.pool = await factory.CreateConnectionPool({
                 type: "mysql",
-                host: process.env.DB_HOST!,
-                username: "amedb",
-                password: "phpmyadmin"
+                host: process.env.AME_DB_HOST!,
+                username: process.env.AME_DB_USER!,
+                password: process.env.AME_DB_PW!
             });
         }
         return this.pool;
