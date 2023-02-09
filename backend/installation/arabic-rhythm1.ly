@@ -106,6 +106,12 @@ tif =
 	b'32
 }
 
+tiff =
+{
+	\override Stem.direction = #UP
+	b'64
+}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%% Taks with fingerings %%%%%%
@@ -206,6 +212,13 @@ sa =
 	b'8
 	\revert NoteHead.style
 }
+saf =
+{
+	\override Stem.direction = #UP
+	\override NoteHead.style = #'cross
+	b'16
+	\revert NoteHead.style
+}
 
 
 
@@ -217,6 +230,13 @@ ba =
 	\override Stem.direction = #UP
 	\override NoteHead.style = #'harmonic
 	b'8
+	\revert NoteHead.style
+}
+baf =
+{
+	\override Stem.direction = #UP
+	\override NoteHead.style = #'harmonic
+	b'16
 	\revert NoteHead.style
 }
 
