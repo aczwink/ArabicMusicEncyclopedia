@@ -14,6 +14,11 @@ dom_dot =
 	\override Stem.direction = #DOWN
 	b'4.
 }
+dom_noBeam =
+{
+	\override Stem.direction = #DOWN
+	b'4\noBeam
+}
 dom_strong =
 {
 	\override Stem.direction = #DOWN
@@ -54,6 +59,17 @@ du_noBeam =
 {
 	\override Stem.direction = #DOWN
 	b'16\noBeam
+}
+
+duf =
+{
+	\override Stem.direction = #DOWN
+	b'32
+}
+duf_noBeam =
+{
+	\override Stem.direction = #DOWN
+	b'32\noBeam
 }
 
 
