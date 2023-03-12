@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -102,8 +102,8 @@ export class MaqamatController
             basePitch: ParseOctavePitch(row.basePitch),
             branchingJinsIds: rows.map(row => row.branchingJinsId),
 
-            popularity: usageData.Values().Map(x => x.usage).Sum() / usageData.length,
-            usage: usageData  
+            popularity: usageData.popularity,
+            usage: usageData.usage
         };
     }
 
@@ -124,14 +124,14 @@ export class MaqamatController
     }
 
     //Private methods
-    private async QueryMaqamUsage(maqamId: number): Promise<MaqamCountryUsage[]>
+    private async QueryMaqamUsage(maqamId: number): Promise<{ usage: MaqamCountryUsage[]; popularity: number }>
     {
         let query = `
         SELECT pl.location, COUNT(*) AS count
         FROM amedb.musical_pieces_maqamat mpm
         INNER JOIN amedb.musical_pieces mp
             ON mp.id = mpm.pieceId
-        INNER JOIN amedb.persons_locations pl
+        LEFT JOIN amedb.persons_locations pl
             ON pl.personId = mp.composerId
         WHERE mpm.maqamId = ?
         GROUP BY pl.location
@@ -140,11 +140,19 @@ export class MaqamatController
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
         const rows = await conn.Select(query, maqamId);
 
-        const maxCount = await this.QueryMaxMaqamUsage();
-        return rows.map(row => ({
-            countryCode: row.location,
-            usage: row.count / maxCount
-        }));
+        const maxLocalCount = Math.max(...rows.map(x => x.count as number));
+
+        const maqamGlobalCount = rows.Values().Map(x => x.count as number).Sum();
+        const maxGlobalCount = await this.QueryMaxMaqamUsage();
+        const globalScale = maqamGlobalCount / maxGlobalCount;
+
+        return {
+            popularity: globalScale,
+            usage: rows.map(row => ({
+                countryCode: row.location,
+                usage: (row.count / maxLocalCount)// * globalScale
+            })),
+        };
     }
 
     private async QueryMaxMaqamUsage(): Promise<number>

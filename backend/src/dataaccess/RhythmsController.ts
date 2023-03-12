@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -74,8 +74,8 @@ export class RhythmsController
             usageText: row.usageText,
             timeSigNum: 0,
 
-            popularity: usage.Values().Map(x => x.usage).Sum() / usage.length,
-            usage
+            popularity: usage.popularity,
+            usage: usage.usage,
         };
     }
 
@@ -116,14 +116,14 @@ export class RhythmsController
         return row.maxCount;
     }
 
-    private async QueryRhythmUsage(rhythmId: number): Promise<RhythmCountryUsage[]>
+    private async QueryRhythmUsage(rhythmId: number): Promise<{ popularity: number; usage: RhythmCountryUsage[] }>
     {
         let query = `
         SELECT pl.location, COUNT(*) AS count
         FROM amedb.musical_pieces_rhythms mpr
         INNER JOIN amedb.musical_pieces mp
             ON mp.id = mpr.pieceId
-        INNER JOIN amedb.persons_locations pl
+        LEFT JOIN amedb.persons_locations pl
             ON pl.personId = mp.composerId
         WHERE mpr.rhythmId = ?
         GROUP BY pl.location
@@ -132,10 +132,18 @@ export class RhythmsController
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
         const rows = await conn.Select(query, rhythmId);
 
-        const maxCount = await this.QueryMaxRhythmUsage();
-        return rows.map(row => ({
-            countryCode: row.location,
-            usage: row.count / maxCount
-        }));
+        const maxLocalCount = Math.max(...rows.map(x => x.count as number));
+
+        const maqamGlobalCount = rows.Values().Map(x => x.count as number).Sum();
+        const maxGlobalCount = await this.QueryMaxRhythmUsage();
+        const globalScale = maqamGlobalCount / maxGlobalCount;
+
+        return {
+            popularity: globalScale,
+            usage: rows.map(row => ({
+                countryCode: row.location,
+                usage: row.count / maxLocalCount
+            }))
+        };
     }
 }
