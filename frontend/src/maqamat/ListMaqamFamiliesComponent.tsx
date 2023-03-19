@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -38,14 +38,12 @@ export class ListMaqamFamiliesComponent extends Component
         if(this.rootAjnas === null)
             return <ProgressSpinner />;
 
-        return <div className="row">
-            <div className="col-1">
-                <ul className="nav nav-pills flex-column">
-                {this.rootAjnas.map(this.RenderFamilyRow.bind(this))}
-                </ul>
+        return <fragment>
+            <div className="row">
+                <div className="col pb-2">Maqamat are traditionally grouped into families by their root jins.</div>
             </div>
-            <div className="col">{this.RenderMaqamList()}</div>
-        </div>;
+            {this.RenderMaqamFamilies()}
+        </fragment>;
     }
 
     //Private members
@@ -68,6 +66,18 @@ export class ListMaqamFamiliesComponent extends Component
         return <ul>
             {this.maqamat.map(maqam => <li><Anchor route={"/maqamat/" + maqam.id}>{maqam.name}</Anchor></li>)}
         </ul>;
+    }
+
+    private RenderMaqamFamilies()
+    {
+        return <div className="row">
+            <div className="col-1">
+                <ul className="nav nav-pills flex-column">
+                {this.rootAjnas!.map(this.RenderFamilyRow.bind(this))}
+                </ul>
+            </div>
+            <div className="col">{this.RenderMaqamList()}</div>
+        </div>;
     }
 
     //Event handlers

@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,6 +18,7 @@
 
 import { Anchor, Component, Injectable, JSX_CreateElement, LineEdit, MatIcon, PaginationComponent, ProgressSpinner, RouterButton } from "acfrontend";
 import { PersonOverviewData } from "../../dist/api";
+import { PersonReferenceComponent } from "./PersonReferenceComponent";
 import { PersonsService } from "./PersonsService";
 
 @Injectable
@@ -92,7 +93,7 @@ export class ListPersonsComponent extends Component
                 </thead>
                 <tbody>
                 {this.data.map(row => <tr>
-                    <td><Anchor route={"/persons/" + row.id}>{row.name}</Anchor></td>
+                    <td><PersonReferenceComponent {...row} /></td>
                 </tr>)}
                 </tbody>
             </table>

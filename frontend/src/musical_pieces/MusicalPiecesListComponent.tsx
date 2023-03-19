@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,6 +17,7 @@
  * */
 import { Anchor, Component, JSX_CreateElement } from "acfrontend";
 import { PieceOverviewData } from "../../dist/api";
+import { PersonReferenceComponent } from "../persons/PersonReferenceComponent";
 
 export class MusicalPiecesListComponent extends Component<{ pieces: PieceOverviewData[] }>
 {
@@ -44,9 +45,9 @@ export class MusicalPiecesListComponent extends Component<{ pieces: PieceOvervie
         return <tr>
             <td>{piece.formName}</td>
             <td><Anchor route={"/musicalpieces/" + piece.id}>{piece.name}</Anchor></td>
-            <td><Anchor route={"/persons/" + piece.composerId}>{piece.composerName}</Anchor></td>
+            <td><PersonReferenceComponent id={piece.composerId} name={piece.composerName} /></td>
             <td>{piece.releaseDate}</td>
-            <td><Anchor route={"/persons/" + piece.singerId}>{piece.singerName}</Anchor></td>
+            <td>{piece.singerId ? <PersonReferenceComponent id={piece.singerId} name={piece.singerName} /> : null}</td>
         </tr>
     }
 }

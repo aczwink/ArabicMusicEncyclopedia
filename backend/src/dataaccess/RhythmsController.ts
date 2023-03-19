@@ -23,6 +23,7 @@ interface RhythmOverviewData
 {
     id: number;
     name: string;
+    popularity: number;
     timeSigNum: number;
 }
 
@@ -35,7 +36,6 @@ interface RhythmCountryUsage
 interface Rhythm extends RhythmOverviewData
 {
     alternativeNames: string;
-    popularity: number;
     category: string;
     usage: RhythmCountryUsage[];
     usageText: string;
@@ -83,7 +83,7 @@ export class RhythmsController
     {
         let query = `
         SELECT
-            r.id, r.name, rts.numerator AS timeSigNum
+            r.id, r.name, rts.numerator
         FROM amedb.rhythms r
         INNER JOIN amedb.rhythms_timeSigs rts
             ON r.id = rts.rhythmId
@@ -91,9 +91,19 @@ export class RhythmsController
         `;
 
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const rows = await conn.Select<RhythmOverviewData>(query);
+        const rows = await conn.Select(query);
 
-        return rows;
+        return await rows.Values().Map(async row => {
+            const usageData = await this.QueryRhythmUsage(row.id);
+
+            const rod: RhythmOverviewData = {
+                id: row.id,
+                name: row.name,
+                popularity: usageData.popularity,
+                timeSigNum: row.numerator
+            };
+            return rod;
+        }).PromiseAll();
     }
 
     //Private methods

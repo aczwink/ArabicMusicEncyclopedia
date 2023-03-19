@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,6 +20,7 @@ import { Anchor, BootstrapIcon, Component, Injectable, JSX_CreateElement, MatIco
 import { Form, Language, Person, PieceDetailsData } from "../../dist/api";
 import { g_backendBaseUrl } from "../backend";
 import { MaqamatService } from "../maqamat/MaqamatService";
+import { PersonReferenceComponent } from "../persons/PersonReferenceComponent";
 import { PersonsService } from "../persons/PersonsService";
 import { RhythmsService } from "../rhythms/RhythmsService";
 import { WikiTextComponent } from "../shared/WikiTextComponent";
@@ -78,7 +79,7 @@ export class ShowMusicalPieceComponent extends Component
                             </tr>
                             <tr>
                                 <th>Composer</th>
-                                <td><Anchor route={"/persons/" + this.piece.composerId}>{this.composer.name}</Anchor></td>
+                                <td><PersonReferenceComponent id={this.piece.composerId} name={this.composer.name} /></td>
                             </tr>
                             <tr>
                                 <th>Release date</th>
@@ -154,11 +155,11 @@ export class ShowMusicalPieceComponent extends Component
         return <fragment>
             <tr>
                 <th>Singer</th>
-                <td><Anchor route={"/persons/" + this.piece?.lyrics?.singerId}>{this.singer.name}</Anchor></td>
+                <td><PersonReferenceComponent id={this.piece!.lyrics!.singerId} name={this.singer.name} /></td>
             </tr>
             <tr>
                 <th>Songwriter</th>
-                <td><Anchor route={"/persons/" + this.piece?.lyrics?.lyricistId}>{this.lyricist.name}</Anchor></td>
+                <td><PersonReferenceComponent id={this.piece!.lyrics!.lyricistId} name={this.lyricist.name} /></td>
             </tr>
             <tr>
                 <th>Language</th>

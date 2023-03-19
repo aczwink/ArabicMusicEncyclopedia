@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,10 +17,12 @@
  * */
 
 import { Routes } from "acfrontend";
+import { ListMaqamatComponent } from "./ListMaqamatComponent";
 import { ListMaqamFamiliesComponent } from "./ListMaqamFamiliesComponent";
 import { MaqamComponent } from "./MaqamComponent";
 
 export const routes : Routes = [
     { path: "families", component: ListMaqamFamiliesComponent},
+    { path: "list", component: ListMaqamatComponent},
     { path: ":maqamId", component: MaqamComponent },
 ];

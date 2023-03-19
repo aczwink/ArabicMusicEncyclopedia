@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -197,18 +197,14 @@ export class MusicalPiecesController
     public async QueryMusicalPiecesCount(filterCriteria: MusicalPiecesFilterCriteria)
     {
         const builder = this.CreateQueryBuilder(filterCriteria);
-        builder.SetColumns(
-            {
-                special: "count"
-            }
-        );
+        const query = "SELECT COUNT(*) as cnt FROM (" + builder.CreateSQLQuery() + ") tbl";
 
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const row = await conn.SelectOne(builder.CreateSQLQuery());
+        const row = await conn.SelectOne(query);
 
         if(row === undefined)
             return 0;
-        return row.count as number;
+        return row.cnt as number;
     }
 
     public async UpdateMusicalPiece(pieceId: number, piece: PieceDetailsData)

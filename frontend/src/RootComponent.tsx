@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,6 +27,7 @@ export class RootComponent extends Component
                 <ul className="nav nav-pills">
                     <NavItem route="/ajnas">Ajnas</NavItem>
                     <NavItem route="/maqamat/families">Maqam families</NavItem>
+                    <NavItem route="/maqamat/list">Maqamat</NavItem>
                     <NavItem route="/rhythms">Rhythms</NavItem>
                 </ul>
                 <ul className="nav nav-pills">

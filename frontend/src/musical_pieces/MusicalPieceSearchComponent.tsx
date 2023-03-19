@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,9 +17,9 @@
  * */
 
 import { Component, FormField, Injectable, JSX_CreateElement, LineEdit, MatIcon, PaginationComponent, ProgressSpinner, RouterButton, Select } from "acfrontend";
-import { Form, MaqamOverviewData, PieceOverviewData } from "../../dist/api";
-import { MaqamatService } from "../maqamat/MaqamatService";
+import { Form, PieceOverviewData } from "../../dist/api";
 import { OptionalSinglePersonSelectionComponent } from "../persons/OptionalSinglePersonSelectionComponent";
+import { MaqamSelectionComponent } from "../shared/MaqamSelectionComponent";
 import { FullRhythmSelectionComponent } from "../shared/RhythmSelectionComponent";
 import { MusicalPiecesListComponent } from "./MusicalPiecesListComponent";
 import { MusicalPiecesService } from "./MusicalPiecesService";
@@ -28,8 +28,7 @@ import { MusicalService } from "./MusicalService";
 @Injectable
 export class MusicalPieceSearchComponent extends Component
 {
-    constructor(private musicalPiecesService: MusicalPiecesService, private musicalService: MusicalService,
-        private maqamatService: MaqamatService)
+    constructor(private musicalPiecesService: MusicalPiecesService, private musicalService: MusicalService)
     {
         super();
 
@@ -46,14 +45,13 @@ export class MusicalPieceSearchComponent extends Component
         this.rhythmId = null;
 
         this.forms = null;
-        this.maqamat = null;
         this.pieces = [];
         this.totalCount = 0;
     }
 
     protected Render(): RenderValue
     {
-        if( (this.forms === null) || (this.maqamat === null) )
+        if( this.forms === null )
             return <ProgressSpinner />;
 
         return <fragment>
@@ -93,9 +91,7 @@ export class MusicalPieceSearchComponent extends Component
                     <div className="row">
                         <div className="col">
                             <FormField title="Maqam">
-                                <Select onChanged={newValue => this.maqamId = parseInt(newValue[0])}>
-                                    {this.maqamat.map(form => <option value={form.id.toString()} selected={this.maqamId === form.id}>{form.name}</option>)}
-                                </Select>
+                                <MaqamSelectionComponent maqamId={this.maqamId} onSelectionChanged={newValue => this.maqamId = newValue} />
                             </FormField>
                         </div>
                         <div className="col">
@@ -125,7 +121,6 @@ export class MusicalPieceSearchComponent extends Component
     private rhythmId: number | null;
 
     private forms: Form[] | null;
-    private maqamat: MaqamOverviewData[] | null;
     private pieces: PieceOverviewData[];
     private totalCount: number;
 
@@ -165,9 +160,6 @@ export class MusicalPieceSearchComponent extends Component
     {
         const forms = await this.musicalService.ListForms();
         this.forms = forms;
-
-        const maqamat = await this.maqamatService.QueryMaqamat();
-        this.maqamat = maqamat;
     }
 
     private OnOffsetChanged(newValue: number)

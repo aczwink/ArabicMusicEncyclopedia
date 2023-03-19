@@ -38,15 +38,14 @@ interface MaqamOverviewData
 {
     id: number;
     name: string;
+    popularity: number;
 }
 
-interface Maqam
+interface Maqam extends MaqamOverviewData
 {
-    name: string;
     text: string;
     basePitch: OctavePitch;
     branchingJinsIds: number[];
-    popularity: number;
     usage: MaqamCountryUsage[];
 }
 
@@ -81,7 +80,7 @@ export class MaqamatController
     public async QueryMaqamInfo(maqamId: number): Promise<Maqam | undefined>
     {
         const query = `
-        SELECT m.name, m.text, IFNULL(m.basePitchOverride, j.basePitch) AS basePitch
+        SELECT m.id, m.name, m.text, IFNULL(m.basePitchOverride, j.basePitch) AS basePitch
         FROM amedb.maqamat m
         INNER JOIN amedb.ajnas j
             ON j.id = m.rootJinsId
@@ -97,6 +96,7 @@ export class MaqamatController
 
         const usageData = await this.QueryMaqamUsage(maqamId);
         return {
+            id: row.id,
             name: row.name,
             text: row.text,
             basePitch: ParseOctavePitch(row.basePitch),
@@ -118,9 +118,18 @@ export class MaqamatController
         }
 
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const rows = await conn.Select<MaqamOverviewData>(query, ...args);
+        const rows = await conn.Select(query, ...args);
 
-        return rows;
+        return await rows.Values().Map(async row => {
+            const usageData = await this.QueryMaqamUsage(row.id);
+
+            const mod: MaqamOverviewData = {
+                id: row.id,
+                name: row.name,
+                popularity: usageData.popularity
+            };
+            return mod;
+        }).PromiseAll();
     }
 
     //Private methods

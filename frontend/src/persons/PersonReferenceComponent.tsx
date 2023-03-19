@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2023 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,11 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Routes } from "acfrontend";
-import { ListRhythmsComponent } from "./ListRhythmsComponent";
-import { ShowRhythmComponent } from "./ShowRhythmComponent";
+import { Anchor, Component, JSX_CreateElement } from "acfrontend";
+import { PersonOverviewData } from "../../dist/api";
+import { g_backendBaseUrl } from "../backend";
 
-export const routes : Routes = [
-    { path: ":rhythmId", component: ShowRhythmComponent },
-    { path: "", component: ListRhythmsComponent },
-];
+export class PersonReferenceComponent extends Component<PersonOverviewData>
+{
+    protected Render(): RenderValue
+    {
+        const row = this.input;
+        return <Anchor route={"/persons/" + row.id}>
+            <img src={g_backendBaseUrl + "/persons/" + row.id + "/image"} className="me-2" style="width: 2rem" />
+            {row.name}
+        </Anchor>;
+    }
+}
