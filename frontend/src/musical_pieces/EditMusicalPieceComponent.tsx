@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -47,7 +47,7 @@ export class EditMusicalPieceComponent extends Component
         return <fragment>
             <h1>Edit musical piece: {this.origPieceName}</h1>
             <MusicalPieceEditorComponent piece={this.piece} attachments={this.attachments} onValidationUpdated={newValue => this.isValid = newValue} />
-            <button type="button" onclick={this.OnSave.bind(this)} disabled={!this.isValid}>Save</button>
+            <button type="button" className="btn btn-primary" onclick={this.OnSave.bind(this)} disabled={!this.isValid}>Save</button>
         </fragment>;
     }
 

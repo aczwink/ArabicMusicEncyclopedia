@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,9 +20,10 @@ import "./api/ajnas/AjnasAPIController";
 import "./api/ajnas/JinsAPIController";
 
 import "./api/maqamat/MaqamAPIController";
+import "./api/maqamat/MaqamatAPIController";
+import "./api/maqamat/MaqamatGroupingsAPIController";
 import "./api/maqamat/MaqamChordsImageAPIController";
 import "./api/maqamat/MaqamImageAPIController";
-import "./api/maqamat/MaqamatAPIController";
 
 import "./api/musical/FormsAPIController";
 import "./api/musical/LanguagesAPIController";

@@ -1,8 +1,8 @@
--- MariaDB dump 10.19  Distrib 10.6.7-MariaDB, for debian-linux-gnu (x86_64)
+-- MariaDB dump 10.19  Distrib 10.6.11-MariaDB, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: amedb
 -- ------------------------------------------------------
--- Server version	10.6.7-MariaDB-2ubuntu1.1
+-- Server version	10.6.11-MariaDB-0ubuntu0.22.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -29,7 +29,7 @@ CREATE TABLE `ajnas` (
   `intervals` text NOT NULL,
   `text` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,7 +45,7 @@ CREATE TABLE `articles` (
   `text` text NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `title` (`title`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -59,7 +59,7 @@ CREATE TABLE `files` (
   `title` varchar(200) NOT NULL,
   `data` longblob NOT NULL,
   PRIMARY KEY (`title`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -80,7 +80,7 @@ CREATE TABLE `maqamat` (
   PRIMARY KEY (`id`),
   KEY `maqamat_rootJinsId` (`rootJinsId`),
   CONSTRAINT `maqamat_rootJinsId` FOREIGN KEY (`rootJinsId`) REFERENCES `ajnas` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -97,7 +97,7 @@ CREATE TABLE `maqamat_forms` (
   KEY `maqamat_forms_branchingJinsId` (`branchingJinsId`),
   CONSTRAINT `maqamat_forms_branchingJinsId` FOREIGN KEY (`branchingJinsId`) REFERENCES `ajnas` (`id`),
   CONSTRAINT `maqamat_forms_maqamId` FOREIGN KEY (`maqamId`) REFERENCES `maqamat` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -119,7 +119,7 @@ CREATE TABLE `musical_pieces` (
   KEY `musical_pieces_formId` (`formId`),
   CONSTRAINT `musical_pieces_composerId` FOREIGN KEY (`composerId`) REFERENCES `persons` (`id`),
   CONSTRAINT `musical_pieces_formId` FOREIGN KEY (`formId`) REFERENCES `musical_pieces_forms` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -138,7 +138,7 @@ CREATE TABLE `musical_pieces_attachments` (
   PRIMARY KEY (`attachmentId`),
   KEY `musical_pieces_attachments_pieceId` (`pieceId`),
   CONSTRAINT `musical_pieces_attachments_pieceId` FOREIGN KEY (`pieceId`) REFERENCES `musical_pieces` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -153,7 +153,7 @@ CREATE TABLE `musical_pieces_forms` (
   `name` text NOT NULL,
   `hasLyrics` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -167,7 +167,7 @@ CREATE TABLE `musical_pieces_languages` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -191,7 +191,7 @@ CREATE TABLE `musical_pieces_lyrics` (
   CONSTRAINT `musical_pieces_lyrics_lyricistId` FOREIGN KEY (`lyricistId`) REFERENCES `persons` (`id`),
   CONSTRAINT `musical_pieces_lyrics_pieceId` FOREIGN KEY (`pieceId`) REFERENCES `musical_pieces` (`id`),
   CONSTRAINT `musical_pieces_lyrics_singerId` FOREIGN KEY (`singerId`) REFERENCES `persons` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -205,11 +205,13 @@ CREATE TABLE `musical_pieces_maqamat` (
   `pieceId` int(10) unsigned NOT NULL,
   `maqamId` int(10) unsigned NOT NULL,
   `explanation` text NOT NULL,
+  `ordering` tinyint(3) unsigned NOT NULL,
+  PRIMARY KEY (`pieceId`,`maqamId`),
   KEY `musical_pieces_maqamat_pieceId` (`pieceId`),
   KEY `musical_pieces_maqamat_maqamId` (`maqamId`),
   CONSTRAINT `musical_pieces_maqamat_maqamId` FOREIGN KEY (`maqamId`) REFERENCES `maqamat` (`id`),
   CONSTRAINT `musical_pieces_maqamat_pieceId` FOREIGN KEY (`pieceId`) REFERENCES `musical_pieces` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -223,11 +225,13 @@ CREATE TABLE `musical_pieces_rhythms` (
   `pieceId` int(10) unsigned NOT NULL,
   `rhythmId` int(10) unsigned NOT NULL,
   `explanation` text NOT NULL,
+  `ordering` tinyint(3) unsigned NOT NULL,
+  PRIMARY KEY (`pieceId`,`rhythmId`),
   KEY `musical_pieces_rhythms_pieceId` (`pieceId`),
   KEY `musical_pieces_rhythms_rhythmId` (`rhythmId`),
   CONSTRAINT `musical_pieces_rhythms_pieceId` FOREIGN KEY (`pieceId`) REFERENCES `musical_pieces` (`id`),
   CONSTRAINT `musical_pieces_rhythms_rhythmId` FOREIGN KEY (`rhythmId`) REFERENCES `rhythms` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -244,7 +248,7 @@ CREATE TABLE `persons` (
   `origin` text NOT NULL,
   `text` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -259,7 +263,7 @@ CREATE TABLE `persons_images` (
   `data` mediumblob NOT NULL,
   PRIMARY KEY (`personId`),
   CONSTRAINT `persons_images_personId` FOREIGN KEY (`personId`) REFERENCES `persons` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -274,7 +278,7 @@ CREATE TABLE `persons_locations` (
   `location` char(2) NOT NULL,
   PRIMARY KEY (`personId`,`location`),
   CONSTRAINT `persons_locations_personId` FOREIGN KEY (`personId`) REFERENCES `persons` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -292,7 +296,7 @@ CREATE TABLE `rhythms` (
   `usageText` text NOT NULL,
   `text` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -307,7 +311,7 @@ CREATE TABLE `rhythms_timeSigs` (
   `numerator` tinyint(3) unsigned NOT NULL,
   PRIMARY KEY (`rhythmId`,`numerator`),
   CONSTRAINT `rhythms_timeSigs` FOREIGN KEY (`rhythmId`) REFERENCES `rhythms` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -319,4 +323,4 @@ CREATE TABLE `rhythms_timeSigs` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-11-19 15:54:43
+-- Dump completed on 2023-03-20 23:00:35

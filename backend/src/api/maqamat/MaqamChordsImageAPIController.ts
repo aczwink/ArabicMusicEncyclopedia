@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -62,18 +62,10 @@ class MaqamChordsImageAPIController
 
     private async CreateImage(maqamId: number, branchingJinsId: number, basePitch: OctavePitch)
     {
-        const maqam = await this.maqamController.QueryMaqam(maqamId);
-        if(maqam === undefined)
-            return undefined;
-        
-        const rootJins = await this.ajnasController.QueryJins(maqam.rootJinsId);
-        if(rootJins === undefined)
-            return undefined;
-        const branchingJins = await this.ajnasController.QueryJins(branchingJinsId);
-        if(branchingJins === undefined)
+        const scaleIntervals = await this.intervalsService.QueryMaqamIntervals(maqamId, branchingJinsId);
+        if(scaleIntervals === undefined)
             return undefined;
 
-        const scaleIntervals = this.intervalsService.GetMaqamIntervals(maqam, rootJins, branchingJins);
         const chords = this.chordDetectionService.FindChords(scaleIntervals);
         const pitches = this.intervalsService.ResolveScalePitches(basePitch, this.intervalsService.ExtendScale(scaleIntervals, 4));
 

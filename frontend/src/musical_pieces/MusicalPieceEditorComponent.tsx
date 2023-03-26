@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,34 +17,29 @@
  * */
 
 import { Component, FormField, Injectable, JSX_CreateElement, LineEdit, MatIcon, PopupManager, ProgressSpinner, Select, Textarea } from "acfrontend";
-import { MaqamatService } from "../maqamat/MaqamatService";
-import { RhythmsService } from "../rhythms/RhythmsService";
 import { WikiTextEditComponent } from "../shared/WikiTextEditComponent";
 import { MusicalService } from "./MusicalService";
 import { SinglePersonSelectionComponent } from "../persons/SinglePersonSelectionComponent";
-import { Form, Language, MaqamOverviewData, PieceDetailsData, PieceMaqamAssociation, PieceRhythmAssociation, RhythmOverviewData } from "../../dist/api";
+import { Form, Language, PieceDetailsData } from "../../dist/api";
 import { Attachment, AttachmentChangesCollection } from "./MusicalPiecesService";
 import { AddAttachmentComponent } from "./AddAttachmentComponent";
-import { RhythmSelectionComponent } from "../shared/RhythmSelectionComponent";
+import { OrderableMaqamOrRhythmComponent } from "./OrderableMaqamOrRhythmComponent";
 
 @Injectable
 export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetailsData; attachments: AttachmentChangesCollection; onValidationUpdated: (newValue: boolean) => void }>
 {
-    constructor(private musicalService: MusicalService, private maqamatService: MaqamatService, private rhythmsService: RhythmsService,
-        private popupManager: PopupManager)
+    constructor(private musicalService: MusicalService, private popupManager: PopupManager)
     {
         super();
 
         this.forms = null;
         this.languages = null;
-        this.maqamat = null;
-        this.rhythmGroups = null;
     }
     
     protected Render(): RenderValue
     {
         if(
-            (this.forms === null) || (this.languages === null) || (this.maqamat === null) || (this.rhythmGroups === null)
+            (this.forms === null) || (this.languages === null)
         )
             return <ProgressSpinner />;
 
@@ -90,7 +85,7 @@ export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetails
                         <th>Explanation</th>
                         <th>Actions</th>
                     </tr>
-                    {piece.maqamat.map(this.RenderMaqamEntry.bind(this, piece))}
+                    <OrderableMaqamOrRhythmComponent entries={piece.maqamat} onUpdate={this.Update.bind(this)} />
                 </table>
                 <button className="btn btn-primary" type="button" onclick={this.AddEntry.bind(this, piece.maqamat, { maqamId: 1, explanation: "" })}><MatIcon>add</MatIcon></button>
             </div>
@@ -103,7 +98,7 @@ export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetails
                         <th>Explanation</th>
                         <th>Actions</th>
                     </tr>
-                    {piece.rhythms.map(this.RenderRhythmEntry.bind(this, piece))}
+                    <OrderableMaqamOrRhythmComponent entries={piece.rhythms} onUpdate={this.Update.bind(this)} />
                 </table>
                 <button className="btn btn-primary" type="button" onclick={this.AddEntry.bind(this, piece.rhythms, { rhythmId: 1, explanation: "" })}><MatIcon>add</MatIcon></button>
             </div>
@@ -132,20 +127,11 @@ export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetails
     //Private members
     private forms: Form[] | null;
     private languages: Language[] | null;
-    private maqamat: MaqamOverviewData[] | null;
-    private rhythmGroups: RhythmOverviewData[][] | null;
 
     //Private methods
     private AddEntry<T>(arr: T[], itemToAdd: T)
     {
         arr.push(itemToAdd);
-        this.Update();
-    }
-
-    private RemoveEntry<T>(arr: T[], itemToRemove: T)
-    {
-        const index = arr.indexOf(itemToRemove);
-        arr.Remove(index);
         this.Update();
     }
 
@@ -174,32 +160,6 @@ export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetails
         }
 
         return null;
-    }
-
-    private RenderMaqamEntry(piece: PieceDetailsData, maqamAssoc: PieceMaqamAssociation)
-    {
-        const maqam = this.maqamat?.Values().Filter(m => m.id === maqamAssoc.maqamId).First();
-
-        return <tr>
-            <td>
-                <Select onChanged={newValue => maqamAssoc.maqamId = parseInt(newValue[0])}>
-                    {this.maqamat?.map(m => <option value={m.id} selected={m.id === maqamAssoc.maqamId}>{m.name}</option>)}
-                </Select>
-            </td>
-            <td><LineEdit value={maqamAssoc.explanation} onChanged={newValue => maqamAssoc.explanation = newValue} /></td>
-            <td><a onclick={this.RemoveEntry.bind(this, piece.maqamat, maqamAssoc)}><MatIcon>delete</MatIcon></a></td>
-        </tr>;
-    }
-
-    private RenderRhythmEntry(piece: PieceDetailsData, rhythmAssoc: PieceRhythmAssociation)
-    {
-        return <tr>
-            <td>
-                <RhythmSelectionComponent rhythmGroups={this.rhythmGroups!} rhythmId={rhythmAssoc.rhythmId} onSelectionChanged={newValue => rhythmAssoc.rhythmId = newValue} />
-            </td>
-            <td><LineEdit value={rhythmAssoc.explanation} onChanged={newValue => rhythmAssoc.explanation = newValue} /></td>
-            <td><a onclick={this.RemoveEntry.bind(this, piece.rhythms, rhythmAssoc)}><MatIcon>delete</MatIcon></a></td>
-        </tr>;
     }
 
     private UpdateValidation()
@@ -250,12 +210,6 @@ export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetails
 
         const languages = await this.musicalService.ListLanguages();
         this.languages = languages;
-
-        const maqamat = await this.maqamatService.QueryMaqamat();
-        this.maqamat = maqamat;
-
-        const rhythms = await this.rhythmsService.QueryRhythmsGroupedByTimeSigNumerator();
-        this.rhythmGroups = rhythms;
     }
 
     private OnComposerChanged(newValue: number)

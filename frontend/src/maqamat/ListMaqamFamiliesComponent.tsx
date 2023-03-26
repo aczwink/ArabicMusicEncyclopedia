@@ -40,7 +40,21 @@ export class ListMaqamFamiliesComponent extends Component
 
         return <fragment>
             <div className="row">
-                <div className="col pb-2">Maqamat are traditionally grouped into families by their root jins.</div>
+                <div className="col pb-2">
+                    Maqamat are traditionally grouped into families by their root jins.
+                    <br />
+                    <div className="row">
+                        <div className="col">
+                            See other groupings:
+                        </div>
+                        <div className="col">
+                            <Anchor route="maqamat/dominantgrouping">Grouped by dominant interval</Anchor>
+                        </div>
+                        <div className="col">
+                            <Anchor route="maqamat/intervalsgrouping">Grouped by their intervals</Anchor>
+                        </div>
+                    </div>
+                </div>
             </div>
             {this.RenderMaqamFamilies()}
         </fragment>;

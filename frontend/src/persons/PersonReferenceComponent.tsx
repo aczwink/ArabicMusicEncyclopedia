@@ -26,7 +26,7 @@ export class PersonReferenceComponent extends Component<PersonOverviewData>
     {
         const row = this.input;
         return <Anchor route={"/persons/" + row.id}>
-            <img src={g_backendBaseUrl + "/persons/" + row.id + "/image"} className="me-2" style="width: 2rem" />
+            <img src={g_backendBaseUrl + "/persons/" + row.id + "/image"} className="me-2 personrefthumb" />
             {row.name}
         </Anchor>;
     }

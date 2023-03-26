@@ -449,6 +449,7 @@ export class MusicalPiecesController
         SELECT mpm.maqamId, mpm.explanation
         FROM amedb.musical_pieces_maqamat mpm
         WHERE mpm.pieceId = ?
+        ORDER BY mpm.ordering
         `;
 
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
@@ -463,6 +464,7 @@ export class MusicalPiecesController
         SELECT mpr.rhythmId, mpr.explanation
         FROM amedb.musical_pieces_rhythms mpr
         WHERE mpr.pieceId = ?
+        ORDER BY mpr.ordering
         `;
 
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
@@ -476,16 +478,18 @@ export class MusicalPiecesController
         await conn.DeleteRows("amedb.musical_pieces_maqamat", "pieceId = ?", pieceId);
         await conn.DeleteRows("amedb.musical_pieces_rhythms", "pieceId = ?", pieceId);
 
-        await maqamat.Values().Map(assoc => conn.InsertRow("amedb.musical_pieces_maqamat", {
+        await Promise.all(maqamat.map( (assoc, index) => conn.InsertRow("amedb.musical_pieces_maqamat", {
             pieceId,
             maqamId: assoc.maqamId,
-            explanation: assoc.explanation
-        })).PromiseAll();
+            explanation: assoc.explanation,
+            ordering: index
+        })));
 
-        await rhythms.Values().Map(assoc => conn.InsertRow("amedb.musical_pieces_rhythms", {
+        await Promise.all(rhythms.map( (assoc, index) => conn.InsertRow("amedb.musical_pieces_rhythms", {
             pieceId,
             rhythmId: assoc.rhythmId,
-            explanation: assoc.explanation
-        })).PromiseAll();
+            explanation: assoc.explanation,
+            ordering: index
+        })));
     }
 }

@@ -18,11 +18,15 @@
 
 import { Routes } from "acfrontend";
 import { ListMaqamatComponent } from "./ListMaqamatComponent";
+import { ListMaqamatGroupingsByDominantComponent } from "./ListMaqamatGroupingsByDominantComponent";
+import { ListMaqamatGroupingsByIntervalsComponent } from "./ListMaqamatGroupingsByIntervalsComponent";
 import { ListMaqamFamiliesComponent } from "./ListMaqamFamiliesComponent";
 import { MaqamComponent } from "./MaqamComponent";
 
 export const routes : Routes = [
     { path: "families", component: ListMaqamFamiliesComponent},
     { path: "list", component: ListMaqamatComponent},
+    { path: "intervalsgrouping", component: ListMaqamatGroupingsByIntervalsComponent },
+    { path: "dominantgrouping", component: ListMaqamatGroupingsByDominantComponent },
     { path: ":maqamId", component: MaqamComponent },
 ];

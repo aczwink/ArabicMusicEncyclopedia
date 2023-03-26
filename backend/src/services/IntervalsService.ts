@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,14 +18,18 @@
 
 import { Injectable } from "acts-util-node";
 import { Accidental, NaturalNote, OctavePitch } from "ame-api";
-import { JinsData } from "../dataaccess/AjnasController";
-import { MaqamData } from "../dataaccess/MaqamatController";
+import { AjnasController, JinsData } from "../dataaccess/AjnasController";
+import { MaqamatController, MaqamData } from "../dataaccess/MaqamatController";
 import { Fraction } from "../model/Fraction";
 import { Interval } from "../model/Interval";
 
 @Injectable
 export class IntervalsService
 {
+    constructor(private maqamController: MaqamatController, private ajnasController: AjnasController)
+    {
+    }
+
     //Public methods
     public ComputeIntervalsFromPitches(pitches: OctavePitch[])
     {
@@ -92,6 +96,24 @@ export class IntervalsService
             last = next;
             return next;
         }));
+    }
+
+    public async QueryMaqamIntervals(maqamId: number, branchingJinsId: number)
+    {
+        const maqam = await this.maqamController.QueryMaqam(maqamId);
+        if(maqam === undefined)
+            return undefined;
+        
+        const rootJins = await this.ajnasController.QueryJins(maqam.rootJinsId);
+        if(rootJins === undefined)
+            return undefined;
+        const branchingJins = await this.ajnasController.QueryJins(branchingJinsId);
+        if(branchingJins === undefined)
+            return undefined;
+
+        const scaleIntervals = this.GetMaqamIntervals(maqam, rootJins, branchingJins);
+
+        return scaleIntervals;
     }
 
     public To12TET(intervals: Fraction[])

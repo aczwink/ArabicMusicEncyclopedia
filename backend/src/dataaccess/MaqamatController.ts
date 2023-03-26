@@ -34,7 +34,7 @@ export interface MaqamData
     additionalIntervals: Interval[];
 }
 
-interface MaqamOverviewData
+export interface MaqamOverviewData
 {
     id: number;
     name: string;
