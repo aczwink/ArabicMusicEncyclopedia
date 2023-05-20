@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2022-2023 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,8 +17,6 @@
  * */
 import { Injectable } from "acts-util-node";
 import { LilypondRendererService } from "./LilypondRendererService";
-
-const linesPerPage = 48;
 
 @Injectable
 export class LyricsRendererService
@@ -37,6 +35,24 @@ export class LyricsRendererService
         const splitIdx = Math.round(blocks.length / (twoColumns ? 2 : 1));
         const col1Text = this.BlocksToLilypondLines(blocks.slice(0, splitIdx));
         const col2Text = this.BlocksToLilypondLines(blocks.slice(splitIdx));
+
+        const singleColumnCode = `
+            \\column
+            {
+                ${col1Text}
+            }
+        `;
+        const twoColumnCode = `
+            \\hspace #1
+            ${singleColumnCode}
+            \\hspace #2
+            \\column
+            {
+                ${col2Text}
+            }
+            \\hspace #1
+        `;
+        const finalTextCode = (col2Text.length === 0) ? singleColumnCode : twoColumnCode;
 
         const lilypondText = `
 \\version "2.22.0"
@@ -72,17 +88,7 @@ export class LyricsRendererService
         \\huge
         \\fill-line
         {
-            \\hspace #1
-            \\column
-            {
-                ${col1Text}
-            }
-            \\hspace #2
-            \\column
-            {
-                ${col2Text}
-            }
-            \\hspace #1
+            ${finalTextCode}
         }
     }
 }
@@ -101,28 +107,51 @@ export class LyricsRendererService
         return blocks.map(this.BlockToLilypondLines.bind(this)).map(x => x.join("\n")).join("\\line {\\null}");
     }
 
+    private CalcMaxLineLength(blocks: string[][])
+    {
+        return blocks.Values().Map(x => x.Values()).Flatten().Map(x => x.length).OrderByDescending(x => x).First();
+    }
+
     private CalcNumberOfLinesOfBlocks(blocks: string[][])
     {
         const nSpaceLines = blocks.length - 1;
         return blocks.Values().Map(x => x.length).Sum() + nSpaceLines;
     }
 
+    private Clamp(num: number, min: number, max: number)
+    {
+        return Math.min(Math.max(num, min), max);
+    }
+
     private DoLayoutComputation(blocks: string[][])
     {
-        /*
-        36 is a good max size
-        TODO: find good min size
-        26 is actually quite small
-        */
-        const ranges = [
-            { nLines: 0, fontSize: 36, twoColumns: false },
-            { nLines: Number.MAX_SAFE_INTEGER, fontSize: 26, twoColumns: true }
-        ];
-        const nLines = this.CalcNumberOfLinesOfBlocks(blocks);
-        console.log(nLines);
-        const possibleRanges = ranges.Values().Filter(r => r.nLines < nLines).ToArray();
+        const minFontSize = 26;
+        const maxFontSize = 36;
+        const linesPerColumnPerPageAtMaxSize = 25;
+        const linesPerColumnPerPageAtMinSize = 36;
+        const charsPerColumnAtMaxSize = 30;
+        const charsPerColumnAtMinSize = 45;
 
-        return possibleRanges[possibleRanges.length - 1];
+        const maxLineLength = this.CalcMaxLineLength(blocks);
+        const nLines = this.CalcNumberOfLinesOfBlocks(blocks);
+
+        const x = this.Clamp(maxLineLength, charsPerColumnAtMaxSize, charsPerColumnAtMinSize);
+        const wx = (x - charsPerColumnAtMaxSize) / (charsPerColumnAtMinSize - charsPerColumnAtMaxSize);
+
+        const y = this.Clamp(nLines, linesPerColumnPerPageAtMaxSize, linesPerColumnPerPageAtMinSize);
+        const wy = (y - linesPerColumnPerPageAtMaxSize) / (linesPerColumnPerPageAtMinSize - linesPerColumnPerPageAtMaxSize);
+
+        const w = (wx + wy) / 2;
+
+        const fontSize = (1 - w) * maxFontSize + w * minFontSize;
+        const twoColumns = wy > 0.75;
+
+        console.log(maxLineLength, nLines, wx, wy, fontSize);
+
+        return {
+            twoColumns,
+            fontSize
+        };
     }
 
     private SplitIntoBlocks(lyrics: string)
