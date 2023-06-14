@@ -60,7 +60,9 @@ export class MusicalPiecesService
 
     public async AddPieceAttachment(pieceId: number, comment: string, file: File)
     {
-        await this.apiService.attachments.post({ pieceId, comment, file });
+        const result = await this.apiService.attachments.post({ pieceId, comment, file });
+        if(result.statusCode !== 204)
+            alert("Upload of attachment with comment '" + comment + "' failed");
     }
 
     public async ApplyAttachmentChanges(pieceId: number, attachments: AttachmentChangesCollection)

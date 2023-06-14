@@ -50,6 +50,8 @@ export class WikiTextEditComponent extends Component<{ text: string; onChanged: 
 
         element.select();
         element.setSelectionRange(selectionStart + selectionBeginOffset, selectionStart + replacedText.length - selectionEndOffset);
+
+        this.input.onChanged(newText);
     }
 
     private ReplaceSelectionWith(replacedText: string)

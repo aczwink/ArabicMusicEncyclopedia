@@ -22,7 +22,7 @@ import { UploadedFile } from "acts-util-node/dist/http/UploadedFile";
 
 export type AttachmentContentType =
     "application/pdf"
-    | "application/vnd.finale.mus"
+    | "application/vnd.musician"
     | "image/jpeg"
     | "text/x-lilypond";
 
@@ -40,6 +40,10 @@ export class AttachmentTypeService
 
         switch(foundType)
         {
+            case "application/octet-stream":
+                if(uf.originalName.endsWith(".mus") && (uf.mediaType === "application/vnd.musician"))
+                    return uf.mediaType;
+                break;
             case "application/pdf":
             case "image/jpeg":
                 return foundType;
@@ -57,7 +61,7 @@ export class AttachmentTypeService
         {
             case "application/pdf":
                 return "pdf";
-            case "application/vnd.finale.mus":
+            case "application/vnd.musician":
                 return "mus";
             case "image/jpeg":
                 return "jpg";
