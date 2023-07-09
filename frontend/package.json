@@ -6,7 +6,7 @@
   "scripts": {
     "generate-api-and-theme": "npx acts-util-apilib && sass ./design/main.scss dist/site.css",
     "start-dev": "webpack serve --open",
-    "create-release-pkg": "npx webpack && (cd dist && zip -r -9 ame-frontend-release.zip acfrontend.js acts-util-core.js bundle.js emmentaler-26.woff images index.htm site.css)"
+    "create-release-pkg": "npx webpack --config webpack.production.config.js && (cd dist && zip -r -9 ame-frontend-release.zip acfrontend.js acts-util-core.js bundle.js site.css emmentaler-26.woff images index.htm)"
   },
   "keywords": [],
   "author": "Amir Czwink",
@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "acts-util-apilib": "*",
+    "copy-webpack-plugin": "^11.0.0",
     "dotenv-webpack": "^8.0.1",
     "typescript": "^4.4.3",
     "webpack": "^5.52.1",

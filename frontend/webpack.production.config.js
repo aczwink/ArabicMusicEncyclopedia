@@ -1,3 +1,4 @@
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 
 module.exports = {
@@ -18,9 +19,16 @@ module.exports = {
     },
 
     plugins: [
+        new CopyWebpackPlugin({
+            patterns: [
+                { from: 'node_modules/acfrontend/dist/acfrontend.js' },
+                { from: 'node_modules/acts-util-core/dist/acts-util-core.js' },
+                { from: 'static' }
+            ]
+        }),
         new Dotenv({
             path: './.env.production'
-        })
+        }),
     ],
 
     module: {
