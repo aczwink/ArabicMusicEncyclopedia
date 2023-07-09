@@ -4,12 +4,9 @@
   "description": "",
   "main": "dist/app.js",
   "scripts": {
-    "compile": "npx acts-util-apilib && tsc",
-    "build-debug": "npx webpack --config webpack.debug.config.js",
-    "build": "npx webpack",
-    "build-themes": "sass ./design/main.scss dist/site.css",
-    "create-release-pkg": "(cd dist && zip -r -9 ame-frontend-release.zip acfrontend.js acts-util-core.js bundle.js emmentaler-26.woff images index.htm site.css)",
-    "deploy-debug": "ln -s ../index.htm dist/ && ln -s ../node_modules/acts-util-core/dist/acts-util-core.js dist/ && ln -s ../node_modules/acfrontend/dist/acfrontend.js dist/ && ln -s ../node_modules/acfrontend/dist/clean.css dist/ && ln -s ../emmentaler-26.woff dist/ && ln -s ../images dist/"
+    "generate-api-and-theme": "npx acts-util-apilib && sass ./design/main.scss dist/site.css",
+    "start-dev": "webpack serve --open",
+    "create-release-pkg": "npx webpack && (cd dist && zip -r -9 ame-frontend-release.zip acfrontend.js acts-util-core.js bundle.js emmentaler-26.woff images index.htm site.css)"
   },
   "keywords": [],
   "author": "Amir Czwink",
@@ -26,6 +23,7 @@
     "dotenv-webpack": "^8.0.1",
     "typescript": "^4.4.3",
     "webpack": "^5.52.1",
-    "webpack-cli": "^4.8.0"
+    "webpack-cli": "^4.8.0",
+    "webpack-dev-server": "^4.15.1"
   }
 }

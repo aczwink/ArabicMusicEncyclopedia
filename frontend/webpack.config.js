@@ -1,27 +1,18 @@
 const Dotenv = require('dotenv-webpack');
+const path = require('path');
 
 module.exports = {
-    mode: "production",
-
+    mode: 'development',
     entry: "./src/app.ts",
+
     output: {
-        path: __dirname + "/dist",
-        filename: "bundle.js",
-      },
-
-    // Enable sourcemaps for debugging webpack's output.
-    devtool: "inline-source-map",
-
-    resolve: {
-        // Add '.ts' and '.tsx' as resolvable extensions.
-        extensions: [".ts", ".tsx", ".js"]
+        filename: 'bundle.js',
+        path: path.resolve(__dirname, 'dist'),
     },
 
-    plugins: [
-        new Dotenv({
-            path: './.env.production'
-        })
-    ],
+    resolve: {
+        extensions: [".ts", ".tsx", ".js"],
+    },
 
     module: {
         rules: [
@@ -43,12 +34,27 @@ module.exports = {
         ]
     },
 
-    // When importing a module whose path matches one of the following, just
-    // assume a corresponding global variable exists and use that instead.
-    // This is important because it allows us to avoid bundling all of our
-    // dependencies, which allows browsers to cache those libraries between builds.
-    externals: {
-        "acfrontend": "window",
-        "acts-util-core": "window",
-    }
+    plugins: [
+        new Dotenv(),
+    ],
+
+    devServer: {
+        historyApiFallback: {
+            index: 'index.htm'
+        },
+        
+        static: [
+            {
+                directory: path.join(__dirname, 'static'),
+                publicPath: '/',
+            },
+            {
+                directory: path.join(__dirname, 'dist/site.css'),
+                publicPath: '/site.css',
+            },
+        ],
+        port: 8081,
+    },
+
+    devtool: "inline-source-map",
 };

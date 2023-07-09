@@ -49,7 +49,7 @@ export class ShowMusicalPieceComponent extends Component
         this.form = null;
         this.composer = null;
         this.language = null;
-        this.singer = null;
+        this.singers = null;
         this.lyricist = null;
         this.maqamat = null;
         this.rhythms = null;
@@ -137,7 +137,7 @@ export class ShowMusicalPieceComponent extends Component
     private form: Form | null;
     private composer: Person | null;
     private language: Language | null;
-    private singer: Person | null;
+    private singers: Person[] | null;
     private lyricist: Person | null;
     private maqamat: Association[] | null;
     private rhythms: Association[] | null;
@@ -149,13 +149,19 @@ export class ShowMusicalPieceComponent extends Component
         if(lyrics === undefined)
             return null;
 
-        if((this.language === null) || (this.singer === null) || (this.lyricist === null))
+        if((this.language === null) || (this.singers === null) || (this.lyricist === null))
             return <ProgressSpinner />;
 
         return <fragment>
             <tr>
-                <th>Singer</th>
-                <td><PersonReferenceComponent id={this.piece!.lyrics!.singerId} name={this.singer.name} /></td>
+                <th>Singers</th>
+                <td>
+                    <div className="col">
+                    {this.piece!.lyrics!.singerIds.map( (singerId, idx) => <div className="row">
+                        <PersonReferenceComponent id={singerId} name={this.singers![idx].name} />
+                    </div>)}
+                    </div>
+                </td>
             </tr>
             <tr>
                 <th>Songwriter</th>
@@ -202,8 +208,7 @@ export class ShowMusicalPieceComponent extends Component
             const languages = await this.musicalService.ListLanguages();
             this.language = languages.Values().Filter(x => x.id === result.lyrics!.languageId).First();
 
-            const singer = await this.personsService.QueryPerson(result.lyrics.singerId);
-            this.singer = singer;
+            this.singers = await Promise.all(result.lyrics.singerIds.map(singerId => this.personsService.QueryPerson(singerId)));
 
             const lyricist = await this.personsService.QueryPerson(result.lyrics.lyricistId);
             this.lyricist = lyricist;

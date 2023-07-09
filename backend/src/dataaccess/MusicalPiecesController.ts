@@ -54,7 +54,7 @@ export interface PieceOverviewData
 interface PieceLyrics
 {
     lyricistId: number;
-    singerId: number;
+    singerIds: number[];
     languageId: number;
     lyricsText: string;
 }
@@ -144,6 +144,7 @@ export class MusicalPiecesController
         const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
 
         await conn.DeleteRows("amedb.musical_pieces_lyrics", "pieceId = ?", pieceId);
+        await conn.DeleteRows("amedb.musical_pieces_singers", "pieceId = ?", pieceId);
     }
 
     public async QueryAttachment(attachmentId: number)
@@ -232,7 +233,6 @@ export class MusicalPiecesController
 
         const result = await conn.UpdateRows("amedb.musical_pieces_lyrics", {
             lyricistId: data.lyricistId,
-            singerId: data.singerId,
             languageId: data.languageId,
             lyrics: data.lyricsText,
         }, "pieceId = ?", pieceId);
@@ -242,9 +242,17 @@ export class MusicalPiecesController
             await conn.InsertRow("amedb.musical_pieces_lyrics", {
                 pieceId,
                 lyricistId: data.lyricistId,
-                singerId: data.singerId,
                 languageId: data.languageId,
                 lyrics: data.lyricsText,
+            });
+        }
+
+        await conn.DeleteRows("amedb.musical_pieces_singers", "pieceId = ?", pieceId);
+        for (const singerId of data.singerIds)
+        {
+            await conn.InsertRow("amedb.musical_pieces_singers", {
+                pieceId,
+                singerId
             });
         }
     }
@@ -288,13 +296,24 @@ export class MusicalPiecesController
             }]
         });
 
+        const mps = builder.AddJoin({
+            type: "LEFT",
+            tableName: "amedb.musical_pieces_singers",
+            conditions: [{
+                column: "pieceId",
+                operator: "=",
+                joinTable: mp,
+                joinTableColumn: "id"
+            }]
+        });
+
         const ps = builder.AddJoin({
             type: "LEFT",
             tableName: "amedb.persons",
             conditions: [{
                 column: "id",
                 operator: "=",
-                joinTable: mpl,
+                joinTable: mps,
                 joinTableColumn: "singerId"
             }]
         });
@@ -306,7 +325,7 @@ export class MusicalPiecesController
             { table: mp, column: "releaseDate"},
             { table: mpf, column: "name AS formName"},
             { table: pc, column: "name AS composerName"},
-            { table: mpl, column: "singerId"},
+            { table: mps, column: "singerId"},
             { table: ps, column: "name AS singerName"}
         ]);
 
@@ -350,7 +369,7 @@ export class MusicalPiecesController
         if(filterCriteria.singerId !== null)
         {
             builder.AddCondition({
-                table: mpl,
+                table: mps,
                 column: "singerId",
                 operator: "=",
                 constant: filterCriteria.singerId
@@ -425,7 +444,7 @@ export class MusicalPiecesController
     private async QueryPieceLyrics(pieceId: number): Promise<PieceLyrics | undefined>
     {
         const query = `
-        SELECT mpl.languageId, mpl.lyricistId, mpl.singerId, mpl.lyrics
+        SELECT mpl.languageId, mpl.lyricistId, mpl.lyrics
         FROM amedb.musical_pieces_lyrics mpl
         WHERE mpl.pieceId = ?
         `;
@@ -435,11 +454,15 @@ export class MusicalPiecesController
 
         if(row === undefined)
             return undefined;
+
+        const singerRows = await conn.Select("SELECT singerId FROM amedb.musical_pieces_singers WHERE pieceId = ?", pieceId);
+
+
         return {
             languageId: row.languageId,
             lyricistId: row.lyricistId,
             lyricsText: row.lyrics,
-            singerId: row.singerId,
+            singerIds: singerRows.map(x => x.singerId)
         };
     }
 

@@ -51,7 +51,7 @@ export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetails
                     languageId: 1,
                     lyricistId: 0,
                     lyricsText: "",
-                    singerId: 0,
+                    singerIds: []
                 };
         }
         else
@@ -147,12 +147,10 @@ export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetails
                         {this.languages!.map(language => <option value={language.id} selected={language.id === lyrics.languageId}>{language.name}</option>)}
                     </Select>
                 </FormField>
-                <FormField title="Singer">
-                    <SinglePersonSelectionComponent selected={lyrics.singerId === 0 ? undefined : lyrics.singerId} onSelectionChanged={this.OnSingerChanged.bind(this)} />
-                </FormField>
                 <FormField title="Songwriter">
                     <SinglePersonSelectionComponent selected={lyrics.lyricistId === 0 ? undefined : lyrics.lyricistId} onSelectionChanged={this.OnSongWriterChanged.bind(this)} />
                 </FormField>
+                {this.RenderSingers(lyrics.singerIds)}
                 <FormField title="Lyrics">
                     <Textarea value={lyrics.lyricsText} onChanged={newValue => lyrics.lyricsText = newValue} />
                 </FormField>
@@ -162,10 +160,23 @@ export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetails
         return null;
     }
 
+    private RenderSingers(singerIds: number[])
+    {
+        return <fragment>
+            <h3>Singers</h3>
+                {singerIds.map( (singerId, idx) => <div className="row">
+                    <div className="col"><SinglePersonSelectionComponent selected={singerId === 0 ? undefined : singerId} onSelectionChanged={this.OnSingerChanged.bind(this, idx)} /></div>
+                    <div className="col-auto"><button type="button" className="btn btn-danger" onclick={this.OnRemoveSinger.bind(this, idx)}><MatIcon>delete</MatIcon></button></div>
+                </div>
+            )}
+            <button className="btn btn-primary" type="button" onclick={this.OnAddSinger.bind(this)}><MatIcon>add</MatIcon></button>
+        </fragment>;
+    }
+
     private UpdateValidation()
     {
         const piece = this.input.piece;
-        const areLyricsValid = (piece.lyrics !== undefined) ? ((piece.lyrics.lyricistId !== 0) && (piece.lyrics.singerId !== 0)) : true;
+        const areLyricsValid = (piece.lyrics !== undefined) ? ((piece.lyrics.lyricistId !== 0) && (!piece.lyrics.singerIds.includes(0))) : true;
         const canSave = (piece.composerId !== 0) && areLyricsValid;
 
         this.input.onValidationUpdated(canSave);
@@ -175,6 +186,14 @@ export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetails
     private OnAddAttachment()
     {
         this.popupManager.OpenDialog(<AddAttachmentComponent onSuccess={this.OnAttachmentAdded.bind(this)} />, { title: "Upload attachment" });
+    }
+
+    private OnAddSinger()
+    {
+        this.input.piece.lyrics?.singerIds.push(0);
+
+        this.Update();
+        this.UpdateValidation();
     }
 
     private OnAttachmentAdded(attachment: Attachment)
@@ -218,9 +237,17 @@ export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetails
         this.UpdateValidation();
     }
 
-    private OnSingerChanged(newValue: number)
+    private OnRemoveSinger(index: number)
     {
-        this.input.piece.lyrics!.singerId = newValue;
+        this.input.piece.lyrics?.singerIds.Remove(index);
+
+        this.Update();
+        this.UpdateValidation();
+    }
+
+    private OnSingerChanged(index: number, newValue: number)
+    {
+        this.input.piece.lyrics!.singerIds[index] = newValue;
         this.UpdateValidation();
     }
 

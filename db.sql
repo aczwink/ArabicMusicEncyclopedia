@@ -1,8 +1,8 @@
--- MariaDB dump 10.19  Distrib 10.6.11-MariaDB, for debian-linux-gnu (x86_64)
+-- MariaDB dump 10.19  Distrib 10.6.12-MariaDB, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: amedb
 -- ------------------------------------------------------
--- Server version	10.6.11-MariaDB-0ubuntu0.22.04.1
+-- Server version	10.6.12-MariaDB-0ubuntu0.22.10.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -180,17 +180,14 @@ DROP TABLE IF EXISTS `musical_pieces_lyrics`;
 CREATE TABLE `musical_pieces_lyrics` (
   `pieceId` int(10) unsigned NOT NULL,
   `lyricistId` int(10) unsigned NOT NULL,
-  `singerId` int(10) unsigned NOT NULL,
   `languageId` int(10) unsigned NOT NULL,
   `lyrics` text NOT NULL,
   PRIMARY KEY (`pieceId`),
   KEY `musical_pieces_lyrics_lyricistId` (`lyricistId`),
-  KEY `musical_pieces_lyrics_singerId` (`singerId`),
   KEY `musical_pieces_lyrics_languageId` (`languageId`),
   CONSTRAINT `musical_pieces_lyrics_languageId` FOREIGN KEY (`languageId`) REFERENCES `musical_pieces_languages` (`id`),
   CONSTRAINT `musical_pieces_lyrics_lyricistId` FOREIGN KEY (`lyricistId`) REFERENCES `persons` (`id`),
-  CONSTRAINT `musical_pieces_lyrics_pieceId` FOREIGN KEY (`pieceId`) REFERENCES `musical_pieces` (`id`),
-  CONSTRAINT `musical_pieces_lyrics_singerId` FOREIGN KEY (`singerId`) REFERENCES `persons` (`id`)
+  CONSTRAINT `musical_pieces_lyrics_pieceId` FOREIGN KEY (`pieceId`) REFERENCES `musical_pieces` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -231,6 +228,23 @@ CREATE TABLE `musical_pieces_rhythms` (
   KEY `musical_pieces_rhythms_rhythmId` (`rhythmId`),
   CONSTRAINT `musical_pieces_rhythms_pieceId` FOREIGN KEY (`pieceId`) REFERENCES `musical_pieces` (`id`),
   CONSTRAINT `musical_pieces_rhythms_rhythmId` FOREIGN KEY (`rhythmId`) REFERENCES `rhythms` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `musical_pieces_singers`
+--
+
+DROP TABLE IF EXISTS `musical_pieces_singers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `musical_pieces_singers` (
+  `pieceId` int(10) unsigned NOT NULL,
+  `singerId` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`pieceId`,`singerId`),
+  KEY `musical_pieces_singers_singerId` (`singerId`),
+  CONSTRAINT `musical_pieces_singers_pieceId` FOREIGN KEY (`pieceId`) REFERENCES `musical_pieces` (`id`),
+  CONSTRAINT `musical_pieces_singers_singerId` FOREIGN KEY (`singerId`) REFERENCES `persons` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -323,4 +337,4 @@ CREATE TABLE `rhythms_timeSigs` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-20 23:00:35
+-- Dump completed on 2023-07-06 13:17:14
