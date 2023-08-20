@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -63,6 +63,31 @@ export const lineFormatters: LineFormatter[] = [
     { prefix: "* ", type: CurrentListType.UnnumberedList, format: (formatted: SingleRenderValue[]) => <fragment>{formatted}</fragment> },
     { prefix: "=== ", suffix: " ===", type: CurrentListType.None, format: (formatted: SingleRenderValue[]) => <h3>{formatted}</h3> },
     { prefix: "== ", suffix: " ==", type: CurrentListType.None, format: (formatted: SingleRenderValue[]) => <h2>{formatted}</h2> },
+    { prefix: "| ", suffix: " |", type: CurrentListType.Table, format: (formatted: SingleRenderValue[]) => {
+        const cells = [];
+        for (const entry of formatted)
+        {
+            if(typeof entry === "string")
+            {
+                const subEntries = entry.split(" | ").map(x => x.trim()).filter(x => x.length > 0);
+                cells.push(...subEntries);
+            }
+            else
+                cells.push(entry);
+        }
+
+        function IsSeperator(value: any)
+        {
+            return (typeof value === "string") && value.ReplaceAll("-", "").length === 0;
+        }
+
+        if(cells.Values().Map(IsSeperator).All())
+        {
+            return "thead-tbody-seperator";
+        }
+
+        return <tr>{cells.map(x => <td>{x}</td>)}</tr>;
+    }},
 ];
 
 export const inlineFormatters = [
@@ -84,6 +109,11 @@ export const inlineFormatters = [
                         {parts[1]}
                     </div>
                 </div>;
+            }
+            else if(content.includes("|"))
+            {
+                const parts = content.split("|");
+                return <Anchor route={"/wiki/" + parts[0]}>{parts[1]}</Anchor>;
             }
 
             const title = content;

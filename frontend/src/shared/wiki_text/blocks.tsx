@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,6 +24,7 @@ export enum CurrentListType
     NumberedList,
     Paragraph,
     UnnumberedList,
+    Table
 }
 
 class Block
@@ -57,6 +58,41 @@ class Block
                 return <p>{this.entries as any}</p>;
             case CurrentListType.UnnumberedList:
                 return <ul>{this.entries.map(elem => <li>{elem}</li>)}</ul>;
+            case CurrentListType.Table:
+            {
+                const sepIdx = this.entries.indexOf("thead-tbody-seperator");
+                const head = this.entries.splice(0, sepIdx);
+                const body = this.entries.splice(sepIdx);
+
+                function td2th(x: RenderValue)
+                {
+                    if( (x === null) || (x === undefined) )
+                        return;
+                    if(typeof x === "boolean")
+                        return;
+                    if(typeof x === "number")
+                        return;
+                    if(typeof x === "string")
+                        return;
+
+                    if(Array.isArray(x))
+                        x.forEach(td2th);
+                    else if(x.type === "tr")
+                        x.children.forEach(td2th);
+                    else if(x.type === "td")
+                        x.type = "th";
+                }
+                head.forEach(td2th);
+                
+                return <table className="table table-striped">
+                    <thead>
+                        {head}
+                    </thead>
+                    <tbody>
+                        {body}
+                    </tbody>
+                </table>;
+            }
         }
     }
     

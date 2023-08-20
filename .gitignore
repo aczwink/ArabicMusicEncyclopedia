@@ -1,5 +1,6 @@
 api/dist/
 api/node_modules/
+api/package-lock.json
 backend/dist/
 backend/node_modules/
 backend/.env

@@ -17,7 +17,6 @@
  * */
 import fs from "fs";
 import http from "http";
-import os from "os";
 
 import { OpenAPI } from "acts-util-core";
 import { Factory, GlobalInjector, HTTP } from "acts-util-node";

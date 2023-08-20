@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
-
+import fs from "fs";
 import { DBConnectionPool, DBFactory, DBResource, Injectable } from "acts-util-node";
 
 @Injectable
@@ -63,11 +63,13 @@ export class DatabaseController
         {
             const factory = new DBFactory;
 
+            const dbPw = await fs.promises.readFile("/run/secrets/dbpw", "utf-8");
+
             this.pool = await factory.CreateConnectionPool({
                 type: "mysql",
                 host: process.env.AME_DB_HOST!,
                 username: process.env.AME_DB_USER!,
-                password: process.env.AME_DB_PW!
+                password: dbPw
             });
         }
         return this.pool;

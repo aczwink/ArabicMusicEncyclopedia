@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -65,7 +65,9 @@ class PersonAPIController
         {
             const emptyImage = Buffer.from("R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==", "base64");
             return Ok(emptyImage, {
-                "Content-Type": "image/gif"
+                "Content-Type": {
+                    mediaType: "image/gif"
+                }
             });
         }
         return image;
