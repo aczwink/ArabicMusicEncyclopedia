@@ -235,6 +235,10 @@ tal_semi =
 
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%% Left-handed taks %%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 til =
 {
@@ -247,7 +251,50 @@ til_noBeam =
 	g'16\noBeam
 }
 
+tifl =
+{
+	\override Stem.direction = #UP
+	g'32
+}
 
+
+%%%%%%%%%%%%%%%%%%
+%%%%%% Saks %%%%%%
+%%%%%%%%%%%%%%%%%%
+sa =
+{
+	\override Stem.direction = #UP
+	\override NoteHead.style = #'cross
+	d''8
+	\revert NoteHead.style
+}
+saf =
+{
+	\override Stem.direction = #UP
+	\override NoteHead.style = #'cross
+	d''16
+	\revert NoteHead.style
+}
+
+
+
+%%%%%%%%%%%%%%%%%%
+%%%%%% Baqs %%%%%%
+%%%%%%%%%%%%%%%%%%
+ba =
+{
+	\override Stem.direction = #UP
+	\override NoteHead.style = #'harmonic
+	g'8
+	\revert NoteHead.style
+}
+baf =
+{
+	\override Stem.direction = #UP
+	\override NoteHead.style = #'harmonic
+	g'16
+	\revert NoteHead.style
+}
 
 
 
