@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -51,12 +51,35 @@ export class MapComponent extends Component<{ usages: RhythmCountryUsage[] }>
                 "sy": "path4439",
                 "tr": "path4419",
             };
-
-            doc.getElementById(codesToPathsMap[countryCode])?.setAttribute("fill", color);
+            const elementId = (codesToPathsMap as any)[countryCode];
+            doc.getElementById(elementId)?.setAttribute("fill", color);
         }
         else
         {
-            throw new Error("Method not implemented.");
+            function SetFillOnElement(element: Element)
+            {
+                const styleParts = element.getAttribute("style")?.split(";") ?? [];
+                const styleValues = styleParts.map(x => {
+                    const parts = x.split(":");
+                    return { key: parts[0], value: parts[1] };
+                });
+
+                const fill = styleValues.find(x => x.key === "fill");
+                if(fill === undefined)
+                    styleValues.push({ key: "fill", value: color });
+                else
+                    fill.value = color;
+
+                const styleLine = styleValues.map(x => x.key + ":" + x.value).join(";");
+                element.setAttribute("style", styleLine);
+            }
+
+            const element = doc.getElementById(countryCode);
+            if(element === null)
+                throw new Error("MISSING COUNTRY: " + countryCode);
+            SetFillOnElement(element);
+            for(let child = element.firstElementChild; child !== null; child = child?.nextElementSibling ?? null)
+                SetFillOnElement(child!);
         }
     }
 
@@ -78,6 +101,12 @@ export class MapComponent extends Component<{ usages: RhythmCountryUsage[] }>
     }
 
     //Event handlers
+    override OnInitiated(): void
+    {
+        if(this.input.usages.find(x => x.countryCode === "tn"))
+            this.usageImage = "arabicworld";
+    }
+
     private OnMapLoaded(event: Event)
     {
         const doc = (event.target as HTMLObjectElement).getSVGDocument()!;

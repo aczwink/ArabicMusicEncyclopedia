@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,6 +21,7 @@ import { Person } from "../../dist/api";
 import { g_backendBaseUrl } from "../backend";
 import { WikiTextComponent } from "../shared/WikiTextComponent";
 import { PersonsService } from "./PersonsService";
+import { MapComponent } from "../shared/MapComponent";
 
 
 @Injectable
@@ -39,6 +40,7 @@ export class ShowPersonComponent extends Component
         if(this.data === null)
             return <ProgressSpinner />;
 
+        const usages = this.data.countryCodes.map(cc => ({ countryCode: cc, usage: 1 }));
         return <fragment>
             <h1>
                 {this.data.name}
@@ -59,6 +61,7 @@ export class ShowPersonComponent extends Component
                     </tr>
                 </table>
                 <WikiTextComponent text={this.data.text} />
+                <MapComponent usages={usages} />
             </div>
         </fragment>;
     }
