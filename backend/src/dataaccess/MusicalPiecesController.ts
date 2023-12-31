@@ -330,8 +330,10 @@ export class MusicalPiecesController
         ]);
 
         builder.AddCondition({
-            table: mp,
-            column: "name",
+            operand: {
+                table: mp,
+                column: "name",
+            },
             operator: "LIKE",
             constant: "%" + filterCriteria.titleFilter + "%"
         });
@@ -339,8 +341,10 @@ export class MusicalPiecesController
         if(filterCriteria.formId !== null)
         {
             builder.AddCondition({
-                table: mp,
-                column: "formId",
+                operand: {
+                    table: mp,
+                    column: "formId",
+                },
                 operator: "=",
                 constant: filterCriteria.formId
             });
@@ -349,8 +353,10 @@ export class MusicalPiecesController
         if(filterCriteria.composerId !== null)
         {
             builder.AddCondition({
-                table: mp,
-                column: "composerId",
+                operand: {
+                    table: mp,
+                    column: "composerId",
+                },
                 operator: "=",
                 constant: filterCriteria.composerId
             });
@@ -359,8 +365,10 @@ export class MusicalPiecesController
         if(filterCriteria.lyricistId !== null)
         {
             builder.AddCondition({
-                table: mpl,
-                column: "lyricistId",
+                operand: {
+                    table: mpl,
+                    column: "lyricistId",
+                },
                 operator: "=",
                 constant: filterCriteria.lyricistId
             });
@@ -369,8 +377,10 @@ export class MusicalPiecesController
         if(filterCriteria.singerId !== null)
         {
             builder.AddCondition({
-                table: mps,
-                column: "singerId",
+                operand: {
+                    table: mps,
+                    column: "singerId",
+                },
                 operator: "=",
                 constant: filterCriteria.singerId
             });

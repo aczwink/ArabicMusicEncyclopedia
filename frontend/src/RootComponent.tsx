@@ -29,6 +29,7 @@ export class RootComponent extends Component
                     <NavItem route="/maqamat/families">Maqam families</NavItem>
                     <NavItem route="/maqamat/list">Maqamat</NavItem>
                     <NavItem route="/rhythms">Rhythms</NavItem>
+                    <NavItem route="/instruments">Instruments</NavItem>
                 </ul>
                 <ul className="nav nav-pills">
                     <NavItem route="/persons">Composers / Lyricists / Singers</NavItem>
