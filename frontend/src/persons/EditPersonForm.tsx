@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2024 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -79,7 +79,7 @@ export class EditPersonForm extends Component<{ person: Person; saveButtonText: 
 
     private RenderLocations()
     {
-        const allCodes: CountryCode[] = ["eg", "iq", "lb", "sy", "tn", "tr"];
+        const allCodes: CountryCode[] = ["eg", "gr", "iq", "lb", "sy", "tn", "tr"];
 
         return allCodes.map(code => {
             const checked = this.person!.countryCodes.Contains(code);

@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2024 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -45,14 +45,16 @@ export class MapComponent extends Component<{ usages: RhythmCountryUsage[] }>
         if(this.usageImage === "levant")
         {
             const codesToPathsMap = {
-                "eg": "path4341",
-                "iq": "path4635",
-                "lb": "path4547",
-                "sy": "path4439",
-                "tr": "path4419",
+                "eg": ["path4341"],
+                "gr": ["path4685", "path4709", "path4827"],
+                "iq": ["path4635"],
+                "lb": ["path4547"],
+                "sy": ["path4439"],
+                "tr": ["path4419"],
             };
-            const elementId = (codesToPathsMap as any)[countryCode];
-            doc.getElementById(elementId)?.setAttribute("fill", color);
+            const elementIds = (codesToPathsMap as any)[countryCode] as string[];
+            for (const elementId of elementIds)
+                doc.getElementById(elementId)?.setAttribute("fill", color);
         }
         else
         {
@@ -113,6 +115,8 @@ export class MapComponent extends Component<{ usages: RhythmCountryUsage[] }>
 
         for (const usage of this.input.usages)
         {
+            if(usage.countryCode === null)
+                continue;
             const color = this.Mix(0xB9B9B9, 0x346733, usage.usage)
             this.Colorize(doc, usage.countryCode, "#" + color.toString(16));
         }

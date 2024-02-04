@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2023 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2023-2024 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,7 +32,7 @@ export class OudFingerBoardComponent extends Component
 
     protected Render(): RenderValue
     {
-        const tuning: Pitch[] = ["C", "F", "A", "D", "G", "C"];
+        const tuning: Pitch[] = ["C", "F", "A", "D", "G", "C", "F"];
         return <fragment>
             <h2>Oud finger board</h2>
             <table className="table table-striped-columns table-hover">
