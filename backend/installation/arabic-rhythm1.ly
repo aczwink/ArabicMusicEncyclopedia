@@ -181,6 +181,11 @@ ti_iii =
 	\override Stem.direction = #UP
 	b'16-3
 }
+ti_iii_closeBeam =
+{
+	\override Stem.direction = #UP
+	b'16-3]
+}
 
 tif_i =
 {
