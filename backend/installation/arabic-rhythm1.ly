@@ -246,6 +246,13 @@ saf =
 %%%%%%%%%%%%%%%%%%
 %%%%%% Baqs %%%%%%
 %%%%%%%%%%%%%%%%%%
+baq =
+{
+	\override Stem.direction = #UP
+	\override NoteHead.style = #'harmonic
+	b'4
+	\revert NoteHead.style
+}
 ba =
 {
 	\override Stem.direction = #UP

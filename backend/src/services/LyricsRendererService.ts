@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2022-2023 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2022-2024 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,6 +18,12 @@
 import { Injectable } from "acts-util-node";
 import { LilypondRendererService } from "./LilypondRendererService";
 
+interface PageState
+{
+    leftCol: (string | null)[];
+    rightCol: (string | null)[];
+}
+
 @Injectable
 export class LyricsRendererService
 {
@@ -30,29 +36,10 @@ export class LyricsRendererService
     {
         const blocks = this.SplitIntoBlocks(lyrics);
 
-        const { twoColumns, fontSize } = this.DoLayoutComputation(blocks);
+        const { twoColumns, fontSize, linesPerPage } = this.DoLayoutComputation(blocks);
 
-        const splitIdx = Math.round(blocks.length / (twoColumns ? 2 : 1));
-        const col1Text = this.BlocksToLilypondLines(blocks.slice(0, splitIdx));
-        const col2Text = this.BlocksToLilypondLines(blocks.slice(splitIdx));
-
-        const singleColumnCode = `
-            \\column
-            {
-                ${col1Text}
-            }
-        `;
-        const twoColumnCode = `
-            \\hspace #1
-            ${singleColumnCode}
-            \\hspace #2
-            \\column
-            {
-                ${col2Text}
-            }
-            \\hspace #1
-        `;
-        const finalTextCode = (col2Text.length === 0) ? singleColumnCode : twoColumnCode;
+        const pageBlocks = this.SplitBlocksOntoPages(blocks, twoColumns, linesPerPage);
+        const pageRendered = pageBlocks.map(this.RenderPage.bind(this));
 
         const lilypondText = `
 \\version "2.22.0"
@@ -79,32 +66,15 @@ export class LyricsRendererService
     title = \\markup \\naskh_bold "${pieceName}"
     composer = \\markup \\naskh_composer "${composerName}"
 }
-
-\\markup
-{
-    \\override #'(font-name . "Noto Naskh Arabic")
-    {
-        \\override #'(text-direction . -1)
-        \\huge
-        \\fill-line
-        {
-            ${finalTextCode}
-        }
-    }
-}
+${pageRendered.join("\n")}
         `;
         return await this.lilypondRendererService.Render(lilypondText, "pdf");
     }
 
     //Private methods
-    private BlockToLilypondLines(block: string[])
+    private BlockToLilypondLines(block: (string | null)[])
     {
-        return block.map(x => "\\right-align\\line {" + x + "}");
-    }
-
-    private BlocksToLilypondLines(blocks: string[][])
-    {
-        return blocks.map(this.BlockToLilypondLines.bind(this)).map(x => x.join("\n")).join("\\line {\\null}");
+        return block.map( x => "\\right-align\\line {" + ((x === null) ? "\\null" : x) + "}");
     }
 
     private CalcMaxLineLength(blocks: string[][])
@@ -143,15 +113,129 @@ export class LyricsRendererService
 
         const w = (wx + wy) / 2;
 
-        const fontSize = (1 - w) * maxFontSize + w * minFontSize;
-        const twoColumns = wy > 0.75;
+        let fontSize = (1 - w) * maxFontSize + w * minFontSize;
+        let wFontSize = (fontSize - minFontSize) / (maxFontSize - minFontSize);
+        let charsPerColumnAtFontSize = (1 - wFontSize) * charsPerColumnAtMinSize + wFontSize * charsPerColumnAtMaxSize;
 
-        console.log(maxLineLength, nLines, wx, wy, fontSize);
+        const twoColumnsWorthConsidering = (wy > 0.75);
+        let twoColumns = false;
+        if(twoColumnsWorthConsidering)
+        {
+            let fontSizeTemp = fontSize;
+            let charsPerColumnAtFontSizeTemp = charsPerColumnAtFontSize;
+            while((charsPerColumnAtFontSizeTemp >= maxLineLength) && (fontSizeTemp > minFontSize))
+            {
+                fontSizeTemp--;
+                const wFontSize = (fontSize - minFontSize) / (maxFontSize - minFontSize);
+                charsPerColumnAtFontSizeTemp = (1 - wFontSize) * charsPerColumnAtMinSize + wFontSize * charsPerColumnAtMaxSize;
+            }
+            twoColumns = (charsPerColumnAtFontSizeTemp >= maxLineLength);
+            if(twoColumns)
+            {
+                fontSize = Math.max(fontSizeTemp, minFontSize);
+                wFontSize = (fontSize - minFontSize) / (maxFontSize - minFontSize);
+                charsPerColumnAtFontSize = (1 - wFontSize) * charsPerColumnAtMinSize + wFontSize * charsPerColumnAtMaxSize;
+            }
+        }
+
+        const linesPerPage = Math.round((1 - wFontSize) * linesPerColumnPerPageAtMinSize + wFontSize * linesPerColumnPerPageAtMaxSize);
+
+        console.log(twoColumns, maxLineLength, nLines, wx, wy, fontSize, charsPerColumnAtFontSize, linesPerPage);
 
         return {
             twoColumns,
-            fontSize
+            fontSize,
+            linesPerPage
         };
+    }
+
+    private RenderPage(page: PageState)
+    {
+        const col1Text = this.BlockToLilypondLines(page.leftCol).join("\n");
+        const col2Text = this.BlockToLilypondLines(page.rightCol).join("\n");
+
+        const singleColumnCode = `
+            \\column
+            {
+                ${col1Text}
+            }
+        `;
+        const twoColumnCode = `
+            \\hspace #1
+            ${singleColumnCode}
+            \\hspace #2
+            \\column
+            {
+                ${col2Text}
+            }
+            \\hspace #1
+        `;
+        const finalTextCode = (col2Text.length === 0) ? singleColumnCode : twoColumnCode;
+
+        return `
+\\markup
+{
+    \\override #'(font-name . "Noto Naskh Arabic")
+    {
+        \\override #'(text-direction . -1)
+        \\huge
+        \\fill-line
+        {
+            ${finalTextCode}
+        }
+    }
+}
+        `;
+    }
+
+    private SplitBlocksOntoPages(blocks: string[][], twoColumns: boolean, linesPerPage: number)
+    {
+        if(twoColumns)
+            linesPerPage -= 2; //else the text overlaps the composer name
+
+        let pageState: PageState = {
+            leftCol: [],
+            rightCol: []
+        };
+        const pages: PageState[] = [];
+        function AddBlock(block: string[])
+        {
+            let addTo = pageState.leftCol;
+            if((pageState.leftCol.length + block.length) > linesPerPage)
+            {
+                if(twoColumns && ((pageState.rightCol.length + block.length) > linesPerPage))
+                {
+                    pages.push(pageState);
+                    pageState = {
+                        leftCol: [],
+                        rightCol: []
+                    };
+                    addTo = pageState.leftCol;
+                }
+                else if(twoColumns)
+                {
+                    addTo = pageState.rightCol;
+                }
+                else
+                {
+                    pages.push(pageState);
+                    pageState = {
+                        leftCol: [],
+                        rightCol: []
+                    };
+                    addTo = pageState.leftCol;
+                }
+            }
+            
+            addTo.push(...block);
+            addTo.push(null); //end of block
+        }
+
+        blocks.forEach(AddBlock);
+        if(pageState.leftCol.length > 0)
+            pages.push(pageState);
+
+        return pages;
     }
 
     private SplitIntoBlocks(lyrics: string)
