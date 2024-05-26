@@ -240,6 +240,13 @@ saf =
 	b'16
 	\revert NoteHead.style
 }
+saff =
+{
+	\override Stem.direction = #UP
+	\override NoteHead.style = #'cross
+	b'32
+	\revert NoteHead.style
+}
 
 
 
