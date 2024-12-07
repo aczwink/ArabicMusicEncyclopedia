@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2024 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,6 +19,7 @@
 import { Component, JSX_CreateElement, Select, SingleSelect } from "acfrontend";
 import { Accidental, NaturalNote, OctavePitch } from "ame-api";
 import { AccidentalComponent } from "./AccidentalComponent";
+import { ObjectExtensions } from "acts-util-core";
 
 const naturalNotes = {
     "A": NaturalNote.A,
@@ -47,7 +48,7 @@ export class PitchSelectionComponent extends Component<{
         return <div className="row">
             <div className="col">
                 <Select onChanged={newValue => this.input.onChanged({ accidental: this.input.selection.accidental, baseNote: this.ParseNote(newValue[0]) })}>
-                    {naturalNotes.Entries().Map( kv =>
+                    {ObjectExtensions.Entries(naturalNotes).Map( kv =>
                         <option selected={kv.value === this.input.selection.baseNote}>{kv.key}</option>
                         ).ToArray()}
                 </Select>

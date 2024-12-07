@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "run-dev-server": "nodemon --exec \"npx acts-util-apilib && tsc && (export $(cat .env | xargs) && cd dist && SCRIPTDIR=../scripts node main.js)\"",
-    "build-release-package": "npx webpack",
+    "build-release-package": "npx acts-util-apilib && npx webpack",
     "build-docker-image": "export $(cat .env | xargs) && docker buildx build $DOCKER_BUILDX_FLAGS --platform linux/arm64 -t $DOCKER_REGISTRY/aczwink/ame-backend --push ."
   },
   "keywords": [],

@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2024 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Component, FormField, Injectable, JSX_CreateElement, LineEdit, MatIcon, PopupManager, ProgressSpinner, Select, Textarea } from "acfrontend";
+import { BootstrapIcon, Component, FormField, Injectable, JSX_CreateElement, LineEdit, PopupManager, ProgressSpinner, Select, TextArea } from "acfrontend";
 import { WikiTextEditComponent } from "../shared/WikiTextEditComponent";
 import { MusicalService } from "./MusicalService";
 import { SinglePersonSelectionComponent } from "../persons/SinglePersonSelectionComponent";
@@ -24,6 +24,7 @@ import { Form, Language, PieceDetailsData } from "../../dist/api";
 import { Attachment, AttachmentChangesCollection } from "./MusicalPiecesService";
 import { AddAttachmentComponent } from "./AddAttachmentComponent";
 import { OrderableMaqamOrRhythmComponent } from "./OrderableMaqamOrRhythmComponent";
+import { CreateDataBindingProxy } from "acfrontend/dist/DataBinding";
 
 @Injectable
 export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetailsData; attachments: AttachmentChangesCollection; onValidationUpdated: (newValue: boolean) => void }>
@@ -57,7 +58,7 @@ export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetails
         else
             this.input.piece.lyrics = undefined;
 
-        const piece = this.CreateDataBindingProxy(this.input.piece);
+        const piece = CreateDataBindingProxy(this.input.piece, this.Update.bind(this));
         return <fragment>
             <FormField title="Name">
                 <LineEdit value={piece.name} onChanged={newValue => piece.name = newValue} />
@@ -87,7 +88,7 @@ export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetails
                     </tr>
                     <OrderableMaqamOrRhythmComponent entries={piece.maqamat} onUpdate={this.Update.bind(this)} />
                 </table>
-                <button className="btn btn-primary" type="button" onclick={this.AddEntry.bind(this, piece.maqamat, { maqamId: 1, explanation: "" })}><MatIcon>add</MatIcon></button>
+                <button className="btn btn-primary" type="button" onclick={this.AddEntry.bind(this, piece.maqamat, { maqamId: 1, explanation: "" })}><BootstrapIcon>plus</BootstrapIcon></button>
             </div>
 
             <h2>Rhythms</h2>
@@ -100,7 +101,7 @@ export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetails
                     </tr>
                     <OrderableMaqamOrRhythmComponent entries={piece.rhythms} onUpdate={this.Update.bind(this)} />
                 </table>
-                <button className="btn btn-primary" type="button" onclick={this.AddEntry.bind(this, piece.rhythms, { rhythmId: 1, explanation: "" })}><MatIcon>add</MatIcon></button>
+                <button className="btn btn-primary" type="button" onclick={this.AddEntry.bind(this, piece.rhythms, { rhythmId: 1, explanation: "" })}><BootstrapIcon>plus</BootstrapIcon></button>
             </div>
 
             <h2>Attachments</h2>
@@ -112,14 +113,14 @@ export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetails
                     </tr>
                     {this.input.attachments.existing.map ( (a, idx) => <tr>
                         <td>{a.comment}</td>
-                        <td><a onclick={this.OnDeleteExistingAttachment.bind(this, idx)}><MatIcon>delete</MatIcon></a></td>
+                        <td><a onclick={this.OnDeleteExistingAttachment.bind(this, idx)}><BootstrapIcon>trash</BootstrapIcon></a></td>
                     </tr>)}
                     {this.input.attachments.new.map( (a, idx) => <tr>
                         <td>{a.comment}</td>
-                        <td><a onclick={this.OnDeleteNewAttachment.bind(this, idx)}><MatIcon>delete</MatIcon></a></td>
+                        <td><a onclick={this.OnDeleteNewAttachment.bind(this, idx)}><BootstrapIcon>trash</BootstrapIcon></a></td>
                     </tr>)}
                 </table>
-                <button className="btn btn-primary" type="button" onclick={this.OnAddAttachment.bind(this)}><MatIcon>add</MatIcon></button>
+                <button className="btn btn-primary" type="button" onclick={this.OnAddAttachment.bind(this)}><BootstrapIcon>plus</BootstrapIcon></button>
             </div>
         </fragment>;
     }
@@ -152,7 +153,7 @@ export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetails
                 </FormField>
                 {this.RenderSingers(lyrics.singerIds)}
                 <FormField title="Lyrics">
-                    <Textarea value={lyrics.lyricsText} onChanged={newValue => lyrics.lyricsText = newValue} />
+                    <TextArea value={lyrics.lyricsText} onChanged={newValue => lyrics.lyricsText = newValue} />
                 </FormField>
             </fragment>;
         }
@@ -166,10 +167,10 @@ export class MusicalPieceEditorComponent extends Component<{ piece: PieceDetails
             <h3>Singers</h3>
                 {singerIds.map( (singerId, idx) => <div className="row">
                     <div className="col"><SinglePersonSelectionComponent selected={singerId === 0 ? undefined : singerId} onSelectionChanged={this.OnSingerChanged.bind(this, idx)} /></div>
-                    <div className="col-auto"><button type="button" className="btn btn-danger" onclick={this.OnRemoveSinger.bind(this, idx)}><MatIcon>delete</MatIcon></button></div>
+                    <div className="col-auto"><button type="button" className="btn btn-danger" onclick={this.OnRemoveSinger.bind(this, idx)}><BootstrapIcon>trash</BootstrapIcon></button></div>
                 </div>
             )}
-            <button className="btn btn-primary" type="button" onclick={this.OnAddSinger.bind(this)}><MatIcon>add</MatIcon></button>
+            <button className="btn btn-primary" type="button" onclick={this.OnAddSinger.bind(this)}><BootstrapIcon>plus</BootstrapIcon></button>
         </fragment>;
     }
 

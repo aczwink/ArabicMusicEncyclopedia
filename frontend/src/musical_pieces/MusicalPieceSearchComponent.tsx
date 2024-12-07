@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2024 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Component, FormField, Injectable, JSX_CreateElement, LineEdit, MatIcon, PaginationComponent, ProgressSpinner, RouterButton, Select } from "acfrontend";
+import { BootstrapIcon, Component, FormField, Injectable, JSX_CreateElement, LineEdit, PaginationComponent, ProgressSpinner, RouterButton, Select } from "acfrontend";
 import { Form, PieceOverviewData } from "../../dist/api";
 import { OptionalSinglePersonSelectionComponent } from "../persons/OptionalSinglePersonSelectionComponent";
 import { MaqamSelectionComponent } from "../shared/MaqamSelectionComponent";
@@ -147,11 +147,11 @@ export class MusicalPieceSearchComponent extends Component
         if(this.loading)
             return <ProgressSpinner />;
         if(this.pieces.length === 0)
-            return <RouterButton className="btn btn-primary" route={"/musicalpieces/add"}><MatIcon>add</MatIcon></RouterButton>;
+            return <RouterButton color="primary" className="btn" route={"/musicalpieces/add"}><BootstrapIcon>plus</BootstrapIcon></RouterButton>;
         return <fragment>
             <MusicalPiecesListComponent pieces={this.pieces} />
             <PaginationComponent count={this.totalCount} offset={this.offset} size={this.size} onOffsetChanged={this.OnOffsetChanged.bind(this)} onSizeChanged={this.OnSizeChanged.bind(this)} />
-            <RouterButton className="btn btn-primary" route={"/musicalpieces/add"}><MatIcon>add</MatIcon></RouterButton>
+            <RouterButton color="primary" className="btn" route={"/musicalpieces/add"}><BootstrapIcon>plus</BootstrapIcon></RouterButton>
         </fragment>;
     }
 

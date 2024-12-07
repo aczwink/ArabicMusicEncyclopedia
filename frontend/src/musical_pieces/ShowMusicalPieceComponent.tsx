@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2024 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Anchor, BootstrapIcon, Component, Injectable, JSX_CreateElement, MatIcon, PopupManager, ProgressSpinner, RouterState, TitleService } from "acfrontend";
+import { Anchor, BootstrapIcon, Component, Injectable, JSX_CreateElement, PopupManager, ProgressSpinner, RouterState, TitleService } from "acfrontend";
 import { Form, Language, Person, PieceDetailsData } from "../../dist/api";
 import { g_backendBaseUrl } from "../backend";
 import { MaqamatService } from "../maqamat/MaqamatService";
@@ -63,7 +63,7 @@ export class ShowMusicalPieceComponent extends Component
         return <fragment>
             <h1>
                 {this.piece.name}
-                <Anchor route={"/musicalpieces/edit/" + this.pieceId}><MatIcon>edit</MatIcon></Anchor>
+                <Anchor route={"/musicalpieces/edit/" + this.pieceId}><BootstrapIcon>pencil</BootstrapIcon></Anchor>
             </h1>
             <div>
                 <div className="row">
@@ -116,9 +116,9 @@ export class ShowMusicalPieceComponent extends Component
                             {this.piece.attachments.map(attachment => <tr>
                                 <td>{attachment.comment}</td>
                                 <td>
-                                    <a href={g_backendBaseUrl + "/attachments/" + attachment.attachmentId} target="_blank"><MatIcon>download</MatIcon></a>
+                                    <a href={g_backendBaseUrl + "/attachments/" + attachment.attachmentId} target="_blank"><BootstrapIcon>download</BootstrapIcon></a>
                                     {attachment.isRenderable ?
-                                        <a onclick={this.OnDownloadRenderedAttachment.bind(this, attachment.attachmentId)}><MatIcon>picture_as_pdf</MatIcon></a>
+                                        <a onclick={this.OnDownloadRenderedAttachment.bind(this, attachment.attachmentId)}><BootstrapIcon>file-pdf</BootstrapIcon></a>
                                     : null}
                                 </td>
                             </tr>)}

@@ -20,6 +20,7 @@ import { Component, FileSelect, FormField, JSX_CreateElement, LineEdit, Select }
 import { CountryCode } from "ame-api/dist/Locale";
 import { Person } from "../../dist/api";
 import { WikiTextEditComponent } from "../shared/WikiTextEditComponent";
+import { CreateDataBindingProxy } from "acfrontend/dist/DataBinding";
 
 export class EditPersonForm extends Component<{ person: Person; saveButtonText: string; onSave: (image?: File | null) => void }>
 {
@@ -50,7 +51,7 @@ export class EditPersonForm extends Component<{ person: Person; saveButtonText: 
                 <LineEdit value={p.lifeTime} onChanged={newValue => p.lifeTime = newValue} />
             </FormField>
             <FormField title="Image">
-                <FileSelect class="form-control" onChanged={newValue => this.thumb = newValue} />
+                <FileSelect className="form-control" onChanged={newValue => this.thumb = newValue} />
             </FormField>
             <FormField title="Text">
                 <WikiTextEditComponent text={p.text} onChanged={newValue => p.text = newValue} />
@@ -93,7 +94,7 @@ export class EditPersonForm extends Component<{ person: Person; saveButtonText: 
     //Eventhandlers
     public OnInitiated()
     {
-        this.person = this.CreateDataBindingProxy(this.input.person);
+        this.person = CreateDataBindingProxy(this.input.person, this.Update.bind(this));
     }
 
     private OnLocationChanged(code: CountryCode, wasChecked: boolean)

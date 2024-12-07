@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2024 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Anchor, Component, Injectable, JSX_CreateElement, LineEdit, MatIcon, PaginationComponent, ProgressSpinner, RouterButton } from "acfrontend";
+import { Anchor, BootstrapIcon, Component, Injectable, JSX_CreateElement, LineEdit, PaginationComponent, ProgressSpinner, RouterButton } from "acfrontend";
 import { PersonOverviewData } from "../../dist/api";
 import { PersonReferenceComponent } from "./PersonReferenceComponent";
 import { PersonsService } from "./PersonsService";
@@ -55,7 +55,7 @@ export class ListPersonsComponent extends Component
                 </form>
             </div>
             {this.RenderResultList()}
-            <RouterButton className="btn btn-primary" route={"/persons/add"}><MatIcon>add</MatIcon></RouterButton>
+            <RouterButton color="primary" className="btn" route={"/persons/add"}><BootstrapIcon>plus</BootstrapIcon></RouterButton>
         </fragment>;
     }
 

@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2024 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Anchor, Component, Injectable, JSX_CreateElement, MatIcon, ProgressSpinner, RouterState } from "acfrontend";
+import { Anchor, BootstrapIcon, Component, Injectable, JSX_CreateElement, ProgressSpinner, RouterState } from "acfrontend";
 import { Person } from "../../dist/api";
 import { g_backendBaseUrl } from "../backend";
 import { WikiTextComponent } from "../shared/WikiTextComponent";
@@ -44,7 +44,7 @@ export class ShowPersonComponent extends Component
         return <fragment>
             <h1>
                 {this.data.name}
-                <Anchor route={"/persons/edit/" + this.personId}><MatIcon>edit</MatIcon></Anchor>
+                <Anchor route={"/persons/edit/" + this.personId}><BootstrapIcon>pen</BootstrapIcon></Anchor>
             </h1>
             <div>
                 <div className="box" style="float: right; display: block">

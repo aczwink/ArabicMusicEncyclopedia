@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2022-2024 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Component, DialogRef, FormField, Injectable, JSX_CreateElement, MatIcon, Switch } from "acfrontend";
+import { Component, DialogRef, FormField, Injectable, JSX_CreateElement, Switch } from "acfrontend";
 import { Accidental, NaturalNote, OctavePitch, OctavePitchToString } from "ame-api";
 import { g_backendBaseUrl } from "../backend";
 import { PitchSelectionComponent } from "../shared/PitchSelectionComponent";

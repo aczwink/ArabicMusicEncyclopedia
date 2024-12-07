@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2024 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Component, JSX_CreateElement, LineEdit, MatIcon } from "acfrontend";
+import { BootstrapIcon, Component, JSX_CreateElement, LineEdit } from "acfrontend";
 import { PieceMaqamAssociation, PieceRhythmAssociation } from "../../dist/api";
 import { MaqamSelectionComponent } from "../shared/MaqamSelectionComponent";
 import { FullRhythmSelectionComponent } from "../shared/RhythmSelectionComponent";
@@ -50,9 +50,9 @@ export class OrderableMaqamOrRhythmComponent extends Component<OrderableMaqamOrR
             </td>
             <td><LineEdit value={entry.explanation} onChanged={newValue => entry.explanation = newValue} /></td>
             <td>
-                <button type="button" disabled={index === 0} className="btn btn-secondary" onclick={this.OnMoveUpwards.bind(this, index)}><MatIcon>arrow_upward</MatIcon></button>
-                <button type="button" disabled={index === (this.input.entries.length-1)} className="btn btn-secondary" onclick={this.OnMoveDownwards.bind(this, index)}><MatIcon>arrow_downward</MatIcon></button>
-                <button type="button" className="btn btn-danger" onclick={this.RemoveEntry.bind(this, this.input.entries, entry)}><MatIcon>delete</MatIcon></button>
+                <button type="button" disabled={index === 0} className="btn btn-secondary" onclick={this.OnMoveUpwards.bind(this, index)}><BootstrapIcon>arrow-up-short</BootstrapIcon></button>
+                <button type="button" disabled={index === (this.input.entries.length-1)} className="btn btn-secondary" onclick={this.OnMoveDownwards.bind(this, index)}><BootstrapIcon>arrow-down-short</BootstrapIcon></button>
+                <button type="button" className="btn btn-danger" onclick={this.RemoveEntry.bind(this, this.input.entries, entry)}><BootstrapIcon>trash</BootstrapIcon></button>
             </td>
         </tr>;
     }

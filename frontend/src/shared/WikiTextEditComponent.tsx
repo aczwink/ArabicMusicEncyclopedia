@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2024 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Component, JSX_CreateElement, Textarea } from "acfrontend";
+import { Component, JSX_CreateElement, TextArea } from "acfrontend";
 
 export class WikiTextEditComponent extends Component<{ text: string; onChanged: (newValue: string) => void}>
 {
@@ -30,7 +30,7 @@ export class WikiTextEditComponent extends Component<{ text: string; onChanged: 
                     <a href="#" onclick={this.OnInsertExternalLink.bind(this)}>External link</a>
                 </div>
             </div>
-            <Textarea id="wiki_text" value={this.input.text} onChanged={this.input.onChanged} />
+            <TextArea id="wiki_text" value={this.input.text} onChanged={this.input.onChanged} />
         </fragment>;
     }
 

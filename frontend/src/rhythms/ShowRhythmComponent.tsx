@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2024 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Anchor, Component, Injectable, JSX_CreateElement, MatIcon, ProgressSpinner, RouterState } from "acfrontend";
+import { Anchor, BootstrapIcon, Component, Injectable, JSX_CreateElement, ProgressSpinner, RouterState } from "acfrontend";
 import { Rhythm } from "../../dist/api";
 import { MapComponent } from "../shared/MapComponent";
 import { PopularityComponent } from "../shared/PopularityComponent";
@@ -42,7 +42,7 @@ export class ShowRhythmComponent extends Component
         return <fragment>
             <h1>
                 {this.data.name}
-                <Anchor route={"/rhythms/edit/" + this.rhythmId}><MatIcon>edit</MatIcon></Anchor>
+                <Anchor route={"/rhythms/edit/" + this.rhythmId}><BootstrapIcon>pencil</BootstrapIcon></Anchor>
             </h1>
             <div>
                 <div className="box" style="float: right; display: block">
