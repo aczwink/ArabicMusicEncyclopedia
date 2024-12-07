@@ -82,7 +82,7 @@ jobs:
     - name: Build and push backend image
       uses: docker/build-push-action@v4
       with:
-        context: ./service
+        context: ./backend
         platforms: linux/amd64,linux/arm64
         push: true
         tags: ghcr.io/aczwink/arabicmusicencyclopedia:latest
