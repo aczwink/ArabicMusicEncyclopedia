@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2024 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -71,7 +71,7 @@ export class MaqamatController
         if(row === undefined)
             return undefined;
         return{
-            additionalIntervals: row.additionalIntervals.split(","),
+            additionalIntervals: (row.additionalIntervals.length === 0) ? [] : row.additionalIntervals.split(","),
             dominant: row.dominant,
             rootJinsId: row.rootJinsId
         };

@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,16 +17,16 @@
  * */
 import fs from "fs";
 import http from "http";
-
 import { OpenAPI } from "acts-util-core";
 import { Factory, GlobalInjector, HTTP } from "acts-util-node";
 import { APIRegistry } from "acts-util-apilib";
 import { DatabaseController } from "./dataaccess/DatabaseController";
+import ENV from "./env";
 
 async function SetupServer()
 {
     const requestHandlerChain = Factory.CreateRequestHandlerChain();
-    requestHandlerChain.AddCORSHandler([process.env.AME_ORIGIN!]);
+    requestHandlerChain.AddCORSHandler([ENV.allowedOrigin]);
     requestHandlerChain.AddBodyParser();
 
     await import("./__http_registry");
@@ -37,7 +37,7 @@ async function SetupServer()
 
     const server = http.createServer(requestHandlerChain.requestListener);
 
-    server.listen(process.env.AME_PORT, () => {
+    server.listen(ENV.port, () => {
         console.log("Server is running...");
     });
 

@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,6 +17,7 @@
  * */
 import fs from "fs";
 import { DBConnectionPool, DBFactory, DBResource, Injectable } from "acts-util-node";
+import ENV from "../env";
 
 @Injectable
 export class DatabaseController
@@ -67,8 +68,8 @@ export class DatabaseController
 
             this.pool = await factory.CreateConnectionPool({
                 type: "mysql",
-                host: process.env.AME_DB_HOST!,
-                username: process.env.AME_DB_USER!,
+                host: ENV.database.host,
+                username: ENV.database.user,
                 password: dbPw
             });
         }

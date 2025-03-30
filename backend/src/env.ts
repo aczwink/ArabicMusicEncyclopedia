@@ -15,19 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
-import { APIController, Get } from "acts-util-apilib";
-import { AjnasController } from "../../dataaccess/AjnasController";
 
-@APIController("ajnas")
-class AjnasAPIController
-{
-    constructor(private ajnasController: AjnasController)
-    {
-    }
-
-    @Get()
-    public async ListAjnas()
-    {
-        return await this.ajnasController.QueryAjnas();
-    }
-}
+export default {
+    allowedOrigin: process.env.AME_ORIGIN!,
+    database: {
+        host: process.env.AME_DB_HOST!,
+        user: process.env.AME_DB_USER!
+    },
+    port: process.env.AME_PORT
+};
