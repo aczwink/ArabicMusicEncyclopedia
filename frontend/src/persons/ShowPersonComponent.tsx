@@ -18,7 +18,7 @@
 
 import { Anchor, BootstrapIcon, Component, Injectable, JSX_CreateElement, ProgressSpinner, RouterState } from "acfrontend";
 import { Person } from "../../dist/api";
-import { g_backendBaseUrl } from "../backend";
+import { g_backendBaseUrl } from "../env";
 import { WikiTextComponent } from "../shared/WikiTextComponent";
 import { PersonsService } from "./PersonsService";
 import { MapComponent } from "../shared/MapComponent";

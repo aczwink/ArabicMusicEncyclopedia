@@ -17,7 +17,7 @@
  * */
 
 import { Anchor, Component, Injectable, JSX_CreateElement, ProgressSpinner } from "acfrontend";
-import { g_backendBaseUrl } from "../backend";
+import { g_backendBaseUrl } from "../env";
 import { WikiFilesService } from "./WikiFilesService";
 
 @Injectable

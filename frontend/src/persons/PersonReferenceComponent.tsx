@@ -18,7 +18,7 @@
 
 import { Anchor, Component, JSX_CreateElement } from "acfrontend";
 import { PersonOverviewData } from "../../dist/api";
-import { g_backendBaseUrl } from "../backend";
+import { g_backendBaseUrl } from "../env";
 
 export class PersonReferenceComponent extends Component<PersonOverviewData>
 {

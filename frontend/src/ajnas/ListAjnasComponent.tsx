@@ -19,7 +19,7 @@
 import { Component, Injectable, JSX_CreateElement, ProgressSpinner } from "acfrontend";
 import { OctavePitch, OctavePitchToString } from "ame-api";
 import { Jins } from "../../dist/api";
-import { g_backendBaseUrl } from "../backend";
+import { g_backendBaseUrl } from "../env";
 import { PitchSelectionComponent } from "../shared/PitchSelectionComponent";
 import { WikiTextComponent } from "../shared/WikiTextComponent";
 import { AjnasService } from "./AjnasService";

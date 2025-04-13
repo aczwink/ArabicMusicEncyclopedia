@@ -20,7 +20,8 @@ export default {
     allowedOrigin: process.env.AME_ORIGIN!,
     database: {
         host: process.env.AME_DB_HOST!,
-        user: process.env.AME_DB_USER!
+        user: process.env.AME_DB_USER!,
+        documentDBPath: process.env.AME_DICTDB_PATH!,
     },
     port: process.env.AME_PORT
 };

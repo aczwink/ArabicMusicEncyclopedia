@@ -1,5 +1,4 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const Dotenv = require('dotenv-webpack');
 
 module.exports = {
     mode: "production",
@@ -25,9 +24,6 @@ module.exports = {
                 { from: 'node_modules/acts-util-core/dist/acts-util-core.js' },
                 { from: 'static' }
             ]
-        }),
-        new Dotenv({
-            path: './.env.production'
         }),
     ],
 

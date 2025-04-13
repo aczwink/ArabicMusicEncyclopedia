@@ -18,7 +18,7 @@
 
 import { Anchor, BootstrapIcon, Component, Injectable, JSX_CreateElement, PopupManager, ProgressSpinner, RouterState, TitleService } from "acfrontend";
 import { Form, Language, Person, PieceDetailsData } from "../../dist/api";
-import { g_backendBaseUrl } from "../backend";
+import { g_backendBaseUrl } from "../env";
 import { MaqamatService } from "../maqamat/MaqamatService";
 import { PersonReferenceComponent } from "../persons/PersonReferenceComponent";
 import { PersonsService } from "../persons/PersonsService";

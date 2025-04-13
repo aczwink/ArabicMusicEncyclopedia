@@ -17,6 +17,7 @@
  * */
 import fs from "fs";
 import { DBConnectionPool, DBFactory, DBResource, Injectable } from "acts-util-node";
+import { OpenArabicMusicDBDocument } from "openarabicmusicdb-domain";
 import ENV from "../env";
 
 @Injectable
@@ -25,6 +26,7 @@ export class DatabaseController
     constructor()
     {
         this.pool = null;
+        this.documentDB = null;
     }
 
     //Public methods
@@ -38,6 +40,7 @@ export class DatabaseController
 
     public async CreateAnyConnectionQueryExecutor()
     {
+        throw new Error("TODO: replace me");
         const instance = await this.GetPoolInstance();
         return instance.value.CreateAnyConnectionQueryExecutor();
     }
@@ -48,14 +51,23 @@ export class DatabaseController
         return factory.CreateQueryBuilder("mysql");
     }
 
+    public async GetDocumentDB()
+    {
+        if(this.documentDB === null)
+        {
+            const filePath = ENV.database.documentDBPath;
+            const data = await fs.promises.readFile(filePath, "utf-8");
+            this.documentDB = JSON.parse(data);
+        }
+        return this.documentDB!;
+    }
+
     public async GetFreeConnection()
     {
+        throw new Error("TODO: replace me");
         const instance = await this.GetPoolInstance();
         return instance.value.GetFreeConnection();
     }
-
-    //Private members
-    private pool: DBResource<DBConnectionPool> | null;
 
     //Private methods
     private async GetPoolInstance()
@@ -75,4 +87,8 @@ export class DatabaseController
         }
         return this.pool;
     }
+
+    //Private state
+    private pool: DBResource<DBConnectionPool> | null;
+    private documentDB: OpenArabicMusicDBDocument | null;
 }

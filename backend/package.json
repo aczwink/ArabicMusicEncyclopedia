@@ -17,6 +17,7 @@
     "acts-util-core": "*",
     "acts-util-node": "*",
     "ame-api": "*",
+    "openarabicmusicdb-domain": "*",
     "multer": "^1.4.3"
   },
   "devDependencies": {

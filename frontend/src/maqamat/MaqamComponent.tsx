@@ -19,7 +19,7 @@
 import { Component, Injectable, JSX_CreateElement, ProgressSpinner, RouterState } from "acfrontend";
 import { OctavePitch, OctavePitchToString } from "ame-api";
 import { Maqam } from "../../dist/api";
-import { g_backendBaseUrl } from "../backend";
+import { g_backendBaseUrl } from "../env";
 import { MapComponent } from "../shared/MapComponent";
 import { PitchSelectionComponent } from "../shared/PitchSelectionComponent";
 import { PopularityComponent } from "../shared/PopularityComponent";

@@ -18,7 +18,7 @@
 
 import { Component, DialogRef, FormField, Injectable, JSX_CreateElement, Switch } from "acfrontend";
 import { Accidental, NaturalNote, OctavePitch, OctavePitchToString } from "ame-api";
-import { g_backendBaseUrl } from "../backend";
+import { g_backendBaseUrl } from "../env";
 import { PitchSelectionComponent } from "../shared/PitchSelectionComponent";
 
 @Injectable

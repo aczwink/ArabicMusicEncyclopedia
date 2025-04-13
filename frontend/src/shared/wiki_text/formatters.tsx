@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 import { Anchor, JSX_CreateElement } from "acfrontend";
-import { g_backendBaseUrl } from "../../backend";
+import { g_backendBaseUrl } from "../../env";
 import { FileReferenceComponent } from "../../wiki/FileReferenceComponent";
 import { CurrentListType } from "./blocks";
 import { WikiTextFormatter } from "./WikiTextFormatter";

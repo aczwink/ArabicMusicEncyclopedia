@@ -10,4 +10,3 @@ frontend/dist/
 frontend/node_modules/
 frontend/package-lock.json
 frontend/.env
-frontend/.env.production

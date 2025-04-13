@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,12 +18,6 @@
 import { Injectable } from "acts-util-node";
 import { DatabaseController } from "./DatabaseController";
 
-interface Article
-{
-    id: number;
-    text: string;
-}
-
 @Injectable
 export class ArticlesController
 {
@@ -38,18 +32,12 @@ export class ArticlesController
         await conn.InsertRow("amedb.articles", { title, text });
     }
 
-    public async QueryArticle(title: string): Promise<Article | undefined>
+    public async QueryArticle(title: string)
     {
-        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
+        const document = await this.dbController.GetDocumentDB();
+        const article = document.articles.find(x => x.title === title);
 
-        const row = await conn.SelectOne("SELECT id, text FROM amedb.articles WHERE title = ?", title);
-
-        if(row === undefined)
-            return undefined;
-        return {
-            id: row.id,
-            text: row.text,
-        };
+        return article;
     }
 
     public async UpdateArticle(title: string, text: string)
