@@ -100,7 +100,7 @@ jobs:
     - name: Build frontend
       run: |
         npm link acfrontend acts-util-apilib acts-util-core openarabicmusicdb-domain
-        apt install ruby-sass
+        sudo apt install -y ruby-sass
         npm run generate-api-and-theme
         npm run create-release-pkg
       working-directory: ./frontend
