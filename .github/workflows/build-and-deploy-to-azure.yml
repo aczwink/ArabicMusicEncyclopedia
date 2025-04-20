@@ -86,7 +86,7 @@ jobs:
         npm install
         npm run build
         npm link
-      working-directory: ./openarabicmusicdb
+      working-directory: ./openarabicmusicdb/domain
 
     #build backend
     - name: Build backend
