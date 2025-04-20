@@ -18,9 +18,8 @@
 import fs from "fs";
 import http from "http";
 import { OpenAPI } from "acts-util-core";
-import { Factory, GlobalInjector, HTTP } from "acts-util-node";
+import { Factory, HTTP } from "acts-util-node";
 import { APIRegistry } from "acts-util-apilib";
-import { DatabaseController } from "./dataaccess/DatabaseController";
 import ENV from "./env";
 
 async function SetupServer()
@@ -44,7 +43,6 @@ async function SetupServer()
     process.on('SIGINT', function()
     {
         console.log("Shutting server down...");
-        GlobalInjector.Resolve(DatabaseController).Close();
         server.close();
     });
 }

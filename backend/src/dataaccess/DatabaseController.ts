@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 import fs from "fs";
-import { DBConnectionPool, DBFactory, DBResource, Injectable } from "acts-util-node";
+import { DBFactory, Injectable } from "acts-util-node";
 import { OpenArabicMusicDBDocument } from "openarabicmusicdb-domain";
 import ENV from "../env";
 
@@ -25,30 +25,15 @@ export class DatabaseController
 {
     constructor()
     {
-        this.pool = null;
         this.documentDB = null;
     }
 
     //Public methods
-    public Close()
-    {
-        if(this.pool === null)
-            return;
-        this.pool.Close();
-        this.pool = null;
-    }
-
     public async CreateAnyConnectionQueryExecutor()
     {
         throw new Error("TODO: replace me");
         const instance = await this.GetPoolInstance();
         return instance.value.CreateAnyConnectionQueryExecutor();
-    }
-
-    public CreateQueryBuilder()
-    {
-        const factory = new DBFactory;
-        return factory.CreateQueryBuilder("mysql");
     }
 
     public async GetDocumentDB()
@@ -62,33 +47,22 @@ export class DatabaseController
         return this.documentDB!;
     }
 
-    public async GetFreeConnection()
-    {
-        throw new Error("TODO: replace me");
-        const instance = await this.GetPoolInstance();
-        return instance.value.GetFreeConnection();
-    }
-
     //Private methods
     private async GetPoolInstance()
     {
-        if(this.pool === null)
-        {
-            const factory = new DBFactory;
+        const factory = new DBFactory;
 
-            const dbPw = await fs.promises.readFile("/run/secrets/dbpw", "utf-8");
-
-            this.pool = await factory.CreateConnectionPool({
-                type: "mysql",
-                host: ENV.database.host,
-                username: ENV.database.user,
-                password: dbPw
-            });
-        }
-        return this.pool;
+        const dbPw = await fs.promises.readFile("/run/secrets/dbpw", "utf-8");
+        
+        const pool = await factory.CreateConnectionPool({
+            type: "mysql",
+            host: ENV.database.host,
+            username: ENV.database.user,
+            password: dbPw
+        });
+        return pool;
     }
 
     //Private state
-    private pool: DBResource<DBConnectionPool> | null;
     private documentDB: OpenArabicMusicDBDocument | null;
 }

@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2024 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,7 +17,7 @@
  * */
 
 import { BootstrapIcon, Component, FormField, Injectable, JSX_CreateElement, LineEdit, PaginationComponent, ProgressSpinner, RouterButton, Select } from "acfrontend";
-import { Form, PieceOverviewData } from "../../dist/api";
+import { OpenArabicMusicDBForm, PieceOverviewData } from "../../dist/api";
 import { OptionalSinglePersonSelectionComponent } from "../persons/OptionalSinglePersonSelectionComponent";
 import { MaqamSelectionComponent } from "../shared/MaqamSelectionComponent";
 import { FullRhythmSelectionComponent } from "../shared/RhythmSelectionComponent";
@@ -60,7 +60,7 @@ export class MusicalPieceSearchComponent extends Component
                     <div className="row">
                         <div className="col">
                             <FormField title="Form">
-                                <Select onChanged={newValue => this.formId = parseInt(newValue[0])}>
+                                <Select onChanged={newValue => this.formId = newValue[0]}>
                                     {this.forms.map(form => <option value={form.id.toString()} selected={this.formId === form.id}>{form.name}</option>)}
                                 </Select>
                             </FormField>
@@ -112,15 +112,15 @@ export class MusicalPieceSearchComponent extends Component
     private offset: number;
     private size: number;
 
-    private formId: number | null;
+    private formId: string | null;
     private titleFilter: string;
-    private composerId: number | null;
-    private lyricistId: number | null;
-    private singerId: number | null;
-    private maqamId: number | null;
-    private rhythmId: number | null;
+    private composerId: string | null;
+    private lyricistId: string | null;
+    private singerId: string | null;
+    private maqamId: string | null;
+    private rhythmId: string | null;
 
-    private forms: Form[] | null;
+    private forms: OpenArabicMusicDBForm[] | null;
     private pieces: PieceOverviewData[];
     private totalCount: number;
 

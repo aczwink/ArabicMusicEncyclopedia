@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,7 +27,7 @@ export class MaqamatService
     }
 
     //Public methods
-    public async QueryMaqam(maqamId: number)
+    public async QueryMaqam(maqamId: string)
     {
         const result = await this.apiService.maqamat._any_.get(maqamId);
         if(result.statusCode === 404)
@@ -35,7 +35,7 @@ export class MaqamatService
         return result.data;
     }
     
-    public async QueryMaqamat(rootJinsId?: number)
+    public async QueryMaqamat(rootJinsId?: string)
     {
         return (await this.apiService.maqamat.get({ rootJinsId })).data;
     }

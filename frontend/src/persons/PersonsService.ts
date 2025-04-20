@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,7 +17,6 @@
  * */
 
 import { Injectable } from "acfrontend";
-import { Person } from "../../dist/api";
 import { APIService } from "../shared/APIService";
 
 @Injectable
@@ -28,17 +27,7 @@ export class PersonsService
     }
 
     //Public methods
-    public async AddPerson(person: Person)
-    {
-        return (await this.apiService.persons.post(person)).data;
-    }
-
-    public async EditPerson(personId: number, person: Person)
-    {
-        await this.apiService.persons._any_.put(personId, person);
-    }
-
-    public async QueryPerson(personId: number)
+    public async QueryPerson(personId: string)
     {
         const result = await this.apiService.persons._any_.get(personId);
         if(result.statusCode === 404)
@@ -49,13 +38,5 @@ export class PersonsService
     public async QueryPersons(nameFilter: string, offset: number, limit: number)
     {
         return (await this.apiService.persons.get({ nameFilter, offset, limit })).data;
-    }
-
-    public async UpdatePersonImage(personId: number, image: File | null)
-    {
-        if(image === null)
-            await this.apiService.persons._any_.image.delete(personId);
-        else
-            await this.apiService.persons._any_.image.put(personId, { file: image });
     }
 }

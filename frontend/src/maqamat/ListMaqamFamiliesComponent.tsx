@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,7 +17,7 @@
  * */
 
 import { Anchor, Component, Injectable, JSX_CreateElement, ProgressSpinner } from "acfrontend";
-import { Jins, MaqamOverviewData } from "../../dist/api";
+import { MaqamOverviewData, OpenArabicMusicDBJins } from "../../dist/api";
 import { AjnasService } from "../ajnas/AjnasService";
 import { MaqamatService } from "./MaqamatService";
 
@@ -61,12 +61,12 @@ export class ListMaqamFamiliesComponent extends Component
     }
 
     //Private members
-    private rootAjnas: Jins[] | null;
-    private selectedRootJinsId: number | null;
+    private rootAjnas: OpenArabicMusicDBJins[] | null;
+    private selectedRootJinsId: string | null;
     private maqamat: MaqamOverviewData[] | null;
 
     //Private methods
-    private RenderFamilyRow(jins: Jins)
+    private RenderFamilyRow(jins: OpenArabicMusicDBJins)
     {
         const className = "nav-link" + ((this.selectedRootJinsId === jins.id) ? " active" : "");
         return <li><a className={className} onclick={this.OnSelectionChanged.bind(this, jins.id)}>{jins.name}</a></li>;
@@ -101,7 +101,7 @@ export class ListMaqamFamiliesComponent extends Component
         this.OnSelectionChanged(this.rootAjnas[0].id);
     }
 
-    private async OnSelectionChanged(newSelection: number)
+    private async OnSelectionChanged(newSelection: string)
     {
         this.selectedRootJinsId = newSelection;
         this.maqamat = null;

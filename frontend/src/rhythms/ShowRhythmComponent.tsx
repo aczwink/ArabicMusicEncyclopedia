@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2024 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -31,7 +31,7 @@ export class ShowRhythmComponent extends Component
         super();
         
         this.data = null;
-        this.rhythmId = parseInt(routerState.routeParams.rhythmId!);
+        this.rhythmId = routerState.routeParams.rhythmId!;
     }
     
     protected Render(): RenderValue
@@ -66,7 +66,7 @@ export class ShowRhythmComponent extends Component
     }
 
     //Private members
-    private rhythmId: number;
+    private rhythmId: string;
     private data: Rhythm | null;
 
     //Private methods

@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,10 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 import { APIController, Get, NotFound, Path, Query } from "acts-util-apilib";
-import { ParseOctavePitch } from "ame-api";
 import { AjnasController } from "../../dataaccess/AjnasController";
 import { ImageCacheManager } from "../../services/ImageCacheManager";
 import { MaqamPicCreator } from "../../services/MaqamPicCreator";
+import { ParseOctavePitch } from "openarabicmusicdb-domain/dist/OctavePitch";
 
 @APIController("ajnas/{jinsId}")
 class JinsAPIController
@@ -30,7 +30,7 @@ class JinsAPIController
 
     @Get("image")
     public async QueryJinsImage(
-        @Path jinsId: number,
+        @Path jinsId: string,
         @Query basePitch: string
     )
     {

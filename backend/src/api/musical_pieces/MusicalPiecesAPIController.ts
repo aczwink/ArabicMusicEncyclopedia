@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
-import { APIController, Body, Get, Post, Query } from "acts-util-apilib";
+import { APIController, Get, Query } from "acts-util-apilib";
 import { MusicalController } from "../../dataaccess/MusicalController";
-import { MusicalPiecesController, MusicalPiecesFilterCriteria, PieceDetailsData, PieceOverviewData } from "../../dataaccess/MusicalPiecesController";
+import { MusicalPiecesController, MusicalPiecesFilterCriteria, PieceOverviewData } from "../../dataaccess/MusicalPiecesController";
 
 interface PiecesResultData
 {
@@ -32,32 +32,18 @@ class MusicalPiecesAPIController
     {
     }
 
-    @Post()
-    public async AddPiece(
-        @Body piece: PieceDetailsData
-    )
-    {
-        const form = await this.musicalController.QueryForm(piece.formId);
-
-        const pieceId = await this.musicalPiecesController.AddMusicalPiece(piece);
-        if(form!.hasLyrics)
-            await this.musicalPiecesController.UpdateMusicalPieceLyrics(pieceId, piece.lyrics!);
-
-        return pieceId;
-    }
-
     @Get()
     public async ListPieces(
         @Query titleFilter: string,
         @Query offset: number,
         @Query limit: number,
 
-        @Query formId?: number,
-        @Query composerId?: number,
-        @Query lyricistId?: number,
-        @Query singerId?: number,
-        @Query maqamId?: number,
-        @Query rhythmId?: number,
+        @Query formId?: string,
+        @Query composerId?: string,
+        @Query lyricistId?: string,
+        @Query singerId?: string,
+        @Query maqamId?: string,
+        @Query rhythmId?: string,
     ): Promise<PiecesResultData>
     {
         const fc: MusicalPiecesFilterCriteria = {

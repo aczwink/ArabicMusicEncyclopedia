@@ -16,27 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 import { Injectable } from "acts-util-node";
-import { OctavePitch, ParseOctavePitch } from "ame-api";
-import { CountryCode } from "ame-api/dist/Locale";
-import { Interval } from "../model/Interval";
 import { DatabaseController } from "./DatabaseController";
-
-interface MaqamCountryUsage
-{
-    countryCode: CountryCode | null;
-    usage: number;
-}
+import { OctavePitch } from "openarabicmusicdb-domain/dist/OctavePitch";
+import { Interval } from "openarabicmusicdb-domain";
+import { MaqamCountryUsage, StatisticsController } from "./StatisticsController";
 
 export interface MaqamData
 {
-    rootJinsId: number;
+    rootJinsId: string;
     dominant: number;
     additionalIntervals: Interval[];
 }
 
 export interface MaqamOverviewData
 {
-    id: number;
+    id: string;
     name: string;
     popularity: number;
 }
@@ -45,141 +39,66 @@ interface Maqam extends MaqamOverviewData
 {
     text: string;
     basePitch: OctavePitch;
-    branchingJinsIds: number[];
+    branchingJinsIds: string[];
     usage: MaqamCountryUsage[];
 }
 
 @Injectable
 export class MaqamatController
 {
-    constructor(private dbController: DatabaseController)
+    constructor(private dbController: DatabaseController, private statisticsController: StatisticsController)
     {
     }
 
     //Public methods
-    public async QueryMaqam(maqamId: number): Promise<MaqamData | undefined>
+    public async QueryMaqam(maqamId: string): Promise<MaqamData | undefined>
     {
-        const query = `
-        SELECT m.rootJinsId, m.dominant, m.additionalIntervals
-        FROM amedb.maqamat m
-        WHERE m.id = ?
-        `;
+        const document = await this.dbController.GetDocumentDB();
+        const maqam = document.maqamat.find(x => x.id === maqamId);
 
-        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const row = await conn.SelectOne(query, maqamId);
-
-        if(row === undefined)
+        if(maqam === undefined)
             return undefined;
         return{
-            additionalIntervals: (row.additionalIntervals.length === 0) ? [] : row.additionalIntervals.split(","),
-            dominant: row.dominant,
-            rootJinsId: row.rootJinsId
+            additionalIntervals: maqam.additionalIntervals,
+            dominant: maqam.dominant,
+            rootJinsId: maqam.rootJinsId
         };
     }
 
-    public async QueryMaqamInfo(maqamId: number): Promise<Maqam | undefined>
+    public async QueryMaqamInfo(maqamId: string): Promise<Maqam | undefined>
     {
-        const query = `
-        SELECT m.id, m.name, m.text, IFNULL(m.basePitchOverride, j.basePitch) AS basePitch
-        FROM amedb.maqamat m
-        INNER JOIN amedb.ajnas j
-            ON j.id = m.rootJinsId
-        WHERE m.id = ?
-        `;
+        const document = await this.dbController.GetDocumentDB();
+        const maqam = document.maqamat.find(x => x.id === maqamId);
 
-        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const row = await conn.SelectOne(query, maqamId);
-        const rows = await conn.Select("SELECT branchingJinsId FROM amedb.maqamat_forms WHERE maqamId = ?", maqamId);
-
-        if(row === undefined)
+        if(maqam === undefined)
             return undefined;
-
-        const usageData = await this.QueryMaqamUsage(maqamId);
+        const usageData = await this.statisticsController.QueryMaqamUsageSafe(maqamId);
         return {
-            id: row.id,
-            name: row.name,
-            text: row.text,
-            basePitch: ParseOctavePitch(row.basePitch),
-            branchingJinsIds: rows.map(row => row.branchingJinsId),
+            id: maqam.id,
+            name: maqam.name,
+            text: maqam.text,
+            basePitch: maqam.basePitch,
+            branchingJinsIds: maqam.branchingAjnas,
 
             popularity: usageData.popularity,
             usage: usageData.usage
         };
     }
 
-    public async QueryMaqamat(rootJinsId?: number): Promise<MaqamOverviewData[]>
+    public async QueryMaqamat(rootJinsId?: string): Promise<MaqamOverviewData[]>
     {
-        const args = [];
-        let query = "SELECT id, name FROM amedb.maqamat";
-        if(rootJinsId !== undefined)
-        {
-            query += " WHERE rootJinsId = ?";
-            args.push(rootJinsId);
-        }
+        const document = await this.dbController.GetDocumentDB();
 
-        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const rows = await conn.Select(query, ...args);
-
-        return await rows.Values().Map(async row => {
-            const usageData = await this.QueryMaqamUsage(row.id);
+        const maqamat = (rootJinsId === undefined) ? document.maqamat : document.maqamat.filter(x => x.rootJinsId === rootJinsId);
+        return await maqamat.Values().Map(async maqam => {
+            const usageData = await this.statisticsController.QueryMaqamUsageSafe(maqam.id);
 
             const mod: MaqamOverviewData = {
-                id: row.id,
-                name: row.name,
+                id: maqam.id,
+                name: maqam.name,
                 popularity: usageData.popularity
             };
             return mod;
         }).PromiseAll();
-    }
-
-    //Private methods
-    private async QueryMaqamUsage(maqamId: number): Promise<{ usage: MaqamCountryUsage[]; popularity: number }>
-    {
-        let query = `
-        SELECT pl.location, COUNT(*) AS count
-        FROM amedb.musical_pieces_maqamat mpm
-        INNER JOIN amedb.musical_pieces mp
-            ON mp.id = mpm.pieceId
-        LEFT JOIN amedb.persons_locations pl
-            ON pl.personId = mp.composerId
-        WHERE mpm.maqamId = ?
-        GROUP BY pl.location
-        `;
-
-        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const rows = await conn.Select(query, maqamId);
-
-        const maxLocalCount = Math.max(...rows.map(x => x.count as number));
-
-        const maqamGlobalCount = rows.Values().Map(x => x.count as number).Sum();
-        const maxGlobalCount = await this.QueryMaxMaqamUsage();
-        const globalScale = maqamGlobalCount / maxGlobalCount;
-
-        return {
-            popularity: globalScale,
-            usage: rows.map(row => ({
-                countryCode: row.location,
-                usage: (row.count / maxLocalCount)// * globalScale
-            })),
-        };
-    }
-
-    private async QueryMaxMaqamUsage(): Promise<number>
-    {
-        let query = `
-        SELECT MAX(maqamUsageCounts.count) AS maxCount
-        FROM (
-            SELECT mpm.maqamId, COUNT(mpm.pieceId) AS count
-            FROM amedb.musical_pieces_maqamat mpm
-            GROUP BY mpm.maqamId
-        ) AS maqamUsageCounts
-        `;
-
-        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const row = await conn.SelectOne(query);
-
-        if(row === undefined)
-            return 1;
-        return row.maxCount;
     }
 }

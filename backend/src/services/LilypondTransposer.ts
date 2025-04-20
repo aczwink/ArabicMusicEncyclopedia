@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2022-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,8 +17,8 @@
  * */
 
 import { Injectable } from "acts-util-node";
-import { OctavePitch } from "ame-api";
 import { LilypondNoteService } from "./LilypondNoteService";
+import { OctavePitch } from "openarabicmusicdb-domain/dist/OctavePitch";
 
 @Injectable
 export class LilypondTransposer

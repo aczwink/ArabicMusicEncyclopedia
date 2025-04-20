@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 import { Component, JSX_CreateElement } from "acfrontend";
-import { Accidental } from "ame-api";
 import { EmmentalerComponent } from "./EmmentalerComponent";
+import { Accidental } from "openarabicmusicdb-domain/dist/OctavePitch";
 
 export class AccidentalComponent extends Component<{ accidental: Accidental; }>
 {

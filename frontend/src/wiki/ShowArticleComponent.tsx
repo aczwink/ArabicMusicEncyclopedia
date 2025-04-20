@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2024 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,15 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Anchor, BootstrapIcon, Component, Injectable, JSX_CreateElement, ProgressSpinner, Router, RouterState } from "acfrontend";
-import { Article } from "../../dist/api";
+import { Anchor, BootstrapIcon, Component, Injectable, JSX_CreateElement, ProgressSpinner, RouterState } from "acfrontend";
 import { WikiTextComponent } from "../shared/WikiTextComponent";
 import { WikiService } from "./WikiService";
+import { OpenArabicMusicDBWikiArticle } from "../../dist/api";
 
 @Injectable
 export class ShowArticleComponent extends Component
 {
-    constructor(routerState: RouterState, private wikiService: WikiService, private router: Router)
+    constructor(routerState: RouterState, private wikiService: WikiService)
     {
         super();
 
@@ -48,15 +48,12 @@ export class ShowArticleComponent extends Component
 
     //Private members
     private title: string;
-    private article: Article | null;
+    private article: OpenArabicMusicDBWikiArticle | null;
 
     //Event handlers
     public async OnInitiated()
     {
         const result = await this.wikiService.QueryArticle(this.title);
         this.article = result;
-
-        if(result === null)
-            this.router.RouteTo("/wiki/create/" + this.title);
     }
 }

@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,7 +21,7 @@ import { PersonOverviewData } from "../../dist/api";
 import { PersonsService } from "./PersonsService";
 
 @Injectable
-export class SinglePersonSelectionComponent extends Component<{ selected?: number, onSelectionChanged: (id: number) => void }>
+export class SinglePersonSelectionComponent extends Component<{ selected?: string, onSelectionChanged: (id: string) => void }>
 {
     constructor(private personsService: PersonsService)
     {
@@ -37,7 +37,7 @@ export class SinglePersonSelectionComponent extends Component<{ selected?: numbe
             displayValue: this.selection.name
         };
 
-        return <AutoCompleteSelectBox<number> selection={selection} onChanged={this.OnSelectionChanged.bind(this)} onLoadSuggestions={this.OnLoadSuggestions.bind(this)} />;
+        return <AutoCompleteSelectBox<string> selection={selection} onChanged={this.OnSelectionChanged.bind(this)} onLoadSuggestions={this.OnLoadSuggestions.bind(this)} />;
     }
 
     //Private members
@@ -56,7 +56,7 @@ export class SinglePersonSelectionComponent extends Component<{ selected?: numbe
         }
     }
 
-    private async OnLoadSuggestions(searchText: string): Promise<KeyDisplayValuePair<number>[]>
+    private async OnLoadSuggestions(searchText: string): Promise<KeyDisplayValuePair<string>[]>
     {
         const result = await this.personsService.QueryPersons(searchText, 0, 10);
 
@@ -66,7 +66,7 @@ export class SinglePersonSelectionComponent extends Component<{ selected?: numbe
         }));
     }
 
-    private OnSelectionChanged(newValue: KeyDisplayValuePair<number>)
+    private OnSelectionChanged(newValue: KeyDisplayValuePair<string>)
     {
         this.selection = {
             id: newValue.key,

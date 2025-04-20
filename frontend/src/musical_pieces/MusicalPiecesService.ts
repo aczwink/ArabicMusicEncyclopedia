@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,19 +17,19 @@
  * */
 
 import { Injectable } from "acfrontend";
-import { PieceAttachmentAssociation, PieceDetailsData } from "../../dist/api";
+import { PieceAttachmentAssociation } from "../../dist/api";
 import { APIService } from "../shared/APIService";
 
 interface PieceFilterCriteria
 {
     titleFilter: string;
 
-    formId: number | null;
-    composerId: number | null;
-    lyricistId: number | null;
-    singerId: number | null;
-    maqamId: number | null;
-    rhythmId: number | null
+    formId: string | null;
+    composerId: string | null;
+    lyricistId: string | null;
+    singerId: string | null;
+    maqamId: string | null;
+    rhythmId: string | null
 }
 
 export interface Attachment
@@ -42,7 +42,7 @@ export interface AttachmentChangesCollection
 {
     new: Attachment[];
     existing: PieceAttachmentAssociation[];
-    deleted: number[];
+    deleted: string[];
 }
 
 @Injectable
@@ -53,30 +53,6 @@ export class MusicalPiecesService
     }
 
     //Public methods
-    public async AddPiece(piece: PieceDetailsData)
-    {
-        return (await this.apiService.musicalpieces.post(piece)).data;
-    }
-
-    public async AddPieceAttachment(pieceId: number, comment: string, file: File)
-    {
-        const result = await this.apiService.attachments.post({ pieceId, comment, file });
-        if(result.statusCode !== 204)
-            alert("Upload of attachment with comment '" + comment + "' failed");
-    }
-
-    public async ApplyAttachmentChanges(pieceId: number, attachments: AttachmentChangesCollection)
-    {
-        for (const attachmentId of attachments.deleted)
-        {
-            await this.apiService.attachments._any_.delete(attachmentId);
-        }
-        for (const newAttach of attachments.new)
-        {
-            await this.AddPieceAttachment(pieceId, newAttach.comment, newAttach.file);
-        }
-    }
-
     public async ListPieces(fc: PieceFilterCriteria, offset: number, limit: number)
     {
         return (await this.apiService.musicalpieces.get({
@@ -94,16 +70,11 @@ export class MusicalPiecesService
         })).data;
     }
 
-    public async QueryPiece(pieceId: number)
+    public async QueryPiece(pieceId: string)
     {
         const result = await this.apiService.musicalpieces._any_.get(pieceId);
         if(result.statusCode === 404)
             throw new Error("todo implement me");
         return result.data;
-    }
-
-    public async SetPiece(pieceId: number, piece: PieceDetailsData)
-    {
-        await this.apiService.musicalpieces._any_.put(pieceId, piece);
     }
 }

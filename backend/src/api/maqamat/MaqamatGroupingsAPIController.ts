@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,21 +18,21 @@
 import { APIController, Get } from "acts-util-apilib";
 import { AjnasController } from "../../dataaccess/AjnasController";
 import { MaqamatController, MaqamOverviewData } from "../../dataaccess/MaqamatController";
-import { Interval } from "../../model/Interval";
 import { IntervalsService } from "../../services/IntervalsService";
+import { Interval } from "openarabicmusicdb-domain";
 
 interface MaqamByIntervalGroupingData
 {
-    maqamId: number;
+    maqamId: string;
     maqamName: string;
-    branchingJinsId: number;
+    branchingJinsId: string;
     branchingJinsName: string;
     intervals: Interval[];
 }
 
 interface MaqamByIntervalGroupingResultData
 {
-    maqamId: number;
+    maqamId: string;
     maqamName: string;
     branchingJinsName: string;
 }

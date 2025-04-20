@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,12 +17,12 @@
  * */
 
 import { Component, Injectable, JSX_CreateElement, ProgressSpinner } from "acfrontend";
-import { OctavePitch, OctavePitchToString } from "ame-api";
-import { Jins } from "../../dist/api";
 import { g_backendBaseUrl } from "../env";
 import { PitchSelectionComponent } from "../shared/PitchSelectionComponent";
 import { WikiTextComponent } from "../shared/WikiTextComponent";
 import { AjnasService } from "./AjnasService";
+import { OctavePitch, OpenArabicMusicDBJins } from "../../dist/api";
+import { OctavePitchToString } from "openarabicmusicdb-domain/dist/OctavePitch";
 
 @Injectable
 export class ListAjnasComponent extends Component
@@ -52,12 +52,12 @@ export class ListAjnasComponent extends Component
     }
 
     //Private members
-    private data: Jins[] | null;
-    private selectedJins: Jins | null;
+    private data: OpenArabicMusicDBJins[] | null;
+    private selectedJins: OpenArabicMusicDBJins | null;
     private selectedPitch: OctavePitch | null;
 
     //Private methods
-    private RenderJinsRow(jins: Jins)
+    private RenderJinsRow(jins: OpenArabicMusicDBJins)
     {
         const className = "nav-link" + ((this.selectedJins === jins) ? " active" : "");
         return <li><a className={className} onclick={this.OnSelectionChanged.bind(this, jins)}>{jins.name}</a></li>;
@@ -89,7 +89,7 @@ export class ListAjnasComponent extends Component
         this.OnSelectionChanged(this.data[0]);
     }
 
-    private OnSelectionChanged(newSelection: Jins)
+    private OnSelectionChanged(newSelection: OpenArabicMusicDBJins)
     {
         this.selectedJins = newSelection;
         this.selectedPitch = newSelection.basePitch;

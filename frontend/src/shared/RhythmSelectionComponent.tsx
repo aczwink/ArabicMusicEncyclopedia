@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,16 +22,16 @@ import { RhythmsService } from "../rhythms/RhythmsService";
 
 interface RhythmSelectionInput
 {
-    rhythmId: number | null;
+    rhythmId: string | null;
     rhythmGroups: RhythmOverviewData[][];
-    onSelectionChanged: (newValue: number) => void;
+    onSelectionChanged: (newValue: string) => void;
 }
 
 export class RhythmSelectionComponent extends Component<RhythmSelectionInput>
 {
     protected Render(): RenderValue
     {
-        return <Select onChanged={newValue => this.input.onSelectionChanged(parseInt(newValue[0]))}>
+        return <Select onChanged={newValue => this.input.onSelectionChanged(newValue[0])}>
             {this.input.rhythmGroups.map(rhythmGroup =>
                 <optgroup label={rhythmGroup[0].timeSigNum.toString()}>
                     {rhythmGroup.map(form => <option value={form.id.toString()} selected={this.input.rhythmId === form.id}>{form.name}</option>)}
@@ -41,7 +41,7 @@ export class RhythmSelectionComponent extends Component<RhythmSelectionInput>
 }
 
 @Injectable
-export class FullRhythmSelectionComponent extends Component<{ rhythmId: number | null; onSelectionChanged: (newValue: number) => void; }>
+export class FullRhythmSelectionComponent extends Component<{ rhythmId: string | null; onSelectionChanged: (newValue: string) => void; }>
 {
     constructor(private rhythmsService: RhythmsService)
     {

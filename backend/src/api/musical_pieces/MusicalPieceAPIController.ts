@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,23 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
-import { APIController, Body, Get, NotFound, Ok, Path, Put } from "acts-util-apilib";
-import { MusicalController } from "../../dataaccess/MusicalController";
-import { MusicalPiecesController, PieceDetailsData } from "../../dataaccess/MusicalPiecesController";
+import { APIController, Get, NotFound, Ok, Path } from "acts-util-apilib";
+import { MusicalPiecesController } from "../../dataaccess/MusicalPiecesController";
 import { PersonsController } from "../../dataaccess/PersonsController";
 import { LyricsRendererService } from "../../services/LyricsRendererService";
 
 @APIController("musicalpieces/{pieceId}")
 class MusicalPieceAPIController
 {
-    constructor(private musicalPiecesController: MusicalPiecesController, private musicalController: MusicalController,
-        private lyricsRendererService: LyricsRendererService, private personsController: PersonsController)
+    constructor(private musicalPiecesController: MusicalPiecesController, private lyricsRendererService: LyricsRendererService, private personsController: PersonsController)
     {
     }
 
     @Get()
     public async QueryPiece(
-        @Path pieceId: number
+        @Path pieceId: string
     )
     {
         const piece = await this.musicalPiecesController.QueryMusicalPiece(pieceId);
@@ -42,7 +40,7 @@ class MusicalPieceAPIController
 
     @Get("renderedtext")
     public async RenderPieceLyrics(
-        @Path pieceId: number
+        @Path pieceId: string
     )
     {
         const piece = await this.musicalPiecesController.QueryMusicalPiece(pieceId);
@@ -58,20 +56,5 @@ class MusicalPieceAPIController
         return Ok(result, {
             "Content-Disposition": 'attachment; filename="' + fileName + '"'
         });
-    }
-
-    @Put()
-    public async UpdatePiece(
-        @Path pieceId: number,
-        @Body piece: PieceDetailsData
-    )
-    {
-        const form = await this.musicalController.QueryForm(piece.formId);
-
-        await this.musicalPiecesController.UpdateMusicalPiece(pieceId, piece);
-        if(form!.hasLyrics)
-            await this.musicalPiecesController.UpdateMusicalPieceLyrics(pieceId, piece.lyrics!);
-        else
-            await this.musicalPiecesController.DeleteMusicalPieceLyrics(pieceId);
     }
 }

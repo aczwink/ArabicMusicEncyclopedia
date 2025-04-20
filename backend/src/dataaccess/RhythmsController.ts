@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2024 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,21 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 import { Injectable } from "acts-util-node";
-import { CountryCode } from "ame-api/dist/Locale";
 import { DatabaseController } from "./DatabaseController";
+import { RhythmCountryUsage, StatisticsController } from "./StatisticsController";
 
 interface RhythmOverviewData
 {
-    id: number;
+    id: string;
     name: string;
     popularity: number;
     timeSigNum: number;
-}
-
-interface RhythmCountryUsage
-{
-    countryCode: CountryCode | null;
-    usage: number;
 }
 
 interface Rhythm extends RhythmOverviewData
@@ -45,34 +39,28 @@ interface Rhythm extends RhythmOverviewData
 @Injectable
 export class RhythmsController
 {
-    constructor(private dbController: DatabaseController)
+    constructor(private dbController: DatabaseController, private statisticsController: StatisticsController)
     {
     }
 
     //Public methods
-    public async QueryRhythm(rhythmId: number): Promise<Rhythm | undefined>
+    public async QueryRhythm(rhythmId: string): Promise<Rhythm | undefined>
     {
-        let query = `
-        SELECT *
-        FROM amedb.rhythms
-        WHERE id = ?
-        `;
+        const document = await this.dbController.GetDocumentDB();
+        const rhythm = document.rhythms.find(x => x.id === rhythmId);
 
-        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const row = await conn.SelectOne(query, rhythmId);
-
-        if(row === undefined)
+        if(rhythm === undefined)
             return undefined;
 
-        const usage = await this.QueryRhythmUsage(rhythmId);
+        const usage = (await this.statisticsController.QueryRhythmUsage(rhythmId))!;
         return {
-            alternativeNames: row.alternativeNames,
-            category: row.category,
-            id: row.id,
-            name: row.name,
-            text: row.text,
-            usageText: row.usageText,
-            timeSigNum: 0,
+            alternativeNames: rhythm.alternativeNames,
+            category: rhythm.category,
+            id: rhythm.id,
+            name: rhythm.name,
+            text: rhythm.text,
+            usageText: rhythm.usageText,
+            timeSigNum: rhythm.timeSignatureNumerator,
 
             popularity: usage.popularity,
             usage: usage.usage,
@@ -81,79 +69,18 @@ export class RhythmsController
 
     public async QueryRhythms(): Promise<RhythmOverviewData[]>
     {
-        let query = `
-        SELECT
-            r.id, r.name, rts.numerator
-        FROM amedb.rhythms r
-        INNER JOIN amedb.rhythms_timeSigs rts
-            ON r.id = rts.rhythmId
-        ORDER BY rts.numerator, r.name
-        `;
+        const document = await this.dbController.GetDocumentDB();
 
-        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const rows = await conn.Select(query);
-
-        return await rows.Values().Map(async row => {
-            const usageData = await this.QueryRhythmUsage(row.id);
+        return await document.rhythms.Values().Map(async row => {
+            const usageData = (await this.statisticsController.QueryRhythmUsage(row.id))!;
 
             const rod: RhythmOverviewData = {
                 id: row.id,
                 name: row.name,
                 popularity: usageData.popularity,
-                timeSigNum: row.numerator
+                timeSigNum: row.timeSignatureNumerator
             };
             return rod;
         }).PromiseAll();
-    }
-
-    //Private methods
-    private async QueryMaxRhythmUsage(): Promise<number>
-    {
-        let query = `
-        SELECT MAX(rhythmUsageCounts.count) AS maxCount
-        FROM (
-            SELECT mpr.rhythmId, COUNT(mpr.pieceId) AS count
-            FROM amedb.musical_pieces_rhythms mpr
-            GROUP BY mpr.rhythmId
-        ) AS rhythmUsageCounts
-        `;
-
-        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const row = await conn.SelectOne(query);
-
-        if(row === undefined)
-            return 1;
-        return row.maxCount;
-    }
-
-    private async QueryRhythmUsage(rhythmId: number): Promise<{ popularity: number; usage: RhythmCountryUsage[] }>
-    {
-        let query = `
-        SELECT pl.location, COUNT(*) AS count
-        FROM amedb.musical_pieces_rhythms mpr
-        INNER JOIN amedb.musical_pieces mp
-            ON mp.id = mpr.pieceId
-        LEFT JOIN amedb.persons_locations pl
-            ON pl.personId = mp.composerId
-        WHERE mpr.rhythmId = ?
-        GROUP BY pl.location
-        `;
-
-        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const rows = await conn.Select(query, rhythmId);
-
-        const maxLocalCount = Math.max(...rows.map(x => x.count as number));
-
-        const maqamGlobalCount = rows.Values().Map(x => x.count as number).Sum();
-        const maxGlobalCount = await this.QueryMaxRhythmUsage();
-        const globalScale = maqamGlobalCount / maxGlobalCount;
-
-        return {
-            popularity: globalScale,
-            usage: rows.map(row => ({
-                countryCode: row.location,
-                usage: row.count / maxLocalCount
-            }))
-        };
     }
 }

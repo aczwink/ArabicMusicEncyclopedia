@@ -74,18 +74,24 @@ jobs:
         npm link
       working-directory: ./acfrontend
 
-    #build api    
-    - name: Build API
+    #build acfrontend
+    - name: Checkout OpenArabicMusicDB repo
+      uses: actions/checkout@v4
+      with:
+        repository: aczwink/OpenArabicMusicDB
+        path: openarabicmusicdb
+
+    - name: Building openarabicmusicdb-domain
       run: |
         npm install
         npm run build
         npm link
-      working-directory: ./api
+      working-directory: ./openarabicmusicdb
 
     #build backend
     - name: Build backend
       run: |
-        npm link acts-util-apilib acts-util-core acts-util-node ame-api
+        npm link acts-util-apilib acts-util-core acts-util-node openarabicmusicdb-domain
         npm install
         npm run build-release-package
       working-directory: ./backend
@@ -93,7 +99,7 @@ jobs:
     #build frontend
     - name: Build frontend
       run: |
-        npm link acfrontend acts-util-apilib acts-util-core ame-api
+        npm link acfrontend acts-util-apilib acts-util-core
         npm generate-api-and-theme
         npm run create-release-pkg
       working-directory: ./frontend

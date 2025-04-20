@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,7 +28,7 @@ interface Family
 }
 
 @Injectable
-export class MaqamSelectionComponent extends Component<{ maqamId: number | null; onSelectionChanged: (newValue: number) => void }>
+export class MaqamSelectionComponent extends Component<{ maqamId: string | null; onSelectionChanged: (newValue: string) => void }>
 {
     constructor(private maqamatService: MaqamatService, private ajnasService: AjnasService)
     {
@@ -39,7 +39,7 @@ export class MaqamSelectionComponent extends Component<{ maqamId: number | null;
 
     protected Render(): RenderValue
     {
-        return <Select onChanged={newValue => this.input.onSelectionChanged(parseInt(newValue[0]))}>
+        return <Select onChanged={newValue => this.input.onSelectionChanged(newValue[0])}>
             {this.RenderFamilies()}
         </Select>;
     }

@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2022-2024 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2022-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,12 +17,12 @@
  * */
 
 import { Component, DialogRef, FormField, Injectable, JSX_CreateElement, Switch } from "acfrontend";
-import { Accidental, NaturalNote, OctavePitch, OctavePitchToString } from "ame-api";
 import { g_backendBaseUrl } from "../env";
 import { PitchSelectionComponent } from "../shared/PitchSelectionComponent";
+import { NaturalNote, Accidental, OctavePitch, OctavePitchToString } from "openarabicmusicdb-domain/dist/OctavePitch";
 
 @Injectable
-export class RenderedAttachmentDownloader extends Component<{ attachmentId: number; }>
+export class RenderedAttachmentDownloader extends Component<{ attachmentId: string; }>
 {
     constructor(private dialogRef: DialogRef)
     {

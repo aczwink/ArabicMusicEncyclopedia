@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,8 +17,8 @@
  * */
 
 import { Component, JSX_CreateElement } from "acfrontend";
-import { NaturalNote, OctavePitch } from "ame-api";
 import { AccidentalComponent } from "./AccidentalComponent";
+import { OctavePitch, NaturalNote } from "openarabicmusicdb-domain/dist/OctavePitch";
 
 export class PitchComponent extends Component<{ pitch: OctavePitch }>
 {

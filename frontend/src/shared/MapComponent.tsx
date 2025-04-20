@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2024 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,8 +17,7 @@
  * */
 
 import { Component, Injectable, JSX_CreateElement } from "acfrontend";
-import { Locale } from "ame-api";
-import { RhythmCountryUsage } from "../../dist/api";
+import { CountryCode, RhythmCountryUsage } from "../../dist/api";
 
 @Injectable
 export class MapComponent extends Component<{ usages: RhythmCountryUsage[] }>
@@ -40,7 +39,7 @@ export class MapComponent extends Component<{ usages: RhythmCountryUsage[] }>
     private usageImage: "levant" | "arabicworld";
 
     //Private methods
-    private Colorize(doc: Document, countryCode: Locale.CountryCode, color: string)
+    private Colorize(doc: Document, countryCode: CountryCode, color: string)
     {
         if(this.usageImage === "levant")
         {

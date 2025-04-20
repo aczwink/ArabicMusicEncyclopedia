@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,29 +15,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
-import { OctavePitch, OctavePitchToString, ParseOctavePitch } from "ame-api";
 import { ImageCacheManager } from "../../services/ImageCacheManager";
-import { AjnasController } from "../../dataaccess/AjnasController";
-import { MaqamatController } from "../../dataaccess/MaqamatController";
 import { IntervalsService } from "../../services/IntervalsService";
 import { ChordDetectionService } from "../../services/ChordDetectionService";
 import { LilypondRendererService } from "../../services/LilypondRendererService";
 import { APIController, Get, NotFound, Path, Query } from "acts-util-apilib";
+import { ParseOctavePitch, OctavePitch, OctavePitchToString } from "openarabicmusicdb-domain/dist/OctavePitch";
 
 @APIController("maqamat/{maqamId}/chordsImage")
 class MaqamChordsImageAPIController
 {
-    constructor(private imgCacheManager: ImageCacheManager, private ajnasController: AjnasController,
-        private maqamController: MaqamatController, private intervalsService: IntervalsService, private chordDetectionService: ChordDetectionService,
+    constructor(private imgCacheManager: ImageCacheManager, private intervalsService: IntervalsService, private chordDetectionService: ChordDetectionService,
         private lilypondImageCreator: LilypondRendererService)
     {
     }
 
     @Get()
     public async QueryMaqamImage(
-        @Path maqamId: number,
+        @Path maqamId: string,
         @Query basePitch: string,
-        @Query branchingJinsId: number
+        @Query branchingJinsId: string
     )
     {
         const cacheName = this.CreateCacheName(maqamId, basePitch, branchingJinsId);
@@ -55,12 +52,12 @@ class MaqamChordsImageAPIController
     }
 
     //Private methods
-    private CreateCacheName(maqamId: number, basePitch: string, branchingJinsId: number)
+    private CreateCacheName(maqamId: string, basePitch: string, branchingJinsId: string)
     {
         return maqamId + basePitch.toLowerCase() + branchingJinsId;
     }
 
-    private async CreateImage(maqamId: number, branchingJinsId: number, basePitch: OctavePitch)
+    private async CreateImage(maqamId: string, branchingJinsId: string, basePitch: OctavePitch)
     {
         const scaleIntervals = await this.intervalsService.QueryMaqamIntervals(maqamId, branchingJinsId);
         if(scaleIntervals === undefined)

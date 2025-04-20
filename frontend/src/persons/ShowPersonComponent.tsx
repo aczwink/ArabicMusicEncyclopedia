@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2024 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,12 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Anchor, BootstrapIcon, Component, Injectable, JSX_CreateElement, ProgressSpinner, RouterState } from "acfrontend";
-import { Person } from "../../dist/api";
+import { Component, Injectable, JSX_CreateElement, ProgressSpinner, RouterState } from "acfrontend";
 import { g_backendBaseUrl } from "../env";
 import { WikiTextComponent } from "../shared/WikiTextComponent";
 import { PersonsService } from "./PersonsService";
 import { MapComponent } from "../shared/MapComponent";
+import { OpenArabicMusicDBPerson } from "../../dist/api";
 
 
 @Injectable
@@ -31,7 +31,7 @@ export class ShowPersonComponent extends Component
     {
         super();
 
-        this.personId = parseInt(routerState.routeParams.personId!);
+        this.personId = routerState.routeParams.personId!;
         this.data = null;
     }
     
@@ -40,11 +40,10 @@ export class ShowPersonComponent extends Component
         if(this.data === null)
             return <ProgressSpinner />;
 
-        const usages = this.data.countryCodes.map(cc => ({ countryCode: cc, usage: 1 }));
+        const usages = this.data.locations.map(cc => ({ countryCode: cc, usage: 1 }));
         return <fragment>
             <h1>
                 {this.data.name}
-                <Anchor route={"/persons/edit/" + this.personId}><BootstrapIcon>pen</BootstrapIcon></Anchor>
             </h1>
             <div>
                 <div className="box" style="float: right; display: block">
@@ -67,8 +66,8 @@ export class ShowPersonComponent extends Component
     }
 
     //Private members
-    private personId: number;
-    private data: Person | null;
+    private personId: string;
+    private data: OpenArabicMusicDBPerson | null;
 
     //Event handlers
     public async OnInitiated()

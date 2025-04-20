@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,12 +21,12 @@ import { PersonOverviewData } from "../../dist/api";
 import { PersonsService } from "./PersonsService";
 
 const allSelection: PersonOverviewData = {
-    id: -1,
+    id: "-1",
     name: "All"
 };
 
 @Injectable
-export class OptionalSinglePersonSelectionComponent extends Component<{ onSelectionChanged: (id: number | null) => void }>
+export class OptionalSinglePersonSelectionComponent extends Component<{ onSelectionChanged: (id: string | null) => void }>
 {
     constructor(private personsService: PersonsService)
     {
@@ -42,14 +42,14 @@ export class OptionalSinglePersonSelectionComponent extends Component<{ onSelect
             displayValue: this.selection.name
         };
 
-        return <AutoCompleteSelectBox<number> selection={selection} onChanged={this.OnSelectionChanged.bind(this)} onLoadSuggestions={this.OnLoadSuggestions.bind(this)} />;
+        return <AutoCompleteSelectBox<string> selection={selection} onChanged={this.OnSelectionChanged.bind(this)} onLoadSuggestions={this.OnLoadSuggestions.bind(this)} />;
     }
 
     //Private members
     private selection: PersonOverviewData;
 
     //Event handlers
-    private async OnLoadSuggestions(searchText: string): Promise<KeyDisplayValuePair<number>[]>
+    private async OnLoadSuggestions(searchText: string): Promise<KeyDisplayValuePair<string>[]>
     {
         const result = await this.personsService.QueryPersons(searchText, 0, 10);
 
@@ -64,7 +64,7 @@ export class OptionalSinglePersonSelectionComponent extends Component<{ onSelect
         })));
     }
 
-    private OnSelectionChanged(newValue: KeyDisplayValuePair<number>)
+    private OnSelectionChanged(newValue: KeyDisplayValuePair<string>)
     {
         if(newValue.key === allSelection.id)
         {

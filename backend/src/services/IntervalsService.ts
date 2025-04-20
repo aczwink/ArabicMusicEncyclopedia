@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,11 +17,11 @@
  * */
 
 import { Injectable } from "acts-util-node";
-import { Accidental, NaturalNote, OctavePitch } from "ame-api";
-import { AjnasController, JinsData } from "../dataaccess/AjnasController";
+import { AjnasController } from "../dataaccess/AjnasController";
 import { MaqamatController, MaqamData } from "../dataaccess/MaqamatController";
 import { Fraction } from "../model/Fraction";
-import { Interval } from "../model/Interval";
+import { OctavePitch, Accidental, NaturalNote } from "openarabicmusicdb-domain/dist/OctavePitch";
+import { Interval, OpenArabicMusicDBJins } from "openarabicmusicdb-domain";
 
 @Injectable
 export class IntervalsService
@@ -72,7 +72,7 @@ export class IntervalsService
         });
     }
 
-    public GetMaqamIntervals(maqam: MaqamData, rootJins: JinsData, branchingJins: JinsData)
+    public GetMaqamIntervals(maqam: MaqamData, rootJins: OpenArabicMusicDBJins, branchingJins: OpenArabicMusicDBJins)
     {
         switch(maqam.dominant)
         {
@@ -98,7 +98,7 @@ export class IntervalsService
         }));
     }
 
-    public async QueryMaqamIntervals(maqamId: number, branchingJinsId: number)
+    public async QueryMaqamIntervals(maqamId: string, branchingJinsId: string)
     {
         const maqam = await this.maqamController.QueryMaqam(maqamId);
         if(maqam === undefined)

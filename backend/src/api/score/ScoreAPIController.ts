@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,13 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 import crypto from "crypto";
-
-import { ParseOctavePitch } from "ame-api";
 import { ImageCacheManager } from "../../services/ImageCacheManager";
 import { LilypondRendererService } from "../../services/LilypondRendererService";
 import { IntervalsService } from "../../services/IntervalsService";
 import { MaqamPicCreator } from "../../services/MaqamPicCreator";
 import { APIController, Get, Query } from "acts-util-apilib";
+import { ParseOctavePitch } from "openarabicmusicdb-domain/dist/OctavePitch";
 
 type ScoreType = "maqam" | "rhythm" | "rhythm2";
 

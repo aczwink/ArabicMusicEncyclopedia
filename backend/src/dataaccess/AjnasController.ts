@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,24 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 import { Injectable } from "acts-util-node";
-import { OctavePitch, ParseOctavePitch } from "ame-api";
-import { Interval } from "../model/Interval";
 import { DatabaseController } from "./DatabaseController";
-
-interface Jins
-{
-    id: number;
-    name: string;
-    basePitch: OctavePitch;
-    text: string;
-}
-
-export interface JinsData
-{
-    name: string;
-    basePitch: OctavePitch;
-    intervals: Interval[];
-}
 
 @Injectable
 export class AjnasController
@@ -43,32 +26,15 @@ export class AjnasController
     }
 
     //Public methods
-    public async QueryJins(jinsId: number): Promise<JinsData | undefined>
+    public async QueryJins(jinsId: string)
     {
-        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-
-        const row = await conn.SelectOne("SELECT name, basePitch, intervals FROM amedb.ajnas WHERE id = ?", jinsId);
-
-        if(row === undefined)
-            return undefined;
-        return {
-            name: row.name,
-            basePitch: ParseOctavePitch(row.basePitch),
-            intervals: row.intervals.split(",")
-        };
+        const document = await this.dbController.GetDocumentDB();
+        return document.ajnas.find(x => x.id === jinsId);
     }
 
-    public async QueryAjnas(): Promise<Jins[]>
+    public async QueryAjnas()
     {
-        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-
-        const rows = await conn.Select("SELECT id, name, basePitch, text FROM amedb.ajnas");
-
-        return rows.map(row => ({
-            id: row.id,
-            name: row.name,
-            basePitch: ParseOctavePitch(row.basePitch),
-            text: row.text,
-        }));
+        const document = await this.dbController.GetDocumentDB();
+        return document.ajnas;
     }
 }

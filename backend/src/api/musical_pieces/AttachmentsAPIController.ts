@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,13 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
-import { APIController, BadRequest, Delete, FormField, Get, NotFound, Ok, Path, Post, Query } from "acts-util-apilib";
-import { UploadedFile } from "acts-util-node/dist/http/UploadedFile";
-import { ParseOctavePitch } from "ame-api";
+import { APIController, BadRequest, Get, NotFound, Ok, Path, Query } from "acts-util-apilib";
 import { MusicalPiecesController } from "../../dataaccess/MusicalPiecesController";
 import { AttachmentTypeService } from "../../services/AttachmentTypeService";
 import { LilypondRendererService } from "../../services/LilypondRendererService";
 import { LilypondTransposer } from "../../services/LilypondTransposer";
+import { ParseOctavePitch } from "openarabicmusicdb-domain/dist/OctavePitch";
 
 @APIController("attachments")
 class AttachmentsAPIController
@@ -29,28 +28,6 @@ class AttachmentsAPIController
     constructor(private musicalPiecesController: MusicalPiecesController, private attachmentTypeService: AttachmentTypeService,
         private lilypondService: LilypondRendererService, private lilypondTransposer: LilypondTransposer)
     {
-    }
-
-    @Post()
-    public async AddAttachment(
-        @FormField pieceId: number,
-        @FormField comment: string,
-        @FormField file: UploadedFile
-    )
-    {
-        const contentType = await this.attachmentTypeService.FindContentType(file);
-        if(contentType === undefined)
-            return BadRequest("Illegal attachment type");
-
-        await this.musicalPiecesController.AddAttachment(pieceId, comment, contentType, file.buffer);
-    }
-
-    @Delete("{attachmentId}")
-    public async DeleteAttachment(
-        @Path attachmentId: number
-    )
-    {
-        await this.musicalPiecesController.DeleteAttachment(attachmentId);
     }
 
     @Get("{attachmentId}")

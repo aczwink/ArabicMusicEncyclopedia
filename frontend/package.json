@@ -14,9 +14,9 @@
   "dependencies": {
     "acfrontend": "*",
     "acts-util-core": "*",
-    "ame-api": "*",
     "source-map-loader": "^3.0.0",
-    "ts-loader": "^9.2.5"
+    "ts-loader": "^9.2.5",
+    "openarabicmusicdb-domain": "*"
   },
   "devDependencies": {
     "acts-util-apilib": "*",

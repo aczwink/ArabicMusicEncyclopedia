@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "run-dev-server": "nodemon --exec \"npx acts-util-apilib && tsc && (export $(cat .env | xargs) && cd dist && SCRIPTDIR=../scripts node main.js)\"",
+    "run-dev-server": "nodemon --exec \"npx acts-util-apilib && tsc; nodemon --exec '(export $(cat .env | xargs) && cd dist && SCRIPTDIR=../scripts node main.js)' --watch '../../OpenArabicMusicDB/builder/dist/db.json'\"",
     "build-release-package": "npx acts-util-apilib && npx webpack",
     "build-docker-image": "export $(cat .env | xargs) && docker buildx build $DOCKER_BUILDX_FLAGS --platform linux/arm64 -t $DOCKER_REGISTRY/aczwink/ame-backend --push ."
   },
@@ -16,7 +16,6 @@
     "acts-util-apilib": "*",
     "acts-util-core": "*",
     "acts-util-node": "*",
-    "ame-api": "*",
     "openarabicmusicdb-domain": "*",
     "multer": "^1.4.3"
   },

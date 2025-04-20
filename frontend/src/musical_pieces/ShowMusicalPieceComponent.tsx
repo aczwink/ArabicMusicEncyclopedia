@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2024 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,7 +17,7 @@
  * */
 
 import { Anchor, BootstrapIcon, Component, Injectable, JSX_CreateElement, PopupManager, ProgressSpinner, RouterState, TitleService } from "acfrontend";
-import { Form, Language, Person, PieceDetailsData } from "../../dist/api";
+import { OpenArabicMusicDBDialect, OpenArabicMusicDBForm, OpenArabicMusicDBPerson, PieceDetailsData } from "../../dist/api";
 import { g_backendBaseUrl } from "../env";
 import { MaqamatService } from "../maqamat/MaqamatService";
 import { PersonReferenceComponent } from "../persons/PersonReferenceComponent";
@@ -30,7 +30,7 @@ import { RenderedAttachmentDownloader } from "./RenderedAttachmentDownloader";
 
 interface Association
 {
-    id: number;
+    id: string;
     name: string;
     explanation: string;
 }
@@ -44,7 +44,7 @@ export class ShowMusicalPieceComponent extends Component
     {
         super();
 
-        this.pieceId = parseInt(routerState.routeParams.pieceId!);
+        this.pieceId = routerState.routeParams.pieceId!;
         this.piece = null;
         this.form = null;
         this.composer = null;
@@ -63,7 +63,6 @@ export class ShowMusicalPieceComponent extends Component
         return <fragment>
             <h1>
                 {this.piece.name}
-                <Anchor route={"/musicalpieces/edit/" + this.pieceId}><BootstrapIcon>pencil</BootstrapIcon></Anchor>
             </h1>
             <div>
                 <div className="row">
@@ -132,13 +131,13 @@ export class ShowMusicalPieceComponent extends Component
     }
 
     //Private members
-    private pieceId: number;
+    private pieceId: string;
     private piece: PieceDetailsData | null;
-    private form: Form | null;
-    private composer: Person | null;
-    private language: Language | null;
-    private singers: Person[] | null;
-    private lyricist: Person | null;
+    private form: OpenArabicMusicDBForm | null;
+    private composer: OpenArabicMusicDBPerson | null;
+    private language: OpenArabicMusicDBDialect | null;
+    private singers: OpenArabicMusicDBPerson[] | null;
+    private lyricist: OpenArabicMusicDBPerson | null;
     private maqamat: Association[] | null;
     private rhythms: Association[] | null;
 
@@ -185,7 +184,7 @@ export class ShowMusicalPieceComponent extends Component
     }
 
     //Event handlers
-    private OnDownloadRenderedAttachment(attachmentId: number)
+    private OnDownloadRenderedAttachment(attachmentId: string)
     {
         this.popupManager.OpenDialog(<RenderedAttachmentDownloader attachmentId={attachmentId} />, { title: "Download as PDF" });
     }

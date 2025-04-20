@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,14 +17,14 @@
  * */
 
 import { Component, Injectable, JSX_CreateElement, ProgressSpinner, RouterState } from "acfrontend";
-import { OctavePitch, OctavePitchToString } from "ame-api";
-import { Maqam } from "../../dist/api";
+import { Maqam, OctavePitch } from "../../dist/api";
 import { g_backendBaseUrl } from "../env";
 import { MapComponent } from "../shared/MapComponent";
 import { PitchSelectionComponent } from "../shared/PitchSelectionComponent";
 import { PopularityComponent } from "../shared/PopularityComponent";
 import { WikiTextComponent } from "../shared/WikiTextComponent";
 import { MaqamatService } from "./MaqamatService";
+import { OctavePitchToString } from "openarabicmusicdb-domain/dist/OctavePitch";
 
 @Injectable
 export class MaqamComponent extends Component
@@ -72,19 +72,19 @@ export class MaqamComponent extends Component
     }
 
     //Private members
-    private maqamId: number;
+    private maqamId: string;
     private selectedPitch: OctavePitch | null;
     private maqam: Maqam | null;
 
     //Private methods
-    private RenderChords(pitch: OctavePitch, branchingJinsId: number)
+    private RenderChords(pitch: OctavePitch, branchingJinsId: string)
     {
         return <div className="col-auto">
             <img src={g_backendBaseUrl + "/maqamat/" + this.maqamId + "/chordsImage?basePitch=" + OctavePitchToString(pitch) + "&branchingJinsId=" + branchingJinsId} />
         </div>;
     }
 
-    private RenderForm(pitch: OctavePitch, branchingJinsId: number)
+    private RenderForm(pitch: OctavePitch, branchingJinsId: string)
     {
         return <div className="col-auto">
             <img src={g_backendBaseUrl + "/maqamat/" + this.maqamId + "/image?basePitch=" + OctavePitchToString(pitch) + "&branchingJinsId=" + branchingJinsId} />

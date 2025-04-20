@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,14 +17,10 @@
  * */
 
 import { Routes } from "acfrontend";
-import { AddMusicalPieceComponent } from "./AddMusicalPieceComponent";
-import { EditMusicalPieceComponent } from "./EditMusicalPieceComponent";
 import { MusicalPieceSearchComponent } from "./MusicalPieceSearchComponent";
 import { ShowMusicalPieceComponent } from "./ShowMusicalPieceComponent";
 
 export const routes : Routes = [
-    { path: "add", component: AddMusicalPieceComponent },
-    { path: "edit/:pieceId", component: EditMusicalPieceComponent },
     { path: ":pieceId", component: ShowMusicalPieceComponent },
     { path: "", component: MusicalPieceSearchComponent },
 ];

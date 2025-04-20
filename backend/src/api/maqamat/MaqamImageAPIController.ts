@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,13 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
-import { OctavePitch, OctavePitchToString, ParseOctavePitch } from "ame-api";
 import { ImageCacheManager } from "../../services/ImageCacheManager";
 import { AjnasController } from "../../dataaccess/AjnasController";
 import { MaqamPicCreator } from "../../services/MaqamPicCreator";
 import { MaqamatController } from "../../dataaccess/MaqamatController";
 import { IntervalsService } from "../../services/IntervalsService";
 import { APIController, Get, NotFound, Path, Query } from "acts-util-apilib";
+import { ParseOctavePitch, OctavePitch, OctavePitchToString } from "openarabicmusicdb-domain/dist/OctavePitch";
 
 @APIController("maqamat/{maqamId}/image")
 class MaqamImageAPIController
@@ -33,9 +33,9 @@ class MaqamImageAPIController
 
     @Get()
     public async QueryMaqamImage(
-        @Path maqamId: number,
+        @Path maqamId: string,
         @Query basePitch: string,
-        @Query branchingJinsId: number
+        @Query branchingJinsId: string
     )
     {
         const cacheName = this.CreateCacheName(maqamId, basePitch, branchingJinsId);
@@ -53,12 +53,12 @@ class MaqamImageAPIController
     }
 
     //Private methods
-    private CreateCacheName(maqamId: number, basePitch: string, branchingJinsId: number)
+    private CreateCacheName(maqamId: string, basePitch: string, branchingJinsId: string)
     {
         return maqamId + basePitch.toLowerCase() + branchingJinsId;
     }
 
-    private async CreateImage(maqamId: number, basePitch: OctavePitch, branchingJinsId: number)
+    private async CreateImage(maqamId: string, basePitch: OctavePitch, branchingJinsId: string)
     {
         const maqam = await this.maqamController.QueryMaqam(maqamId);
         if(maqam === undefined)

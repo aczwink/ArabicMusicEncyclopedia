@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,21 +17,13 @@
  * */
 
 import { Injectable } from "acts-util-node";
-import { CountryCode } from "ame-api/dist/Locale";
 import { DatabaseController } from "./DatabaseController";
-
-export interface Person
-{
-    name: string;
-    lifeTime: string;
-    origin: string;
-    text: string;
-    countryCodes: CountryCode[];
-}
+import { HTTP } from "acts-util-node";
+import { AbsURL } from "acts-util-core";
 
 export interface PersonOverviewData
 {
-    id: number;
+    id: string;
     name: string;
 }
 
@@ -43,100 +35,50 @@ export class PersonsController
     }
 
     //Public methods
-    public async AddPerson(person: Person)
+    public async QueryPerson(personId: string)
     {
-        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const result = await conn.InsertRow("amedb.persons", {
-            name: person.name,
-            lifeTime: person.lifeTime,
-            origin: person.origin,
-            text: person.text,
-        });
-
-        await this.UpdatePersonLocations(result.insertId, person.countryCodes);
-
-        return result.insertId;
+        const document = await this.dbController.GetDocumentDB();
+        const person = document.persons.find(x => x.id === personId);
+        return person;
     }
 
-    public async QueryPerson(personId: number)
+    public async QueryPersonImage(personId: string)
     {
-        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const row = await conn.SelectOne<Person>("SELECT name, lifeTime, origin, text FROM amedb.persons WHERE id = ?", personId);
-        if(row === undefined)
+        const document = await this.dbController.GetDocumentDB();
+        const person = document.persons.find(x => x.id === personId);
+        if(person?.image === undefined)
             return undefined;
-
-        const countryCodes = await conn.Select("SELECT location FROM amedb.persons_locations WHERE personId = ?", personId);
-        row.countryCodes = countryCodes.map(x => x.location);
-
-        return row;
-    }
-
-    public async QueryPersonImage(personId: number)
-    {
-        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const row = await conn.SelectOne<{ data: Buffer; }>("SELECT data FROM amedb.persons_images WHERE personId = ?", personId);
-
-        if(row === undefined)
-            return undefined;
-        return row.data;
+        switch(person.image.type)
+        {
+            case "external":
+                {
+                    const sender = new HTTP.RequestSender();
+                    const response = await sender.SendRequest({
+                        body: Buffer.alloc(0),
+                        headers: {},
+                        method: "GET",
+                        url: AbsURL.Parse(person.image.uri)
+                    });
+                    return response.body;
+                }
+            case "private":
+                throw new Error("TODO: implement me :)");
+        }
     }
 
     public async QueryPersons(nameFilter: string, offset: number, limit: number)
     {
-        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const query = `
-        SELECT id, name
-        FROM amedb.persons
-        WHERE name LIKE ?
-        LIMIT ?
-        OFFSET ?
-        `;
-        const rows = await conn.Select<PersonOverviewData>(query, "%" + nameFilter + "%", limit, offset);
+        nameFilter = nameFilter.toLowerCase();
 
-        const row = await conn.SelectOne("SELECT COUNT(*) AS cnt FROM amedb.persons WHERE name LIKE ?", "%" + nameFilter + "%");
+        const document = await this.dbController.GetDocumentDB();
+        const filtered = document.persons.Values().Filter(x => x.name.toLowerCase().includes(nameFilter));
 
         return {
-            persons: rows,
-            totalCount: (row as any).cnt
+            persons: filtered.Skip(offset).Take(limit).Map<PersonOverviewData>(x => ({
+                id: x.id,
+                name: x.name
+            })).ToArray(),
+            totalCount: filtered.Count()
         };
-    }
-
-    public async UpdatePerson(personId: number, person: Person)
-    {
-        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-
-        await conn.UpdateRows("amedb.persons", {
-            name: person.name,
-            lifeTime: person.lifeTime,
-            origin: person.origin,
-            text: person.text
-        }, "id = ?", personId);
-
-        await this.UpdatePersonLocations(personId, person.countryCodes);
-    }
-
-    public async UpdatePersonImage(personId: number, image: Buffer)
-    {
-        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-
-        const result = await conn.UpdateRows("amedb.persons_images", {
-            data: image
-        }, "personId = ?", personId);
-        if(result.affectedRows === 0)
-        {
-            await conn.InsertRow("amedb.persons_images", {
-                personId,
-                data: image
-            });
-        }
-    }
-
-    //Private methods
-    private async UpdatePersonLocations(personId: number, countryCodes: CountryCode[])
-    {
-        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-
-        await conn.DeleteRows("amedb.persons_locations", "personId = ?", personId);
-        await countryCodes.Values().Map(cc => conn.InsertRow("amedb.persons_locations", { personId, location: cc }) ).PromiseAll();
     }
 }

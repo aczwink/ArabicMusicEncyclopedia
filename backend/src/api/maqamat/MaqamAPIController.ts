@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,7 +27,7 @@ class MaqamAPIController
 
     @Get()
     public async QueryMaqam(
-        @Path maqamId: number
+        @Path maqamId: string
     )
     {
         const maqam = await this.maqamatController.QueryMaqamInfo(maqamId);
