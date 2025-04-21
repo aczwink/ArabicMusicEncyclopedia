@@ -60,7 +60,7 @@ export class RhythmsController
             name: rhythm.name,
             text: rhythm.text,
             usageText: rhythm.usageText,
-            timeSigNum: rhythm.timeSignatureNumerator,
+            timeSigNum: rhythm.timeSignatureNumerators[0],
 
             popularity: usage.popularity,
             usage: usage.usage,
@@ -71,16 +71,16 @@ export class RhythmsController
     {
         const document = await this.dbController.GetDocumentDB();
 
-        return await document.rhythms.Values().Map(async row => {
+        const res = await document.rhythms.Values().Map(async row => {
             const usageData = (await this.statisticsController.QueryRhythmUsage(row.id))!;
 
-            const rod: RhythmOverviewData = {
+            return row.timeSignatureNumerators.Values().Map<RhythmOverviewData>(x => ({
                 id: row.id,
                 name: row.name,
                 popularity: usageData.popularity,
-                timeSigNum: row.timeSignatureNumerator
-            };
-            return rod;
+                timeSigNum: x
+            }));
         }).PromiseAll();
+        return res.Values().Flatten().ToArray();
     }
 }

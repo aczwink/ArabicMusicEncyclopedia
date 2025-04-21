@@ -46,7 +46,7 @@ resource backend 'Microsoft.Web/sites@2024-04-01' = {
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
-  name: 'arabicmusicencyclopediastorage'
+  name: 'arabicmusicdbstorage'
   location: location
 
   kind: 'StorageV2'
