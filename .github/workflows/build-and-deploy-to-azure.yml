@@ -10,6 +10,7 @@ on:
 permissions:
   contents: read
   id-token: write
+  packages: write
 
 jobs:
   build_and_deploy:
