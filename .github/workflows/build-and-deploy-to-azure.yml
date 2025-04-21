@@ -37,6 +37,7 @@ jobs:
       run: |
         npm install
         npm run compile
+        npm run webpack-debug
         npm link
       working-directory: ./actsutil/core
 
