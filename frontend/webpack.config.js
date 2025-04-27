@@ -40,7 +40,7 @@ module.exports = {
 
     devServer: {
         historyApiFallback: {
-            index: 'index.htm'
+            index: 'index.html'
         },
         
         static: [
