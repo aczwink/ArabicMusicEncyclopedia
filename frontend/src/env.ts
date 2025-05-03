@@ -19,5 +19,5 @@
 export const g_backendHostname = process.env.AME_BACKEND_HOSTNAME!;
 export const g_backendPort = parseInt(process.env.AME_BACKEND_PORT!);
 const g_backendAuthority = g_backendHostname + ":" + g_backendPort;
-export const g_backendProtocol = "http";
+export const g_backendProtocol = process.env.AME_BACKEND_PROTOCOL! as ("http" | "https");
 export const g_backendBaseUrl = g_backendProtocol + "://" + g_backendAuthority;

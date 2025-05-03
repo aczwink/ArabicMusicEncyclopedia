@@ -35,6 +35,14 @@ resource backend 'Microsoft.Web/sites@2024-04-01' = {
     
     siteConfig: {
       appSettings: [
+        {
+          name: 'AME_DICTDB_PATH'
+          value: '/srv/db/db.json'
+        }
+        {
+          name: 'AME_PORT'
+          value: '8080'
+        }
       ]
       minTlsVersion: '1.3'
     }
