@@ -109,7 +109,7 @@ jobs:
 
     - name: Configuring frontend
       run: |
-        echo 'window.process = { env: { AME_BACKEND_HOSTNAME: "arabicmusicencyclopedia-backend.azurewebsites.net", AME_BACKEND_PORT: 80, AME_BACKEND_PROTOCOL: "https" } };' >> env.js
+        echo 'window.process = { env: { AME_BACKEND_HOSTNAME: "arabicmusicencyclopedia-backend.azurewebsites.net", AME_BACKEND_PORT: 443, AME_BACKEND_PROTOCOL: "https" } };' >> env.js
         echo '{ "navigationFallback": { "rewrite": "/index.html" } }' >> staticwebapp.config.json
       working-directory: ./frontend/dist
 
