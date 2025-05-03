@@ -129,14 +129,13 @@ jobs:
         push: true
         tags: ghcr.io/aczwink/arabicmusicencyclopedia:latest
 
-    # deploy backend to azure
+    #Deploy infrastructure
     - uses: azure/login@v1
       with:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-    #Deploy infrastructure
     - name: Deploy infrastructure
       uses: azure/arm-deploy@v1
       with:
@@ -146,14 +145,16 @@ jobs:
         parameters: ./infrastructure/deployParams.json
         failOnStdErr: false
 
-    - uses: azure/webapps-deploy@v3
-      with:
-        app-name: 'arabicmusicencyclopedia-backend'
-        package: 'backend/dist/'
-        
     - name: logout
       run: |
         az logout
+
+    #Deploy backend to azure
+    - uses: azure/webapps-deploy@v3
+      with:
+        app-name: 'arabicmusicencyclopedia-backend'
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        images: 'ghcr.io/aczwink/arabicmusicencyclopedia:latest'
         
     #Deploying frontend to azure
     - name: Deploy

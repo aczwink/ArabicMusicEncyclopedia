@@ -34,12 +34,8 @@ resource backend 'Microsoft.Web/sites@2024-04-01' = {
     serverFarmId: appServicePlan.id
     
     siteConfig: {
-      appCommandLine: './main.js'
-
       appSettings: [
       ]
-
-      linuxFxVersion: 'NODE|20-lts'
       minTlsVersion: '1.3'
     }
   }
