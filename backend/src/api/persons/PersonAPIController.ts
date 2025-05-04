@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { APIController, Get, NotFound, Ok, Path } from "acts-util-apilib";
+import { APIController, Get, NotFound, Ok, Path, Redirect } from "acts-util-apilib";
 import { PersonsController } from "../../dataaccess/PersonsController";
 
 @APIController("persons/{personId}")
@@ -53,6 +53,8 @@ class PersonAPIController
                 }
             });
         }
+        else if(typeof image === "string")
+            return Redirect(image);
         return Ok(image, {
             "Cache-Control": "max-age=31536000, immutable"
         });

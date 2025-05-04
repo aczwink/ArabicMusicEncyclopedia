@@ -40,6 +40,10 @@ resource backend 'Microsoft.Web/sites@2024-04-01' = {
           value: '/srv/db/db.json'
         }
         {
+          name: 'AME_ORIGIN'
+          value: 'https://${frontend.properties.defaultHostname}'
+        }
+        {
           name: 'AME_PORT'
           value: '8080'
         }

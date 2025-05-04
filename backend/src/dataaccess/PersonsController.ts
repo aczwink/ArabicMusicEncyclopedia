@@ -18,8 +18,6 @@
 
 import { Injectable } from "acts-util-node";
 import { DatabaseController } from "./DatabaseController";
-import { HTTP } from "acts-util-node";
-import { AbsURL } from "acts-util-core";
 
 export interface PersonOverviewData
 {
@@ -51,16 +49,7 @@ export class PersonsController
         switch(person.image.type)
         {
             case "external":
-                {
-                    const sender = new HTTP.RequestSender();
-                    const response = await sender.SendRequest({
-                        body: Buffer.alloc(0),
-                        headers: {},
-                        method: "GET",
-                        url: AbsURL.Parse(person.image.uri)
-                    });
-                    return response.body;
-                }
+                return person.image.uri;
             case "private":
                 throw new Error("TODO: implement me :)");
         }
