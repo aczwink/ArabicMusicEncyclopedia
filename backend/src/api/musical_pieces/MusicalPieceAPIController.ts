@@ -15,15 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
-import { APIController, Get, NotFound, Ok, Path } from "acts-util-apilib";
+import { APIController, BadRequest, Get, NotFound, Ok, Path, Query } from "acts-util-apilib";
 import { MusicalPiecesController } from "../../dataaccess/MusicalPiecesController";
 import { PersonsController } from "../../dataaccess/PersonsController";
 import { LyricsRendererService } from "../../services/LyricsRendererService";
+import { AttachmentTypeService } from "../../services/AttachmentTypeService";
+import { ParseOctavePitch } from "openarabicmusicdb-domain/dist/OctavePitch";
+import { LilypondTransposer } from "../../services/LilypondTransposer";
+import { LilypondRendererService } from "../../services/LilypondRendererService";
+import { OpenArabicMusicDBFileDownloader } from "../../services/OpenArabicMusicDBFileDownloader";
 
 @APIController("musicalpieces/{pieceId}")
 class MusicalPieceAPIController
 {
-    constructor(private musicalPiecesController: MusicalPiecesController, private lyricsRendererService: LyricsRendererService, private personsController: PersonsController)
+    constructor(private musicalPiecesController: MusicalPiecesController, private lyricsRendererService: LyricsRendererService, private personsController: PersonsController, private attachmentTypeService: AttachmentTypeService,
+        private lilypondTransposer: LilypondTransposer, private lilypondService: LilypondRendererService, private downloader: OpenArabicMusicDBFileDownloader,
+    )
     {
     }
 
@@ -36,6 +43,54 @@ class MusicalPieceAPIController
         if(piece === undefined)
             return NotFound("piece not found");
         return piece;
+    }
+
+    @Get("attachment/{index}")
+    public async QueryAttachment(
+        @Path pieceId: string,
+        @Path index: number
+    )
+    {
+        const piece = await this.musicalPiecesController.QueryMusicalPiece(pieceId);
+        if(piece === undefined)
+            return NotFound("piece not found");
+        const attachment = piece.attachments[index];
+        if(attachment === undefined)
+            return NotFound("attachment not found");
+
+        const data = await this.downloader.Download(attachment);
+        const fileName = attachment.comment + "." + this.attachmentTypeService.TypeToFileExtension(attachment.contentType as any);
+
+        return Ok(data, {
+            "Content-Disposition": 'attachment; filename="' + fileName + '"'
+        });
+    }
+
+    @Get("attachment/{index}/rendered")
+    public async DownloadRenderedAttachment(
+        @Path pieceId: string,
+        @Path index: number,
+        @Query basePitch?: string
+    )
+    {
+        const piece = await this.musicalPiecesController.QueryMusicalPiece(pieceId);
+        if(piece === undefined)
+            return NotFound("piece not found");
+        const attachment = piece.attachments[index];
+        if(attachment === undefined)
+            return NotFound("attachment not found");
+        if(attachment.contentType !== "text/x-lilypond")
+            return BadRequest("attachment is not renderable");
+
+        const data = await this.downloader.Download(attachment);
+        const source = data.toString("utf-8");
+        const transposed = basePitch === undefined ? source : this.lilypondTransposer.TransposeTo(source, ParseOctavePitch(basePitch));
+
+        const fileName = attachment.comment + ".pdf";
+        const result = await this.lilypondService.Render(transposed, "pdf");
+        return Ok(result, {
+            "Content-Disposition": 'attachment; filename="' + fileName + '"'
+        });
     }
 
     @Get("renderedtext")

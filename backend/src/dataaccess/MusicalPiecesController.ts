@@ -19,7 +19,7 @@
 import { Injectable } from "acts-util-node";
 import { AttachmentContentType } from "../services/AttachmentTypeService";
 import { DatabaseController } from "./DatabaseController";
-import { OpenArabicMusicDBMusicalPiece } from "openarabicmusicdb-domain";
+import { OpenArabicMusicDBAttachment, OpenArabicMusicDBMusicalPiece } from "openarabicmusicdb-domain";
 
 interface FullAttachmentData
 {
@@ -71,10 +71,8 @@ interface PieceRhythmAssociation
     explanation: string;
 }
 
-interface PieceAttachmentAssociation
+interface PieceAttachmentAssociation extends OpenArabicMusicDBAttachment
 {
-    attachmentId: string;
-    comment: string;
     isRenderable: boolean;
 }
 
@@ -100,16 +98,6 @@ export class MusicalPiecesController
     }
 
     //Public methods
-    public async QueryAttachment(attachmentId: number)
-    {
-        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        const row = await conn.SelectOne<FullAttachmentData>("SELECT comment, contentType, content FROM amedb.musical_pieces_attachments WHERE attachmentId = ?", attachmentId);
-
-        if(row === undefined)
-            return undefined;
-        return row;
-    }
-
     public async QueryMusicalPiece(pieceId: string): Promise<PieceDetailsData | undefined>
     {
         const document = await this.dbController.GetDocumentDB();
@@ -221,7 +209,9 @@ export class MusicalPiecesController
     private QueryPieceAttachments(piece: OpenArabicMusicDBMusicalPiece)
     {
         return piece.attachments.map<PieceAttachmentAssociation>(x => ({
-            attachmentId: x.uri,
+            contentType: x.contentType,
+            type: x.type,
+            uri: x.uri,
             comment: x.comment,
             isRenderable: x.contentType === "text/x-lilypond"
         }));

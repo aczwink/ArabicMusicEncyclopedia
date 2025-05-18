@@ -112,12 +112,12 @@ export class ShowMusicalPieceComponent extends Component
                                 <th>Name</th>
                                 <th>Actions</th>
                             </tr>
-                            {this.piece.attachments.map(attachment => <tr>
+                            {this.piece.attachments.map( (attachment, idx) => <tr>
                                 <td>{attachment.comment}</td>
                                 <td>
-                                    <a href={g_backendBaseUrl + "/attachments/" + attachment.attachmentId} target="_blank"><BootstrapIcon>download</BootstrapIcon></a>
+                                    <a href={g_backendBaseUrl + "/musicalpieces/" + this.pieceId + "/attachment/" + idx} target="_blank"><BootstrapIcon>download</BootstrapIcon></a>
                                     {attachment.isRenderable ?
-                                        <a onclick={this.OnDownloadRenderedAttachment.bind(this, attachment.attachmentId)}><BootstrapIcon>file-pdf</BootstrapIcon></a>
+                                        <a onclick={this.OnDownloadRenderedAttachment.bind(this, attachment.uri)}><BootstrapIcon>file-pdf</BootstrapIcon></a>
                                     : null}
                                 </td>
                             </tr>)}
