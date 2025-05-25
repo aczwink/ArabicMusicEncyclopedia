@@ -26,23 +26,11 @@ export class ArticlesController
     }
 
     //Public methods
-    public async CreateArticle(title: string, text: string)
-    {
-        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        await conn.InsertRow("amedb.articles", { title, text });
-    }
-
     public async QueryArticle(title: string)
     {
         const document = await this.dbController.GetDocumentDB();
         const article = document.articles.find(x => x.title === title);
 
         return article;
-    }
-
-    public async UpdateArticle(title: string, text: string)
-    {
-        const conn = await this.dbController.CreateAnyConnectionQueryExecutor();
-        await conn.UpdateRows("amedb.articles", { text }, "title = ?", title);
     }
 }

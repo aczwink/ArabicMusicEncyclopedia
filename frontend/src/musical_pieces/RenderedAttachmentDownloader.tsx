@@ -22,7 +22,7 @@ import { PitchSelectionComponent } from "../shared/PitchSelectionComponent";
 import { NaturalNote, Accidental, OctavePitch, OctavePitchToString } from "openarabicmusicdb-domain/dist/OctavePitch";
 
 @Injectable
-export class RenderedAttachmentDownloader extends Component<{ attachmentId: string; }>
+export class RenderedAttachmentDownloader extends Component<{ attachmentIndex: number; pieceId: string; }>
 {
     constructor(private dialogRef: DialogRef)
     {
@@ -53,7 +53,7 @@ export class RenderedAttachmentDownloader extends Component<{ attachmentId: stri
     public OnInitiated()
     {
         this.dialogRef.onAccept.Subscribe(() => {
-            const baseUrl = g_backendBaseUrl + "/attachments/" + this.input.attachmentId + "/rendered";
+            const baseUrl = g_backendBaseUrl + "/musicalpieces/" + this.input.pieceId + "/attachment/" + this.input.attachmentIndex + "/rendered";
             const url = baseUrl + (this.transpose ? "?basePitch=" + OctavePitchToString(this.selectedPitch) : "");
             window.open(url, '_blank')?.focus();
             this.dialogRef.Close();

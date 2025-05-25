@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 import fs from "fs";
-import { DBFactory, Injectable } from "acts-util-node";
+import { Injectable } from "acts-util-node";
 import { OpenArabicMusicDBDocument } from "openarabicmusicdb-domain";
 import ENV from "../env";
 
@@ -29,38 +29,15 @@ export class DatabaseController
     }
 
     //Public methods
-    public async CreateAnyConnectionQueryExecutor()
-    {
-        throw new Error("TODO: replace me");
-        const instance = await this.GetPoolInstance();
-        return instance.value.CreateAnyConnectionQueryExecutor();
-    }
-
     public async GetDocumentDB()
     {
         if(this.documentDB === null)
         {
-            const filePath = ENV.database.documentDBPath;
+            const filePath = ENV.documentDBPath;
             const data = await fs.promises.readFile(filePath, "utf-8");
             this.documentDB = JSON.parse(data);
         }
         return this.documentDB!;
-    }
-
-    //Private methods
-    private async GetPoolInstance()
-    {
-        const factory = new DBFactory;
-
-        const dbPw = await fs.promises.readFile("/run/secrets/dbpw", "utf-8");
-        
-        const pool = await factory.CreateConnectionPool({
-            type: "mysql",
-            host: ENV.database.host,
-            username: ENV.database.user,
-            password: dbPw
-        });
-        return pool;
     }
 
     //Private state

@@ -117,7 +117,7 @@ export class ShowMusicalPieceComponent extends Component
                                 <td>
                                     <a href={g_backendBaseUrl + "/musicalpieces/" + this.pieceId + "/attachment/" + idx} target="_blank"><BootstrapIcon>download</BootstrapIcon></a>
                                     {attachment.isRenderable ?
-                                        <a onclick={this.OnDownloadRenderedAttachment.bind(this, attachment.uri)}><BootstrapIcon>file-pdf</BootstrapIcon></a>
+                                        <a onclick={this.OnDownloadRenderedAttachment.bind(this, idx)}><BootstrapIcon>file-pdf</BootstrapIcon></a>
                                     : null}
                                 </td>
                             </tr>)}
@@ -184,9 +184,9 @@ export class ShowMusicalPieceComponent extends Component
     }
 
     //Event handlers
-    private OnDownloadRenderedAttachment(attachmentId: string)
+    private OnDownloadRenderedAttachment(attachmentIndex: number)
     {
-        this.popupManager.OpenDialog(<RenderedAttachmentDownloader attachmentId={attachmentId} />, { title: "Download as PDF" });
+        this.popupManager.OpenDialog(<RenderedAttachmentDownloader attachmentIndex={attachmentIndex} pieceId={this.pieceId} />, { title: "Download as PDF" });
     }
 
     public async OnInitiated()

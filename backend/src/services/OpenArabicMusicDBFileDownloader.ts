@@ -38,7 +38,7 @@ export class OpenArabicMusicDBFileDownloader
     //Private methods
     private async DownloadPublicFile(repoPath: string)
     {
-        const url = "https://raw.githubusercontent.com/aczwink/OpenArabicMusicDB/refs/heads/main/data/" + repoPath;
+        const url = "https://raw.githubusercontent.com/aczwink/OpenArabicMusicDB/refs/heads/main/data" + repoPath;
         const sender = new HTTP.RequestSender();
         const response = await sender.SendRequest({
             body: Buffer.alloc(0),
@@ -47,6 +47,8 @@ export class OpenArabicMusicDBFileDownloader
             url: AbsURL.Parse(url)
         });
 
+        if(response.statusCode === 404)
+            return null;
         return response.body;
     }
 }

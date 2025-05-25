@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { APIController, BodyProp, Get, NotFound, Post, Put, Query } from "acts-util-apilib";
+import { APIController, Get, NotFound, Query } from "acts-util-apilib";
 import { ArticlesController } from "../../dataaccess/ArticlesController";
 
 @APIController("articles")
@@ -24,15 +24,6 @@ class ArticlesAPIController
 {
     constructor(private articlesController: ArticlesController)
     {
-    }
-
-    @Post()
-    public async CreateArticle(
-        @BodyProp title: string,
-        @BodyProp text: string
-    )
-    {
-        await this.articlesController.CreateArticle(title, text);
     }
 
     @Get()
@@ -44,14 +35,5 @@ class ArticlesAPIController
         if(result === undefined)
             return NotFound("article does not exist");
         return result;
-    }
-
-    @Put()
-    public async UpdateArticle(
-        @BodyProp title: string,
-        @BodyProp text: string
-    )
-    {
-        await this.articlesController.UpdateArticle(title, text);
     }
 }

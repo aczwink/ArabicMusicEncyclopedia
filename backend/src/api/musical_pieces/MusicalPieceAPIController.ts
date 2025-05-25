@@ -83,6 +83,8 @@ class MusicalPieceAPIController
             return BadRequest("attachment is not renderable");
 
         const data = await this.downloader.Download(attachment);
+        if(data === null)
+            return NotFound("attachment not found");
         const source = data.toString("utf-8");
         const transposed = basePitch === undefined ? source : this.lilypondTransposer.TransposeTo(source, ParseOctavePitch(basePitch));
 

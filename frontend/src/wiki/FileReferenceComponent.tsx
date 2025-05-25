@@ -41,7 +41,7 @@ export class FileReferenceComponent extends Component<{ fileName: string; }>
     private RenderContent(fileName: string)
     {
         if(this.exists === false)
-            return "Create file: " + fileName;
+            return <span style="color:red; font-weight:bold">TODO MISSING FILE: {fileName}</span>
 
         const imageExtensions = [
             ".gif", ".jpg", ".png", ".svg"

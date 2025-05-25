@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,21 +27,11 @@ export class WikiService
     }
 
     //Public methods
-    public CreateArticle(title: string, text: string)
-    {
-        return this.apiService.articles.post({ title, text });
-    }
-
     public async QueryArticle(title: string)
     {
         const response = await this.apiService.articles.get({ title });
         if(response.statusCode == 404)
             return null;
         return response.data;
-    }
-
-    public UpdateArticle(title: string, text: string)
-    {
-        return this.apiService.articles.put({ title, text });
     }
 }
