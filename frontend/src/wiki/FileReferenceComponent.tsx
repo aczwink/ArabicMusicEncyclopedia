@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Anchor, Component, Injectable, JSX_CreateElement, ProgressSpinner } from "acfrontend";
+import { Component, Injectable, JSX_CreateElement, ProgressSpinner } from "acfrontend";
 import { g_backendBaseUrl } from "../env";
 import { WikiFilesService } from "./WikiFilesService";
 
@@ -35,7 +35,7 @@ export class FileReferenceComponent extends Component<{ fileName: string; }>
         if(this.exists === null)
             return <ProgressSpinner />;
 
-        return <Anchor route={"/wiki/file/" + this.input.fileName}>{this.RenderContent(this.input.fileName)}</Anchor>
+        return this.RenderContent(this.input.fileName);
     }
 
     private RenderContent(fileName: string)

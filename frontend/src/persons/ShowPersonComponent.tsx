@@ -52,7 +52,7 @@ export class ShowPersonComponent extends Component
                 <table className="keyValue">
                     <tr>
                         <th>Lifetime</th>
-                        <td>{this.data.lifeTime}</td>
+                        <td>{this.RenderLifeTime()}</td>
                     </tr>
                     <tr>
                         <th>Origin</th>
@@ -65,9 +65,15 @@ export class ShowPersonComponent extends Component
         </fragment>;
     }
 
-    //Private members
-    private personId: string;
-    private data: OpenArabicMusicDBPerson | null;
+    //Private methods
+    private RenderLifeTime()
+    {
+        if(this.data?.lifeTime === undefined)
+            return "unknown";
+        if(this.data.lifeTime.deathYear === undefined)
+            return this.data.lifeTime.birthYear + " - (still alive)";
+        return this.data.lifeTime.birthYear + " - " + this.data.lifeTime.deathYear;
+    }
 
     //Event handlers
     public async OnInitiated()
@@ -75,4 +81,8 @@ export class ShowPersonComponent extends Component
         const result = await this.personsService.QueryPerson(this.personId);
         this.data = result;
     }
+
+    //State
+    private personId: string;
+    private data: OpenArabicMusicDBPerson | null;
 }
