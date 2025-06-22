@@ -1,1 +1,2 @@
 # ArabicMusicEncyclopedia
+[![Build and deploy to Azure](https://github.com/aczwink/ArabicMusicEncyclopedia/actions/workflows/build-and-deploy-to-azure.yml/badge.svg)](https://github.com/aczwink/ArabicMusicEncyclopedia/actions/workflows/build-and-deploy-to-azure.yml)

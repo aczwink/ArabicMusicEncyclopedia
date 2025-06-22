@@ -52,7 +52,7 @@ export class ShowPersonComponent extends Component
                 <table className="keyValue">
                     <tr>
                         <th>Lifetime</th>
-                        <td>{this.RenderLifeTime()}</td>
+                        <td>{this.RenderLifeTime()}{this.RenderAge()}</td>
                     </tr>
                     <tr>
                         <th>Origin</th>
@@ -66,12 +66,22 @@ export class ShowPersonComponent extends Component
     }
 
     //Private methods
+    private RenderAge()
+    {
+        const lt = this.data?.lifeTime;
+        if(lt === undefined)
+            return null;
+        if(lt.deathYear === undefined)
+            return " (age " + (new Date().getFullYear() - lt.birthYear) + ")";
+        return " (age " + (lt.deathYear - lt.birthYear) + ")";
+    }
+
     private RenderLifeTime()
     {
         if(this.data?.lifeTime === undefined)
             return "unknown";
         if(this.data.lifeTime.deathYear === undefined)
-            return this.data.lifeTime.birthYear + " - (still alive)";
+            return this.data.lifeTime.birthYear + " - ";
         return this.data.lifeTime.birthYear + " - " + this.data.lifeTime.deathYear;
     }
 
