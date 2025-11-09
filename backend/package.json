@@ -12,12 +12,10 @@
   "author": "Amir Czwink",
   "license": "AGPL-3.0",
   "dependencies": {
-    "@types/multer": "^1.4.7",
     "acts-util-apilib": "*",
     "acts-util-core": "*",
     "acts-util-node": "*",
-    "openarabicmusicdb-domain": "*",
-    "multer": "^1.4.3"
+    "openarabicmusicdb-domain": "*"
   },
   "devDependencies": {
     "nodemon": "^2.0.22",
