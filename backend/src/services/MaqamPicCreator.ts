@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2026 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -51,7 +51,7 @@ export class MaqamPicCreator
         await this.CallScript(dir);
         const result = await fs.promises.readFile(this.GetOutputFilePath(dir));
 
-        await fs.promises.rmdir(dir, { recursive: true});
+        await fs.promises.rm(dir, { recursive: true });
 
         return result;
     }

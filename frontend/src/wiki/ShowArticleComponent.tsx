@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2026 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -34,6 +34,8 @@ export class ShowArticleComponent extends Component
     
     protected Render()
     {
+        if(this.article === undefined)
+            return "This article does not exist.";
         if(this.article === null)
             return <ProgressSpinner />;
     
@@ -45,12 +47,19 @@ export class ShowArticleComponent extends Component
 
     //Private members
     private title: string;
-    private article: OpenArabicMusicDBWikiArticle | null;
+    private article: OpenArabicMusicDBWikiArticle | null | undefined;
 
     //Event handlers
     public async OnInitiated()
     {
         const result = await this.wikiService.QueryArticle(this.title);
         this.article = result;
+
+        if(document.location.hash.length > 0)
+        {
+            setTimeout(() => {
+                document.location.hash = document.location.hash;
+            }, 100);
+        }
     }
 }

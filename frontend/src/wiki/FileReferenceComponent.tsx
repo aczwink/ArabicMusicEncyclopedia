@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2026 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -43,13 +43,18 @@ export class FileReferenceComponent extends Component<{ fileName: string; }>
         if(this.exists === false)
             return <span style="color:red; font-weight:bold">TODO MISSING FILE: {fileName}</span>
 
+        const url = g_backendBaseUrl + "/files?title=" + fileName;
+
+        if(fileName.endsWith(".svg"))
+            return <iframe src={url} />
+            
         const imageExtensions = [
-            ".gif", ".jpg", ".png", ".svg"
+            ".gif", ".jpg", ".png"
         ];
         for (const ext of imageExtensions)
         {
             if(fileName.endsWith(ext))
-                return <img src={g_backendBaseUrl + "/files?title=" + fileName} />;   
+                return <img className="wikipic" src={url} />;   
         }
         return fileName;
     }

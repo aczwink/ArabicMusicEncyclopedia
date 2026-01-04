@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2026 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -57,6 +57,8 @@ export class ShowMusicalPieceComponent extends Component
     
     protected Render(): RenderValue
     {
+        if(this.piece === undefined)
+            return "This piece does not exist";
         if( (this.piece === null) || (this.form === null) || (this.composer === null) || (this.maqamat === null) || (this.rhythms === null) )
             return <ProgressSpinner />;
 
@@ -132,7 +134,7 @@ export class ShowMusicalPieceComponent extends Component
 
     //Private members
     private pieceId: string;
-    private piece: PieceDetailsData | null;
+    private piece: PieceDetailsData | null | undefined;
     private form: OpenArabicMusicDBForm | null;
     private composer: OpenArabicMusicDBPerson | null;
     private language: OpenArabicMusicDBDialect | null;
@@ -193,8 +195,10 @@ export class ShowMusicalPieceComponent extends Component
     {
         const result = await this.musicalPiecesService.QueryPiece(this.pieceId);
         this.piece = result;
+        if(result === undefined)
+            return;
 
-        this.titleService.title = this.piece.name;
+        this.titleService.title = result.name;
 
         const forms = await this.musicalService.ListForms();
         this.form = forms.Values().Filter(x => x.id === result.formId).First();
