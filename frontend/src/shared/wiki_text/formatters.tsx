@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2023 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2026 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -59,10 +59,10 @@ export const blockFormatters: RegExFormatter[] = [
 ];
 
 export const lineFormatters: LineFormatter[] = [
-    { prefix: "# ", type: CurrentListType.NumberedList, format: (formatted: SingleRenderValue[]) => <fragment>{formatted}</fragment> },
+    //{ prefix: "# ", type: CurrentListType.NumberedList, format: (formatted: SingleRenderValue[]) => <fragment>{formatted}</fragment> },
     { prefix: "* ", type: CurrentListType.UnnumberedList, format: (formatted: SingleRenderValue[]) => <fragment>{formatted}</fragment> },
-    { prefix: "=== ", suffix: " ===", type: CurrentListType.None, format: (formatted: SingleRenderValue[]) => <h3>{formatted}</h3> },
-    { prefix: "== ", suffix: " ==", type: CurrentListType.None, format: (formatted: SingleRenderValue[]) => <h2>{formatted}</h2> },
+    { prefix: "## ", type: CurrentListType.None, format: (formatted: SingleRenderValue[]) => <h3 id={formatted as unknown as string}>{formatted}</h3> },
+    { prefix: "# ", type: CurrentListType.None, format: (formatted: SingleRenderValue[]) => <h2>{formatted}</h2> },
     { prefix: "| ", suffix: " |", type: CurrentListType.Table, format: (formatted: SingleRenderValue[]) => {
         const cells = [];
         for (const entry of formatted)
@@ -92,7 +92,7 @@ export const lineFormatters: LineFormatter[] = [
 
 export const inlineFormatters = [
     {
-        pattern: /\[\[(.+)\]\]/,
+        pattern: /\[\[(.+?)\]\]/,
         mapper: (match: RegExpExecArray) => {
             const content = match[0].substr(2, match[0].length - 4);
 
@@ -121,21 +121,10 @@ export const inlineFormatters = [
         }
     },
     {
-        pattern: /\[(.+)\]/,
+        pattern: /\[(.+)\]\((.+)\)/,
         mapper: (match: RegExpExecArray) => {
-            const idx = match[1].indexOf(" ");
-
-            let url, text;
-            if(idx == -1)
-            {
-                url = match[1];
-                text = url;
-            }
-            else
-            {
-                url = match[1].substr(0, idx);
-                text = match[1].substr(idx + 1);
-            }        
+            const text = match[1];
+            const url = match[2];
             return <a href={url} target="_blank">{text}</a>
         }
     },

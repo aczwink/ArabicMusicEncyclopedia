@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2026 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -50,8 +50,12 @@ export class MapComponent extends Component<{ usages: RhythmCountryUsage[] }>
                 "lb": ["path4547"],
                 "sy": ["path4439"],
                 "tr": ["path4419"],
+
+                //not present
+                "ly": [],
+                "tn": [],
             };
-            const elementIds = (codesToPathsMap as any)[countryCode] as string[];
+            const elementIds = codesToPathsMap[countryCode] as string[];
             for (const elementId of elementIds)
                 doc.getElementById(elementId)?.setAttribute("fill", color);
         }
@@ -104,7 +108,8 @@ export class MapComponent extends Component<{ usages: RhythmCountryUsage[] }>
     //Event handlers
     override OnInitiated(): void
     {
-        if(this.input.usages.find(x => x.countryCode === "tn"))
+        const nonLevantCodes = ["ly", "tn"];
+        if(this.input.usages.find(x => (x.countryCode !== null) && nonLevantCodes.includes(x.countryCode)))
             this.usageImage = "arabicworld";
     }
 
