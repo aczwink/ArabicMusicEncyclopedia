@@ -62,11 +62,16 @@ export class MaqamPicCreator
         const child = child_process.exec(path.join(this.GetScriptDir(), "scaler.py") + " " + this.GetInputFilePath(inputDir), {
             cwd: inputDir,
         });
+        let stderr = "";
+        child.stderr?.setEncoding("utf-8");
+        child.stderr?.on("data", x => stderr += x);
 
-        await new Promise( (resolve, reject) => {
+        const code = await new Promise<number>( (resolve, reject) => {
             child.on("exit", resolve);
             child.on("error", reject);
         });
+        if(code !== 0)
+            throw new Error("Creating scale image failed with error: " + stderr);
     }
 
     private GetInputFilePath(dir: string)

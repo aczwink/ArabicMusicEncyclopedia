@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2026 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -64,6 +64,10 @@ export class LilypondNoteService
         {
             switch(acc)
             {
+                case Accidental.DoubleFlat:
+                    return "bb";
+                case Accidental.ThreeQuarterFlat:
+                    return "bsb";
                 case Accidental.Flat:
                     return "b";
                 case Accidental.HalfFlat:

@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2026 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -131,6 +131,10 @@ export class IntervalsService
     {
         switch(accidental)
         {
+            case Accidental.DoubleFlat:
+                return new Fraction(-1, 1);
+            case Accidental.ThreeQuarterFlat:
+                return new Fraction(-3, 4);
             case Accidental.Flat:
                 return new Fraction(-1, 2);
             case Accidental.HalfFlat:
@@ -168,6 +172,10 @@ export class IntervalsService
         const v = fraction.num * 4 / fraction.den;
         switch(v)
         {
+            case -4:
+                return Accidental.DoubleFlat;
+            case -3:
+                return Accidental.ThreeQuarterFlat;
             case -2:
                 return Accidental.Flat;
             case -1:
