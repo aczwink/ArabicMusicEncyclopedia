@@ -50,6 +50,7 @@ export class MapComponent extends Component<{ usages: RhythmCountryUsage[] }>
                 "lb": ["path4547"],
                 "sy": ["path4439"],
                 "tr": ["path4419"],
+                "ye": ["path4343"],
 
                 //not present
                 "ly": [],
