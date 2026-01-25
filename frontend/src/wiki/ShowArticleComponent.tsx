@@ -29,12 +29,13 @@ export class ShowArticleComponent extends Component
         super();
 
         this.title = routerState.routeParams.title!;
+        this.notFound = false;
         this.article = null;
     }
     
     protected Render()
     {
-        if(this.article === undefined)
+        if(this.notFound)
             return "This article does not exist.";
         if(this.article === null)
             return <ProgressSpinner />;
@@ -47,12 +48,18 @@ export class ShowArticleComponent extends Component
 
     //Private members
     private title: string;
-    private article: OpenArabicMusicDBWikiArticle | null | undefined;
+    private notFound: boolean;
+    private article: OpenArabicMusicDBWikiArticle | null;
 
     //Event handlers
     public async OnInitiated()
     {
         const result = await this.wikiService.QueryArticle(this.title);
+        if(result === undefined)
+        {
+            this.notFound = true;
+            return;
+        }
         this.article = result;
 
         if(document.location.hash.length > 0)

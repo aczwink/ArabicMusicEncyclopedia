@@ -48,6 +48,7 @@ export class MapComponent extends Component<{ usages: RhythmCountryUsage[] }>
                 "gr": ["path4685", "path4709", "path4827"],
                 "iq": ["path4635"],
                 "lb": ["path4547"],
+                "ps": ["path4505", "path4633"],
                 "sy": ["path4439"],
                 "tr": ["path4419"],
                 "ye": ["path4343"],
@@ -62,6 +63,10 @@ export class MapComponent extends Component<{ usages: RhythmCountryUsage[] }>
         }
         else
         {
+            const countryCodeMap = {
+                "ps": ["il", "path5472", "path5474"],
+            };
+
             function SetFillOnElement(element: Element)
             {
                 const styleParts = element.getAttribute("style")?.split(";") ?? [];
@@ -80,12 +85,16 @@ export class MapComponent extends Component<{ usages: RhythmCountryUsage[] }>
                 element.setAttribute("style", styleLine);
             }
 
-            const element = doc.getElementById(countryCode);
-            if(element === null)
-                throw new Error("MISSING COUNTRY: " + countryCode);
-            SetFillOnElement(element);
-            for(let child = element.firstElementChild; child !== null; child = child?.nextElementSibling ?? null)
-                SetFillOnElement(child!);
+            const mappedCCs = (countryCode === "ps") ? countryCodeMap[countryCode] : [countryCode];
+            for (const cc of mappedCCs)
+            {
+                const element = doc.getElementById(cc);
+                if(element === null)
+                    throw new Error("MISSING COUNTRY: " + cc);
+                SetFillOnElement(element);
+                for(let child = element.firstElementChild; child !== null; child = child?.nextElementSibling ?? null)
+                    SetFillOnElement(child!);   
+            }
         }
     }
 

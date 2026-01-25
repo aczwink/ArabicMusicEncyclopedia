@@ -34,6 +34,8 @@ resource backend 'Microsoft.Web/sites@2024-04-01' = {
     serverFarmId: appServicePlan.id
     
     siteConfig: {
+      alwaysOn: true
+
       appSettings: [
         {
           name: 'AME_DICTDB_PATH'
@@ -48,6 +50,7 @@ resource backend 'Microsoft.Web/sites@2024-04-01' = {
           value: '8080'
         }
       ]
+      
       minTlsVersion: '1.3'
     }
   }
