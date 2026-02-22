@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
-import { Injectable } from "acts-util-node";
+import { Injectable } from "@aczwink/acts-util-node";
 import { DatabaseController } from "./DatabaseController";
-import { Dictionary, ObjectExtensions } from "acts-util-core";
+import { Dictionary, ObjectExtensions } from "@aczwink/acts-util-core";
 import { CountryCode } from "openarabicmusicdb-domain";
 
 export interface MaqamCountryUsage

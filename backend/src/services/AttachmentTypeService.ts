@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2022 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2022-2026 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,10 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
-import child_process from "child_process";
-import fs from "fs";
-import { CreateTempFile, Injectable } from "acts-util-node";
-import { UploadedFile } from "acts-util-node/dist/http/UploadedFile";
+import { Injectable } from "@aczwink/acts-util-node";
 
 export type AttachmentContentType =
     "application/pdf"
@@ -30,31 +27,6 @@ export type AttachmentContentType =
 export class AttachmentTypeService
 {
     //Public methods
-    public async FindContentType(uf: UploadedFile): Promise<AttachmentContentType | undefined>
-    {
-        const tmpFile = await CreateTempFile();
-        await tmpFile.file.write(uf.buffer);
-        await tmpFile.file.close();
-        const foundType = child_process.execSync('file --mime-type -b "' + tmpFile.filePath + '"').toString("utf-8").trim();
-        await fs.promises.unlink(tmpFile.filePath);
-
-        switch(foundType)
-        {
-            case "application/octet-stream":
-                if(uf.originalName.endsWith(".mus") && (uf.mediaType === "application/vnd.musician"))
-                    return uf.mediaType;
-                break;
-            case "application/pdf":
-            case "image/jpeg":
-                return foundType;
-            case "text/plain":
-                if(uf.originalName.endsWith(".ly") && uf.mediaType === "text/x-lilypond")
-                    return uf.mediaType;
-        }
-
-        return undefined;
-    }
-
     public TypeToFileExtension(contentType: AttachmentContentType)
     {
         switch(contentType)

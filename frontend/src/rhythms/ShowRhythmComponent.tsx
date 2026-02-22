@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Anchor, BootstrapIcon, Component, Injectable, JSX_CreateElement, ProgressSpinner, RouterState } from "acfrontend";
+import { Anchor, BootstrapIcon, Component, Injectable, JSX_CreateElement, ProgressSpinner, RouterState } from "@aczwink/acfrontend";
 import { Rhythm } from "../../dist/api";
 import { MapComponent } from "../shared/MapComponent";
 import { PopularityComponent } from "../shared/PopularityComponent";

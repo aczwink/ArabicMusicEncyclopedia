@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { HTTP, Injectable } from "acts-util-node";
+import { HTTP, Injectable } from "@aczwink/acts-util-node";
 import { OpenArabicMusicDBAttachment } from "openarabicmusicdb-domain";
-import { AbsURL } from "acts-util-core";
+import { AbsURL } from "@aczwink/acts-util-core";
 
 @Injectable
 export class OpenArabicMusicDBFileDownloader

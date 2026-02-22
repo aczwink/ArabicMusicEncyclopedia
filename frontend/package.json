@@ -12,14 +12,14 @@
   "author": "Amir Czwink",
   "license": "AGPL-3.0-or-later",
   "dependencies": {
-    "acfrontend": "*",
-    "acts-util-core": "*",
+    "@aczwink/acfrontend": "^1.0.0",
+    "@aczwink/acts-util-core": "^1.0.0",
     "source-map-loader": "^5.0.0",
     "ts-loader": "^9.5.4",
     "openarabicmusicdb-domain": "*"
   },
   "devDependencies": {
-    "acts-util-apilib": "*",
+    "@aczwink/acts-util-apilib": "^1.0.0",
     "copy-webpack-plugin": "^13.0.1",
     "dotenv-webpack": "^8.1.1",
     "typescript": "^5.9.3",

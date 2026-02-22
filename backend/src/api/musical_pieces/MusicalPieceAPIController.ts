@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
-import { APIController, BadRequest, Get, NotFound, Ok, Path, Query } from "acts-util-apilib";
+import { APIController, BadRequest, Get, NotFound, Ok, Path, Query } from "@aczwink/acts-util-apilib";
 import { MusicalPiecesController } from "../../dataaccess/MusicalPiecesController";
 import { PersonsController } from "../../dataaccess/PersonsController";
 import { LyricsRendererService } from "../../services/LyricsRendererService";

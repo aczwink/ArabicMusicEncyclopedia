@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Component, JSX_CreateElement } from "acfrontend";
+import { Component, JSX_CreateElement } from "@aczwink/acfrontend";
 import { AccidentalComponent } from "./AccidentalComponent";
 import { OctavePitch, NaturalNote } from "openarabicmusicdb-domain/dist/OctavePitch";
 

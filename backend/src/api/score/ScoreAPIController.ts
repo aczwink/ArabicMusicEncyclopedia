@@ -20,7 +20,7 @@ import { ImageCacheManager } from "../../services/ImageCacheManager";
 import { LilypondRendererService } from "../../services/LilypondRendererService";
 import { IntervalsService } from "../../services/IntervalsService";
 import { MaqamPicCreator } from "../../services/MaqamPicCreator";
-import { APIController, Get, Query } from "acts-util-apilib";
+import { APIController, Get, Query } from "@aczwink/acts-util-apilib";
 import { ParseOctavePitch } from "openarabicmusicdb-domain/dist/OctavePitch";
 
 type ScoreType = "maqam" | "rhythm" | "rhythm2";

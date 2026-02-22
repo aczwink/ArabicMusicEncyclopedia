@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Injectable } from "acfrontend";
+import { Injectable } from "@aczwink/acfrontend";
 import { APIService } from "../shared/APIService";
 
 @Injectable

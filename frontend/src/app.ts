@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { BootstrapApp } from "acfrontend";
+import { BootstrapApp } from "@aczwink/acfrontend";
 import { RootComponent } from "./RootComponent";
 import { routes } from "./routing";
 

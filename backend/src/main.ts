@@ -17,9 +17,9 @@
  * */
 import fs from "fs";
 import http from "http";
-import { OpenAPI } from "acts-util-core";
-import { Factory, HTTP } from "acts-util-node";
-import { APIRegistry } from "acts-util-apilib";
+import { OpenAPI } from "@aczwink/acts-util-core";
+import { Factory, HTTP } from "@aczwink/acts-util-node";
+import { APIRegistry } from "@aczwink/acts-util-apilib";
 import ENV from "./env";
 
 async function SetupServer()

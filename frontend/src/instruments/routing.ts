@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Routes } from "acfrontend";
+import { Routes } from "@aczwink/acfrontend";
 import { OudFingerBoardComponent } from "./OudFingerBoardComponent";
 
 export const routes : Routes = [

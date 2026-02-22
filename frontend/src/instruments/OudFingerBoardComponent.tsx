@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Component, JSX_CreateElement } from "acfrontend";
+import { Component, JSX_CreateElement } from "@aczwink/acfrontend";
 
 type Pitch = "A" | "Bb" | "B" | "C" | "Db" | "D" | "Eb" | "E" | "F" | "F#" | "G" | "Ab";
 const stepsCount = 13;

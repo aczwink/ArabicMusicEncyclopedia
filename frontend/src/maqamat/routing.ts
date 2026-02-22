@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Routes } from "acfrontend";
+import { Routes } from "@aczwink/acfrontend";
 import { ListMaqamatComponent } from "./ListMaqamatComponent";
 import { ListMaqamatGroupingsByDominantComponent } from "./ListMaqamatGroupingsByDominantComponent";
 import { ListMaqamatGroupingsByIntervalsComponent } from "./ListMaqamatGroupingsByIntervalsComponent";

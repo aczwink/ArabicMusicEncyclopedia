@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Anchor, Component, JSX_CreateElement } from "acfrontend";
+import { Anchor, Component, JSX_CreateElement } from "@aczwink/acfrontend";
 import { PersonOverviewData } from "../../dist/api";
 import { g_backendBaseUrl } from "../env";
 

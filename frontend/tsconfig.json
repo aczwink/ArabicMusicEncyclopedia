@@ -69,7 +69,7 @@
     "forceConsistentCasingInFileNames": true  /* Disallow inconsistently-cased references to the same file. */
   },
   "include": [
-    "./node_modules/acfrontend/dist/JSX.d.ts",
+    "./node_modules/@aczwink/acfrontend/dist/JSX.d.ts",
     "src/**/*"
   ]
 }

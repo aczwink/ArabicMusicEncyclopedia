@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Anchor, BootstrapIcon, Component, Injectable, JSX_CreateElement, LineEdit, PaginationComponent, ProgressSpinner, RouterButton } from "acfrontend";
+import { Anchor, BootstrapIcon, Component, Injectable, JSX_CreateElement, LineEdit, PaginationComponent, ProgressSpinner, RouterButton } from "@aczwink/acfrontend";
 import { PersonOverviewData } from "../../dist/api";
 import { PersonReferenceComponent } from "./PersonReferenceComponent";
 import { PersonsService } from "./PersonsService";

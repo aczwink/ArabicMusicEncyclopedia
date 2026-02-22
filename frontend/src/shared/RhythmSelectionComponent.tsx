@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Component, Injectable, JSX_CreateElement, ProgressSpinner, Select } from "acfrontend";
+import { Component, Injectable, JSX_CreateElement, ProgressSpinner, Select } from "@aczwink/acfrontend";
 import { RhythmOverviewData } from "../../dist/api";
 import { RhythmsService } from "../rhythms/RhythmsService";
 

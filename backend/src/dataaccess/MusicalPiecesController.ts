@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Injectable } from "acts-util-node";
+import { Injectable } from "@aczwink/acts-util-node";
 import { AttachmentContentType } from "../services/AttachmentTypeService";
 import { DatabaseController } from "./DatabaseController";
 import { OpenArabicMusicDBAttachment, OpenArabicMusicDBMusicalPiece } from "openarabicmusicdb-domain";

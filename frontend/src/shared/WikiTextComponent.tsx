@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
-import { Component } from "acfrontend";
+import { Component } from "@aczwink/acfrontend";
 import { WikiTextFormatter } from "./wiki_text/WikiTextFormatter";
 
 export class WikiTextComponent extends Component<{ text: string; }>

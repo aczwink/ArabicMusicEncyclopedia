@@ -20,7 +20,7 @@ import fs from "fs";
 import os from "os";
 import path from "path";
 
-import { Injectable } from "acts-util-node";
+import { Injectable } from "@aczwink/acts-util-node";
 import { OctavePitch, NaturalNote, Accidental, OctavePitchToString } from "openarabicmusicdb-domain/dist/OctavePitch";
 import { Interval } from "openarabicmusicdb-domain";
 

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Anchor, BootstrapIcon, Component, Injectable, JSX_CreateElement, PopupManager, ProgressSpinner, RouterState, TitleService } from "acfrontend";
+import { Anchor, BootstrapIcon, Component, Injectable, JSX_CreateElement, PopupManager, ProgressSpinner, RouterState, TitleService } from "@aczwink/acfrontend";
 import { OpenArabicMusicDBDialect, OpenArabicMusicDBForm, OpenArabicMusicDBPerson, PieceDetailsData } from "../../dist/api";
 import { g_backendBaseUrl } from "../env";
 import { MaqamatService } from "../maqamat/MaqamatService";

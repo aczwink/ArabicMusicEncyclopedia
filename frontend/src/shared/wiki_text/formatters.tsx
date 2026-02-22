@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
-import { Anchor, JSX_CreateElement } from "acfrontend";
+import { Anchor, JSX_CreateElement } from "@aczwink/acfrontend";
 import { g_backendBaseUrl } from "../../env";
 import { FileReferenceComponent } from "../../wiki/FileReferenceComponent";
 import { CurrentListType } from "./blocks";

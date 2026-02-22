@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { APIController, Get, NotFound, Query } from "acts-util-apilib";
+import { APIController, Get, NotFound, Query } from "@aczwink/acts-util-apilib";
 import { ArticlesController } from "../../dataaccess/ArticlesController";
 
 @APIController("articles")

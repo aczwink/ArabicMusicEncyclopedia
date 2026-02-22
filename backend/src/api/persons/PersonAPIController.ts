@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { APIController, Get, NotFound, Ok, Path, Redirect } from "acts-util-apilib";
+import { APIController, Get, NotFound, Ok, Path, Redirect } from "@aczwink/acts-util-apilib";
 import { PersonsController } from "../../dataaccess/PersonsController";
 
 @APIController("persons/{personId}")

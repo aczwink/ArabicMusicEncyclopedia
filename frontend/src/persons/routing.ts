@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Routes } from "acfrontend";
+import { Routes } from "@aczwink/acfrontend";
 import { ListPersonsComponent } from "./ListPersonsComponent";
 import { ShowPersonComponent } from "./ShowPersonComponent";
 

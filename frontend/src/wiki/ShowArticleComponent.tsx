@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Component, Injectable, JSX_CreateElement, ProgressSpinner, RouterState } from "acfrontend";
+import { Component, Injectable, JSX_CreateElement, ProgressSpinner, RouterState } from "@aczwink/acfrontend";
 import { WikiTextComponent } from "../shared/WikiTextComponent";
 import { WikiService } from "./WikiService";
 import { OpenArabicMusicDBWikiArticle } from "../../dist/api";

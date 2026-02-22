@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Component, Injectable, JSX_CreateElement, ProgressSpinner, RouterState } from "acfrontend";
+import { Component, Injectable, JSX_CreateElement, ProgressSpinner, RouterState } from "@aczwink/acfrontend";
 import { Maqam, OctavePitch } from "../../dist/api";
 import { g_backendBaseUrl } from "../env";
 import { MapComponent } from "../shared/MapComponent";

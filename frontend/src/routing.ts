@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Routes } from "acfrontend";
+import { Routes } from "@aczwink/acfrontend";
 import { routes as ajnasRoutes } from "./ajnas/routing";
 import { routes as instrumentsRoutes } from "./instruments/routing";
 import { routes as maqamatRoutes } from "./maqamat/routing";

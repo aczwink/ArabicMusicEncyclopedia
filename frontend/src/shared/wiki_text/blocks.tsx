@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { JSX_CreateElement } from "acfrontend";
+import { JSX_CreateElement } from "@aczwink/acfrontend";
 
 export enum CurrentListType
 {

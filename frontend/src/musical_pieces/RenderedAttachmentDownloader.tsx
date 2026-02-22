@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Component, DialogRef, FormField, Injectable, JSX_CreateElement, Switch } from "acfrontend";
+import { Component, DialogRef, FormField, Injectable, JSX_CreateElement, Switch } from "@aczwink/acfrontend";
 import { g_backendBaseUrl } from "../env";
 import { PitchSelectionComponent } from "../shared/PitchSelectionComponent";
 import { NaturalNote, Accidental, OctavePitch, OctavePitchToString } from "openarabicmusicdb-domain/dist/OctavePitch";

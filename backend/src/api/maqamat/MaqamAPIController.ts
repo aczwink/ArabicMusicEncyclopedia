@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
-import { APIController, Get, NotFound, Path } from "acts-util-apilib";
+import { APIController, Get, NotFound, Path } from "@aczwink/acts-util-apilib";
 import { MaqamatController } from "../../dataaccess/MaqamatController";
 
 @APIController("maqamat/{maqamId}")

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Component, JSX_CreateElement, Navigation, NavItem, RouterComponent } from "acfrontend";
+import { Component, JSX_CreateElement, Navigation, NavItem, RouterComponent } from "@aczwink/acfrontend";
 
 export class RootComponent extends Component
 {

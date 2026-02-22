@@ -18,7 +18,7 @@
 import fs from "fs";
 import path from "path";
 
-import { Injectable } from "acts-util-node";
+import { Injectable } from "@aczwink/acts-util-node";
 
 type ImgType = "jins" | "maqam" | "maqamchords" | "rhythm" | "rhythm2";
 

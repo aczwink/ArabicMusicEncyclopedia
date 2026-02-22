@@ -44,22 +44,6 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
-    #build acts-util-core
-    - name: Checkout ACTS-Util repo
-      uses: actions/checkout@v4
-      with:
-        repository: aczwink/ACTS-Util
-        path: actsutil
-
-    #build acts-util-apilib
-    - name: Building acts-util-apilib
-      run: |
-        npm link acts-util-core acts-util-node
-        npm install
-        npm run build
-        npm link
-      working-directory: ./actsutil/apilib
-
     #build acfrontend
     - name: Checkout ACFrontEnd repo
       uses: actions/checkout@v4
@@ -69,7 +53,6 @@ jobs:
 
     - name: Building acfrontend
       run: |
-        npm link acts-util-core
         npm install
         npm run compile
         npm run build
@@ -93,7 +76,7 @@ jobs:
     #build backend
     - name: Build backend
       run: |
-        npm link acts-util-apilib acts-util-core acts-util-node openarabicmusicdb-domain
+        npm link openarabicmusicdb-domain
         npm install
         npm run build-release-package
       working-directory: ./backend
@@ -101,7 +84,7 @@ jobs:
     #build frontend
     - name: Build frontend
       run: |
-        npm link acfrontend acts-util-apilib acts-util-core openarabicmusicdb-domain
+        npm link acfrontend openarabicmusicdb-domain
         sudo apt install -y ruby-sass
         npm run generate-api-and-theme
         npm run create-release-pkg

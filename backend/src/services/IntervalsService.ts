@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Injectable } from "acts-util-node";
+import { Injectable } from "@aczwink/acts-util-node";
 import { AjnasController } from "../dataaccess/AjnasController";
 import { MaqamatController, MaqamData } from "../dataaccess/MaqamatController";
 import { Fraction } from "../model/Fraction";
