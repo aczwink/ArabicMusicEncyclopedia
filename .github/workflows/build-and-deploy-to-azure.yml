@@ -44,48 +44,18 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
-    #build acfrontend
-    - name: Checkout ACFrontEnd repo
-      uses: actions/checkout@v4
-      with:
-        repository: aczwink/ACFrontEnd
-        path: acfrontend
-
-    - name: Building acfrontend
-      run: |
-        npm install
-        npm run compile
-        npm run build
-        npm link
-      working-directory: ./acfrontend
-
-    #build acfrontend
-    - name: Checkout OpenArabicMusicDB repo
-      uses: actions/checkout@v4
-      with:
-        repository: aczwink/OpenArabicMusicDB
-        path: openarabicmusicdb
-
-    - name: Building openarabicmusicdb-domain
-      run: |
-        npm install
-        npm run build
-        npm link
-      working-directory: ./openarabicmusicdb/domain
-
     #build backend
     - name: Build backend
       run: |
-        npm link openarabicmusicdb-domain
-        npm install
+        npm ci
         npm run build-release-package
       working-directory: ./backend
 
     #build frontend
     - name: Build frontend
       run: |
-        npm link acfrontend openarabicmusicdb-domain
         sudo apt install -y ruby-sass
+        npm ci
         npm run generate-api-and-theme
         npm run create-release-pkg
       working-directory: ./frontend
