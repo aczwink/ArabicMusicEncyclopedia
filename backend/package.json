@@ -15,7 +15,7 @@
     "@aczwink/acts-util-apilib": "^1.0.0",
     "@aczwink/acts-util-core": "^1.0.0",
     "@aczwink/acts-util-node": "^1.0.0",
-    "openarabicmusicdb-domain": "*"
+    "@aczwink/openarabicmusicdb-domain": "^1.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.11",

@@ -1,12 +1,7 @@
-api/dist/
-api/node_modules/
-api/package-lock.json
 backend/dist/
 backend/node_modules/
 backend/.env
-backend/package-lock.json
 frontend/.sass-cache/
 frontend/dist/
 frontend/node_modules/
-frontend/package-lock.json
 frontend/.env

@@ -16,7 +16,7 @@
     "@aczwink/acts-util-core": "^1.0.0",
     "source-map-loader": "^5.0.0",
     "ts-loader": "^9.5.4",
-    "openarabicmusicdb-domain": "*"
+    "@aczwink/openarabicmusicdb-domain": "^1.0.0"
   },
   "devDependencies": {
     "@aczwink/acts-util-apilib": "^1.0.0",
