@@ -19,7 +19,7 @@
 import { Component, JSX_CreateElement, Select, SingleSelect } from "@aczwink/acfrontend";
 import { AccidentalComponent } from "./AccidentalComponent";
 import { ObjectExtensions } from "@aczwink/acts-util-core";
-import { NaturalNote, Accidental, OctavePitch } from "openarabicmusicdb-domain/dist/OctavePitch";
+import { NaturalNote, Accidental, OctavePitch } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
 
 const naturalNotes = {
     "A": NaturalNote.A,

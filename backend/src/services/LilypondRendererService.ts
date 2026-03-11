@@ -23,7 +23,7 @@ import path from "path";
 import { Injectable } from "@aczwink/acts-util-node";
 import { ChordType } from "./ChordDetectionService";
 import { LilypondNoteService } from "./LilypondNoteService";
-import { OctavePitch } from "openarabicmusicdb-domain/dist/OctavePitch";
+import { OctavePitch } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
 
 @Injectable
 export class LilypondRendererService

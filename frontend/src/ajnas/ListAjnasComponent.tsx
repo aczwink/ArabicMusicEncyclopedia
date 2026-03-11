@@ -22,7 +22,7 @@ import { PitchSelectionComponent } from "../shared/PitchSelectionComponent";
 import { WikiTextComponent } from "../shared/WikiTextComponent";
 import { AjnasService } from "./AjnasService";
 import { OctavePitch, OpenArabicMusicDBJins } from "../../dist/api";
-import { OctavePitchToString } from "openarabicmusicdb-domain/dist/OctavePitch";
+import { OctavePitchToString } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
 
 @Injectable
 export class ListAjnasComponent extends Component

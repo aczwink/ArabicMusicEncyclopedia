@@ -20,8 +20,8 @@ import { Injectable } from "@aczwink/acts-util-node";
 import { AjnasController } from "../dataaccess/AjnasController";
 import { MaqamatController, MaqamData } from "../dataaccess/MaqamatController";
 import { Fraction } from "../model/Fraction";
-import { OctavePitch, Accidental, NaturalNote } from "openarabicmusicdb-domain/dist/OctavePitch";
-import { Interval, OpenArabicMusicDBJins } from "openarabicmusicdb-domain";
+import { OctavePitch, Accidental, NaturalNote } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
+import { Interval, OpenArabicMusicDBJins } from "@aczwink/openarabicmusicdb-domain";
 
 @Injectable
 export class IntervalsService

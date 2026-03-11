@@ -19,7 +19,7 @@
 import { Injectable } from "@aczwink/acts-util-node";
 import { Fraction } from "../model/Fraction";
 import { IntervalsService } from "./IntervalsService";
-import { Interval } from "openarabicmusicdb-domain";
+import { Interval } from "@aczwink/openarabicmusicdb-domain";
 
 export enum ChordType
 {

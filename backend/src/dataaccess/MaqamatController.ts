@@ -17,8 +17,8 @@
  * */
 import { Injectable } from "@aczwink/acts-util-node";
 import { DatabaseController } from "./DatabaseController";
-import { OctavePitch } from "openarabicmusicdb-domain/dist/OctavePitch";
-import { Interval } from "openarabicmusicdb-domain";
+import { OctavePitch } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
+import { Interval } from "@aczwink/openarabicmusicdb-domain";
 import { MaqamCountryUsage, StatisticsController } from "./StatisticsController";
 
 export interface MaqamData

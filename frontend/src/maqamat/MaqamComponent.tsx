@@ -24,7 +24,7 @@ import { PitchSelectionComponent } from "../shared/PitchSelectionComponent";
 import { PopularityComponent } from "../shared/PopularityComponent";
 import { WikiTextComponent } from "../shared/WikiTextComponent";
 import { MaqamatService } from "./MaqamatService";
-import { OctavePitchToString } from "openarabicmusicdb-domain/dist/OctavePitch";
+import { OctavePitchToString } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
 
 @Injectable
 export class MaqamComponent extends Component

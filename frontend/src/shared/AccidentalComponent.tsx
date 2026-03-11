@@ -17,7 +17,7 @@
  * */
 import { Component, JSX_CreateElement } from "@aczwink/acfrontend";
 import { EmmentalerComponent } from "./EmmentalerComponent";
-import { Accidental } from "openarabicmusicdb-domain/dist/OctavePitch";
+import { Accidental } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
 
 export class AccidentalComponent extends Component<{ accidental: Accidental; }>
 {

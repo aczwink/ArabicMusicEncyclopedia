@@ -17,7 +17,7 @@
  * */
 import fs from "fs";
 import { Injectable } from "@aczwink/acts-util-node";
-import { OpenArabicMusicDBDocument } from "openarabicmusicdb-domain";
+import { OpenArabicMusicDBDocument } from "@aczwink/openarabicmusicdb-domain";
 import ENV from "../env";
 
 @Injectable

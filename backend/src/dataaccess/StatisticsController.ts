@@ -18,7 +18,7 @@
 import { Injectable } from "@aczwink/acts-util-node";
 import { DatabaseController } from "./DatabaseController";
 import { Dictionary, ObjectExtensions } from "@aczwink/acts-util-core";
-import { CountryCode } from "openarabicmusicdb-domain";
+import { CountryCode } from "@aczwink/openarabicmusicdb-domain";
 
 export interface MaqamCountryUsage
 {

@@ -20,7 +20,7 @@ import { IntervalsService } from "../../services/IntervalsService";
 import { ChordDetectionService } from "../../services/ChordDetectionService";
 import { LilypondRendererService } from "../../services/LilypondRendererService";
 import { APIController, Get, NotFound, Path, Query } from "@aczwink/acts-util-apilib";
-import { ParseOctavePitch, OctavePitch, OctavePitchToString } from "openarabicmusicdb-domain/dist/OctavePitch";
+import { ParseOctavePitch, OctavePitch, OctavePitchToString } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
 
 @APIController("maqamat/{maqamId}/chordsImage")
 class MaqamChordsImageAPIController

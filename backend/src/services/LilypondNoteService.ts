@@ -17,7 +17,7 @@
  * */
 
 import { Injectable } from "@aczwink/acts-util-node";
-import { OctavePitch, NaturalNote, Accidental } from "openarabicmusicdb-domain/dist/OctavePitch";
+import { OctavePitch, NaturalNote, Accidental } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
 
 type NoteLanguage = "italian";
 

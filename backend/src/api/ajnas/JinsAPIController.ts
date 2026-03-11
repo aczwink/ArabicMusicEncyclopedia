@@ -19,7 +19,7 @@ import { APIController, Get, NotFound, Path, Query } from "@aczwink/acts-util-ap
 import { AjnasController } from "../../dataaccess/AjnasController";
 import { ImageCacheManager } from "../../services/ImageCacheManager";
 import { MaqamPicCreator } from "../../services/MaqamPicCreator";
-import { ParseOctavePitch } from "openarabicmusicdb-domain/dist/OctavePitch";
+import { ParseOctavePitch } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
 
 @APIController("ajnas/{jinsId}")
 class JinsAPIController

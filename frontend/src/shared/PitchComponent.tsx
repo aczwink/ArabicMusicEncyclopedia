@@ -18,7 +18,7 @@
 
 import { Component, JSX_CreateElement } from "@aczwink/acfrontend";
 import { AccidentalComponent } from "./AccidentalComponent";
-import { OctavePitch, NaturalNote } from "openarabicmusicdb-domain/dist/OctavePitch";
+import { OctavePitch, NaturalNote } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
 
 export class PitchComponent extends Component<{ pitch: OctavePitch }>
 {

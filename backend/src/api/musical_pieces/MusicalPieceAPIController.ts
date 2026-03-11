@@ -20,7 +20,7 @@ import { MusicalPiecesController } from "../../dataaccess/MusicalPiecesControlle
 import { PersonsController } from "../../dataaccess/PersonsController";
 import { LyricsRendererService } from "../../services/LyricsRendererService";
 import { AttachmentTypeService } from "../../services/AttachmentTypeService";
-import { ParseOctavePitch } from "openarabicmusicdb-domain/dist/OctavePitch";
+import { ParseOctavePitch } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
 import { LilypondTransposer } from "../../services/LilypondTransposer";
 import { LilypondRendererService } from "../../services/LilypondRendererService";
 import { OpenArabicMusicDBFileDownloader } from "../../services/OpenArabicMusicDBFileDownloader";

@@ -19,7 +19,7 @@
 import { Component, DialogRef, FormField, Injectable, JSX_CreateElement, Switch } from "@aczwink/acfrontend";
 import { g_backendBaseUrl } from "../env";
 import { PitchSelectionComponent } from "../shared/PitchSelectionComponent";
-import { NaturalNote, Accidental, OctavePitch, OctavePitchToString } from "openarabicmusicdb-domain/dist/OctavePitch";
+import { NaturalNote, Accidental, OctavePitch, OctavePitchToString } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
 
 @Injectable
 export class RenderedAttachmentDownloader extends Component<{ attachmentIndex: number; pieceId: string; }>

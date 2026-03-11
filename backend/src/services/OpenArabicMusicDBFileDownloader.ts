@@ -17,7 +17,7 @@
  * */
 
 import { HTTP, Injectable } from "@aczwink/acts-util-node";
-import { OpenArabicMusicDBAttachment } from "openarabicmusicdb-domain";
+import { OpenArabicMusicDBAttachment } from "@aczwink/openarabicmusicdb-domain";
 import { AbsURL } from "@aczwink/acts-util-core";
 
 @Injectable

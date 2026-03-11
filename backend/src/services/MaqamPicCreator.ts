@@ -21,8 +21,8 @@ import os from "os";
 import path from "path";
 
 import { Injectable } from "@aczwink/acts-util-node";
-import { OctavePitch, NaturalNote, Accidental, OctavePitchToString } from "openarabicmusicdb-domain/dist/OctavePitch";
-import { Interval } from "openarabicmusicdb-domain";
+import { OctavePitch, NaturalNote, Accidental, OctavePitchToString } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
+import { Interval } from "@aczwink/openarabicmusicdb-domain";
 
 interface JinsInfo
 {

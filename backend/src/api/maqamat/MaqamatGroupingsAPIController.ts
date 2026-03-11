@@ -19,7 +19,7 @@ import { APIController, Get } from "@aczwink/acts-util-apilib";
 import { AjnasController } from "../../dataaccess/AjnasController";
 import { MaqamatController, MaqamOverviewData } from "../../dataaccess/MaqamatController";
 import { IntervalsService } from "../../services/IntervalsService";
-import { Interval } from "openarabicmusicdb-domain";
+import { Interval } from "@aczwink/openarabicmusicdb-domain";
 
 interface MaqamByIntervalGroupingData
 {

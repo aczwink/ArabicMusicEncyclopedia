@@ -19,7 +19,7 @@
 import { Injectable } from "@aczwink/acts-util-node";
 import { AttachmentContentType } from "../services/AttachmentTypeService";
 import { DatabaseController } from "./DatabaseController";
-import { OpenArabicMusicDBAttachment, OpenArabicMusicDBMusicalPiece } from "openarabicmusicdb-domain";
+import { OpenArabicMusicDBAttachment, OpenArabicMusicDBMusicalPiece } from "@aczwink/openarabicmusicdb-domain";
 
 interface FullAttachmentData
 {

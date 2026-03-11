@@ -21,7 +21,7 @@ import { MaqamPicCreator } from "../../services/MaqamPicCreator";
 import { MaqamatController } from "../../dataaccess/MaqamatController";
 import { IntervalsService } from "../../services/IntervalsService";
 import { APIController, Get, NotFound, Path, Query } from "@aczwink/acts-util-apilib";
-import { ParseOctavePitch, OctavePitch, OctavePitchToString } from "openarabicmusicdb-domain/dist/OctavePitch";
+import { ParseOctavePitch, OctavePitch, OctavePitchToString } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
 
 @APIController("maqamat/{maqamId}/image")
 class MaqamImageAPIController
