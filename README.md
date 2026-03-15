@@ -1,2 +1,2 @@
 # ArabicMusicEncyclopedia
-[![Build and Publish Backend](https://github.com/aczwink/ArabicMusicEncyclopedia/actions/workflows/build-and-publish-backend.yml/badge.svg)](https://github.com/aczwink/ArabicMusicEncyclopedia/actions/workflows/build-and-publish-backend.yml)
+[![Publish Backend](https://github.com/aczwink/ArabicMusicEncyclopedia/actions/workflows/publish-backend.yml/badge.svg)](https://github.com/aczwink/ArabicMusicEncyclopedia/actions/workflows/publish-backend.yml)
