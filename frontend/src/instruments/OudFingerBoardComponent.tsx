@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2023-2024 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2023-2026 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,13 +21,333 @@ import { Component, JSX_CreateElement } from "@aczwink/acfrontend";
 type Pitch = "A" | "Bb" | "B" | "C" | "Db" | "D" | "Eb" | "E" | "F" | "F#" | "G" | "Ab";
 const stepsCount = 13;
 
+interface ChordStringFingering
+{
+    stringNumber: number;
+    fretNumber: number;
+}
+
+interface ChordFingering
+{
+    title: string;
+    fingering: ChordStringFingering[];
+}
+
+interface ChordFingeringCategory
+{
+    title: string;
+    description: string;
+    chordFingers: ChordFingering[];
+}
+
+const knownChordFingerings: ChordFingeringCategory[] = [
+    {
+        chordFingers: [
+            {
+                title: "C major",
+                fingering: [
+                    { stringNumber: 5, fretNumber: 3 },
+                    { stringNumber: 4, fretNumber: 2 },
+                    { stringNumber: 3, fretNumber: 0 },
+                    { stringNumber: 2, fretNumber: 0 },
+                ]
+            },
+            {
+                title: "C minor",
+                fingering: [
+                    { stringNumber: 5, fretNumber: 3 },
+                    { stringNumber: 4, fretNumber: 1 },
+                    { stringNumber: 3, fretNumber: 0 },
+                    { stringNumber: 2, fretNumber: 0 },
+                ]
+            },
+            {
+                title: "D major",
+                fingering: [
+                    { stringNumber: 7, fretNumber: 2 },
+                    { stringNumber: 6, fretNumber: 1 },
+                    { stringNumber: 5, fretNumber: 0 },
+                    { stringNumber: 4, fretNumber: 0 },
+                ]
+            },
+            {
+                title: "D minor",
+                fingering: [
+                    { stringNumber: 7, fretNumber: 2 },
+                    { stringNumber: 6, fretNumber: 0 },
+                    { stringNumber: 5, fretNumber: 0 },
+                    { stringNumber: 4, fretNumber: 0 },
+                ]
+            },
+            {
+                title: "F major",
+                fingering: [
+                    { stringNumber: 4, fretNumber: 3 },
+                    { stringNumber: 3, fretNumber: 2 },
+                    { stringNumber: 2, fretNumber: 0 },
+                    { stringNumber: 1, fretNumber: 0 },
+                ]
+            },
+            {
+                title: "F minor",
+                fingering: [
+                    { stringNumber: 4, fretNumber: 3 },
+                    { stringNumber: 3, fretNumber: 1 },
+                    { stringNumber: 2, fretNumber: 0 },
+                    { stringNumber: 1, fretNumber: 0 },
+                ]
+            },
+            {
+                title: "G major",
+                fingering: [
+                    { stringNumber: 6, fretNumber: 2 },
+                    { stringNumber: 5, fretNumber: 2 },
+                    { stringNumber: 4, fretNumber: 0 },
+                    { stringNumber: 3, fretNumber: 0 },
+                ]
+            },
+            {
+                title: "G minor",
+                fingering: [
+                    { stringNumber: 6, fretNumber: 2 },
+                    { stringNumber: 5, fretNumber: 1 },
+                    { stringNumber: 4, fretNumber: 0 },
+                    { stringNumber: 3, fretNumber: 0 },
+                ]
+            },
+            {
+                title: "Bb major",
+                fingering: [
+                    { stringNumber: 3, fretNumber: 3 },
+                    { stringNumber: 2, fretNumber: 2 },
+                    { stringNumber: 1, fretNumber: 0 },
+                ]
+            },
+            {
+                title: "Bb minor",
+                fingering: [
+                    { stringNumber: 3, fretNumber: 3 },
+                    { stringNumber: 2, fretNumber: 1 },
+                    { stringNumber: 1, fretNumber: 0 },
+                ]
+            },
+        ],
+        description: "",
+        title: "Standard pattern with 2 open strings"
+    },
+    {
+        chordFingers: [
+            {
+                title: "D minor",
+                fingering: [
+                    { stringNumber: 4, fretNumber: 0 },
+                    { stringNumber: 3, fretNumber: 2 },
+                    { stringNumber: 2, fretNumber: 2 },
+                    { stringNumber: 1, fretNumber: 0 },
+                ]
+            },
+            {
+                title: "G5",
+                fingering: [
+                    { stringNumber: 3, fretNumber: 0 },
+                    { stringNumber: 2, fretNumber: 2 },
+                    { stringNumber: 1, fretNumber: 2 },
+                ]
+            },
+            {
+                title: "A minor",
+                fingering: [
+                    { stringNumber: 5, fretNumber: 0 },
+                    { stringNumber: 4, fretNumber: 2 },
+                    { stringNumber: 3, fretNumber: 2 },
+                    { stringNumber: 2, fretNumber: 0 },
+                ]
+            },
+        ],
+        description: "",
+        title: "One finger on two notes directly on next string"
+    },
+    {
+        chordFingers: [
+            {
+                title: "C minor",
+                fingering: [
+                    { stringNumber: 6, fretNumber: 7 },
+                    { stringNumber: 5, fretNumber: 6 },
+                    { stringNumber: 4, fretNumber: 5 },
+                ]
+            },
+            {
+                title: "Ab minor",
+                fingering: [
+                    { stringNumber: 6, fretNumber: 3 },
+                    { stringNumber: 5, fretNumber: 2 },
+                    { stringNumber: 4, fretNumber: 1 },
+                ]
+            },
+            {
+                title: "A minor",
+                fingering: [
+                    { stringNumber: 6, fretNumber: 4 },
+                    { stringNumber: 5, fretNumber: 3 },
+                    { stringNumber: 4, fretNumber: 2 },
+                ]
+            },
+            {
+                title: "Bb minor",
+                fingering: [
+                    { stringNumber: 6, fretNumber: 5 },
+                    { stringNumber: 5, fretNumber: 4 },
+                    { stringNumber: 4, fretNumber: 3 },
+                ]
+            },
+            {
+                title: "B minor",
+                fingering: [
+                    { stringNumber: 6, fretNumber: 6 },
+                    { stringNumber: 5, fretNumber: 5 },
+                    { stringNumber: 4, fretNumber: 4 },
+                ]
+            },
+        ],
+        description: "Can also add 1st finger on G-string for octave",
+        title: "Minor on 6th string",
+    },
+    {
+        chordFingers: [
+            {
+                title: "Em (no 5)",
+                fingering: [
+                    { stringNumber: 4, fretNumber: 2 },
+                    { stringNumber: 3, fretNumber: 0 },
+                    { stringNumber: 2, fretNumber: 4 },
+                ]
+            },
+        ],
+        description: "",
+        title: "Minor omit fifth"
+    },
+    {
+        chordFingers: [
+            {
+                title: "C major",
+                fingering: [
+                    { stringNumber: 3, fretNumber: 5 },
+                    { stringNumber: 2, fretNumber: 4 },
+                    { stringNumber: 1, fretNumber: 2 },
+                ]
+            },
+            {
+                title: "C minor",
+                fingering: [
+                    { stringNumber: 3, fretNumber: 5 },
+                    { stringNumber: 2, fretNumber: 3 },
+                    { stringNumber: 1, fretNumber: 2 },
+                ]
+            },
+            {
+                title: "Db minor",
+                fingering: [
+                    { stringNumber: 5, fretNumber: 4 },
+                    { stringNumber: 4, fretNumber: 2 },
+                    { stringNumber: 3, fretNumber: 1 },
+                ]
+            },
+            {
+                title: "D minor",
+                fingering: [
+                    { stringNumber: 5, fretNumber: 5 },
+                    { stringNumber: 4, fretNumber: 3 },
+                    { stringNumber: 3, fretNumber: 2 },
+                ]
+            },
+            {
+                title: "Eb minor",
+                fingering: [
+                    { stringNumber: 5, fretNumber: 6 },
+                    { stringNumber: 4, fretNumber: 4 },
+                    { stringNumber: 3, fretNumber: 3 },
+                ]
+            },
+            {
+                title: "E minor",
+                fingering: [
+                    { stringNumber: 5, fretNumber: 7 },
+                    { stringNumber: 4, fretNumber: 5 },
+                    { stringNumber: 3, fretNumber: 4 },
+                ]
+            },
+            {
+                title: "F# minor",
+                fingering: [
+                    { stringNumber: 4, fretNumber: 4 },
+                    { stringNumber: 3, fretNumber: 2 },
+                    { stringNumber: 2, fretNumber: 1 },
+                ]
+            },
+            {
+                title: "G minor",
+                fingering: [
+                    { stringNumber: 4, fretNumber: 5 },
+                    { stringNumber: 3, fretNumber: 3 },
+                    { stringNumber: 2, fretNumber: 2 },
+                ]
+            },
+            {
+                title: "Ab minor",
+                fingering: [
+                    { stringNumber: 4, fretNumber: 6 },
+                    { stringNumber: 3, fretNumber: 4 },
+                    { stringNumber: 2, fretNumber: 3 },
+                ]
+            },
+            {
+                title: "A minor",
+                fingering: [
+                    { stringNumber: 4, fretNumber: 7 },
+                    { stringNumber: 3, fretNumber: 5 },
+                    { stringNumber: 2, fretNumber: 4 },
+                ]
+            },
+        ],
+        description: "Can also add 1st finger on G-string for octave",
+        title: "Standard pattern"
+    },
+    {
+        chordFingers: [
+            {
+                title: "Bb major",
+                fingering: [
+                    { stringNumber: 5, fretNumber: 1 },
+                    { stringNumber: 4, fretNumber: 3 },
+                    { stringNumber: 3, fretNumber: 3 },
+                    { stringNumber: 2, fretNumber: 2 },
+                ]
+            },
+            {
+                title: "Ab minor",
+                fingering: [
+                    { stringNumber: 6, fretNumber: 3 },
+                    { stringNumber: 5, fretNumber: 6 },
+                    { stringNumber: 4, fretNumber: 6 },
+                    { stringNumber: 3, fretNumber: 4 },
+                ]
+            }
+        ],
+        description: "",
+        title: "Complex"
+    },
+];
+
+
 export class OudFingerBoardComponent extends Component
 {
     constructor()
     {
         super();
 
-        this.highlighted = new Set();
+        this.highlightedChordFingering = null;
+        this.highlightedPitches = new Set();
     }
 
     protected Render(): RenderValue
@@ -47,15 +367,20 @@ export class OudFingerBoardComponent extends Component
                     </tr>
                 </tfoot>
             </table>
-            <h4>Highlight</h4>
+
+            <h4>Highlight notes</h4>
             <div className="row">
                 {this.RenderPitchHighlight()}
             </div>
+
+            <h4>Highlight known chord fingerings</h4>
+            {knownChordFingerings.map(this.RenderChordFingeringCategory.bind(this))}
         </fragment>;
     }
 
     //State
-    private highlighted: Set<Pitch>;
+    private highlightedChordFingering: ChordFingering | null;
+    private highlightedPitches: Set<Pitch>;
 
     //Private methods
     private NextPitch(pitch: Pitch): Pitch
@@ -89,6 +414,25 @@ export class OudFingerBoardComponent extends Component
         }
     }
 
+    private RenderChordFingering(cf: ChordFingering)
+    {
+        return <div className="col-auto">
+            <label>
+                <input type="checkbox" checked={this.highlightedChordFingering === cf} onclick={this.ToggleHighlightChordFingering.bind(this, cf)} />
+                {cf.title}
+            </label>
+        </div>;
+    }
+
+    private RenderChordFingeringCategory(cf: ChordFingeringCategory)
+    {
+        return <div className="row mt-4">
+            <h5>{cf.title}</h5>
+            <i>{cf.description}</i>
+            {cf.chordFingers.map(this.RenderChordFingering.bind(this))}
+        </div>;
+    }
+
     private RenderChromaticSteps()
     {
         const cells = [];
@@ -99,9 +443,9 @@ export class OudFingerBoardComponent extends Component
         return cells;
     }
 
-    private RenderPitch(pitch: Pitch)
+    private RenderPitch(pitch: Pitch, highlight: boolean)
     {
-        if(this.highlighted.has(pitch))
+        if(highlight)
             return <td className="table-primary">{pitch}</td>;
         return <td>{pitch}</td>;
     }
@@ -116,7 +460,7 @@ export class OudFingerBoardComponent extends Component
             pitches.push(
                 <div className="col">
                     <label>
-                        <input type="checkbox" checked={this.highlighted.has(pitch)} onclick={this.ToggleHighlight.bind(this, pitch)} />
+                        <input type="checkbox" checked={this.highlightedPitches.has(pitch)} onclick={this.ToggleHighlight.bind(this, pitch)} />
                         {pitch}
                     </label>
                 </div>);
@@ -133,19 +477,37 @@ export class OudFingerBoardComponent extends Component
         let pitch = startPitch;
         for(let i = 0; i < stepsCount; i++)
         {
-            cells.push(this.RenderPitch(pitch));
+            cells.push(this.RenderPitch(pitch, this.ShouldPitchBeHighlighted(pitch, stringNumber, i)));
             pitch = this.NextPitch(pitch);
         }
 
         return <tr>{cells}</tr>;
     }
 
+    private ShouldPitchBeHighlighted(pitch: Pitch, stringNumber: number, fretNumber: number)
+    {
+        if(this.highlightedChordFingering !== null)
+        {
+            if(this.highlightedChordFingering.fingering.find(x => (x.stringNumber === stringNumber) && (x.fretNumber === fretNumber)))
+                return true;
+        }
+        return this.highlightedPitches.has(pitch);
+    }
+
     private ToggleHighlight(pitch: Pitch)
     {
-        if(this.highlighted.has(pitch))
-            this.highlighted.delete(pitch);
+        if(this.highlightedPitches.has(pitch))
+            this.highlightedPitches.delete(pitch);
         else
-            this.highlighted.add(pitch);
+            this.highlightedPitches.add(pitch);
         this.Update();
+    }
+
+    private ToggleHighlightChordFingering(cf: ChordFingering)
+    {
+        if(this.highlightedChordFingering === cf)
+            this.highlightedChordFingering = null;
+        else
+            this.highlightedChordFingering = cf;
     }
 }
