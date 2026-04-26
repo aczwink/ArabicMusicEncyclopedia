@@ -19,7 +19,7 @@
 import { Injectable } from "@aczwink/acts-util-node";
 import { OctavePitch, NaturalNote, Accidental } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
 
-type NoteLanguage = "italian";
+type NoteLanguage = "english" | "italian";
 
 interface LilypondPitch
 {
@@ -52,12 +52,63 @@ export class LilypondNoteService
     {
         switch(language)
         {
+            case "english":
+                return this.ToEnglishLilypondNote(pitch);
             case "italian":
                 return this.ToItalianLilypondNote(pitch);
         }
     }
 
     //Private methods
+    private ToEnglishLilypondNote(pitch: OctavePitch)
+    {
+        function AccidentalToString(acc: Accidental)
+        {
+            switch(acc)
+            {
+                case Accidental.DoubleFlat:
+                    return "ff";
+                case Accidental.ThreeQuarterFlat:
+                    return "tqf";
+                case Accidental.Flat:
+                    return "f";
+                case Accidental.HalfFlat:
+                    return "qf";
+                case Accidental.Natural:
+                    return "";
+                case Accidental.HalfSharp:
+                    return "qs";
+                case Accidental.Sharp:
+                    return "s";
+                default:
+                    throw new Error("NOT IMPLEMENTED: " + acc);
+            }
+        }
+
+        function NoteNameToString(note: NaturalNote)
+        {
+            switch(note)
+            {
+                case NaturalNote.A:
+                    return "a";
+                case NaturalNote.B:
+                    return "b";
+                case NaturalNote.C:
+                    return "c";
+                case NaturalNote.D:
+                    return "d";
+                case NaturalNote.E:
+                    return "e";
+                case NaturalNote.F:
+                    return "f";
+                case NaturalNote.G:
+                    return "g";
+            }
+        }
+
+        return NoteNameToString(pitch.baseNote) + AccidentalToString(pitch.accidental);
+    }
+
     private ToItalianLilypondNote(pitch: OctavePitch)
     {
         function AccidentalToString(acc: Accidental)

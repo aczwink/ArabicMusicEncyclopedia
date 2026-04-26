@@ -31,12 +31,23 @@ export class IntervalsService
     }
 
     //Public methods
+    public ComputeIntervalBetweenUpwards(lower: OctavePitch, higher: OctavePitch): Fraction
+    {
+        if(lower.baseNote === higher.baseNote)
+            return this.AccidentalToFraction(lower.accidental).Negate().Add(this.AccidentalToFraction(higher.accidental));
+
+        let d = 1;
+        if((lower.baseNote === NaturalNote.B) || (lower.baseNote === NaturalNote.E))
+            d = 2;
+        return new Fraction(1, d).Add(this.ComputeIntervalBetweenUpwards({ accidental: lower.accidental, baseNote: (lower.baseNote+1) % 7 }, higher));
+    }
+
     public ComputeIntervalsFromPitches(pitches: OctavePitch[])
     {
         const result = [];
         for(let i = 0; i < pitches.length-1; i++)
         {
-            const d1 = this.IntervalBetween(pitches[i], pitches[i+1]);
+            const d1 = this.ComputeIntervalBetweenUpwards(pitches[i], pitches[i+1]);
             result.push(d1);
         }
 
@@ -154,17 +165,6 @@ export class IntervalsService
         if(Math.floor(v) === v)
             return v;
         return undefined;
-    }
-
-    private IntervalBetween(a: OctavePitch, b: OctavePitch): Fraction
-    {
-        if(a.baseNote === b.baseNote)
-            return this.AccidentalToFraction(a.accidental).Negate().Add(this.AccidentalToFraction(b.accidental));
-
-        let d = 1;
-        if((a.baseNote === NaturalNote.B) || (a.baseNote === NaturalNote.E))
-            d = 2;
-        return new Fraction(1, d).Add(this.IntervalBetween({ accidental: a.accidental, baseNote: (a.baseNote+1) % 7 }, b));
     }
 
     private NumericIntervalToAccidental(fraction: Fraction): Accidental

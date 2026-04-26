@@ -24,16 +24,17 @@ import { Injectable } from "@aczwink/acts-util-node";
 import { ChordType } from "./ChordDetectionService";
 import { LilypondNoteService } from "./LilypondNoteService";
 import { OctavePitch } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
+import { IntervalsService } from "./IntervalsService";
 
 @Injectable
 export class LilypondRendererService
 {
-    constructor(private lilypondNoteService: LilypondNoteService)
+    constructor(private lilypondNoteService: LilypondNoteService, private intervalsService: IntervalsService)
     {
     }
 
     //Public methods
-    public async CreateChordImage(chords: (ChordType | undefined)[], pitches: OctavePitch[])
+    public async CreateChordImage(chords: ChordType[][], pitches: OctavePitch[])
     {
         return this.Render(this.ChordsToLilypondText(chords, pitches), "png");
     }
@@ -86,19 +87,25 @@ export class LilypondRendererService
         }
     }
 
-    private ChordsToLilypondText(chords: (ChordType | undefined)[], pitches: OctavePitch[])
+    private ChordsToLilypondText(chords: ChordType[][], pitches: OctavePitch[])
     {
         const lilyChordsAsNotes = [];
         const lilyChords = [];
         for (let index = 0; index < chords.length; index++)
         {
-            const chord = chords[index];
-            if(chord === undefined)
+            const stepChords = chords[index];
+            if(stepChords.length === 0)
                 continue;
-            const notes = this.NotesFromChord(chord, pitches.slice(index));
-            const lilypondNotes = notes.map(n => this.lilypondNoteService.ToLilypondNote(n, "italian"));
-            lilyChordsAsNotes.push("<" + lilypondNotes.join(" ") + ">1");
-            lilyChords.push(this.ToLilypondChord(pitches[index], chord));
+
+            for (const chord of stepChords)
+            {
+                const notes = this.NotesFromChord(chord, pitches.slice(index));
+                const lilypondNotes = this.GenerateLilypondNotesFromChord(notes);
+                lilyChordsAsNotes.push("<" + lilypondNotes.join(" ") + ">1");
+                lilyChords.push(this.ToLilypondChord(pitches[index], chord));
+            }
+
+            lilyChordsAsNotes.push(' \\bar "|" ');
         }
 
         const lilymusic = lilyChordsAsNotes.join(" ");
@@ -106,26 +113,31 @@ export class LilypondRendererService
 
         return `
         \\include "arabic.ly"
+        \\language "english"
         \\header { tagline = ""}
         #(set-global-staff-size 32)
 
         chExceptionMusic = {
-            <do sol>1-\\markup { \\super "5" }
-            <do mib solb>1-\\markup { "dim" }
-            <do mi sold>1-\\markup { "aug" }
-            <do mi sol si>1-\\markup { "M7" }
+            <c g>1-\\markup { \\super "5" }
+            <c ef gf>1-\\markup { "dim" }
+            <c e gs>1-\\markup { "aug" }
+            <c e g b>1-\\markup { "M7" }
         }
         chExceptions = #( append
             ( sequential-music-to-chord-exceptions chExceptionMusic #t)
             ignatzekExceptions)
+
+        \\layout {
+            indent = 0
+        }
           
 
         <<
-        \\override Score.BarLine.stencil = ##f
         \\override Score.NonMusicalPaperColumn.padding = #1.5
-            \\relative do'
+            \\relative c'
             {
-                \\override Staff.TimeSignature #'stencil = ##f
+                \\override Staff.TimeSignature.stencil = ##f
+                \\time 128/4
                 ${lilymusic}
             }
             \\new ChordNames {
@@ -136,6 +148,25 @@ export class LilypondRendererService
             }
         >>
         `;
+    }
+
+    private GenerateLilypondNotesFromChord(pitches: OctavePitch[])
+    {
+        let reference = pitches[0];
+
+        const result = [];
+        for (const pitch of pitches)
+        {
+            const d = this.intervalsService.ComputeIntervalBetweenUpwards(reference, pitch);
+
+            const lilypondNote = this.lilypondNoteService.ToLilypondNote(pitch, "english");
+            const octavedLilypondNote = (d.Eval() >= 3) ? (lilypondNote + "'") : lilypondNote;
+            result.push(octavedLilypondNote);
+
+            reference = pitch;
+        }
+
+        return result;
     }
 
     private NotesFromChord(chord: ChordType, pitches: OctavePitch[]): OctavePitch[]
@@ -152,7 +183,7 @@ export class LilypondRendererService
             case ChordType.MinorSeventh:
                 return [pitches[0], pitches[2], pitches[4], pitches[6]];
             case ChordType.PowerChord:
-                return [pitches[0], pitches[4]];
+                return [pitches[0], pitches[4], pitches[0]];
         }
     }
 
@@ -177,10 +208,10 @@ export class LilypondRendererService
                 case ChordType.MinorTriad:
                     return ":m";
                 case ChordType.PowerChord:
-                    return ":5";
+                    return ":5.8";
             }
         }
 
-        return this.lilypondNoteService.ToLilypondNote(pitch, "italian") + "1" + ChordTypeToString(chord);
+        return this.lilypondNoteService.ToLilypondNote(pitch, "english") + "1" + ChordTypeToString(chord);
     }
 }

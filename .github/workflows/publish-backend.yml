@@ -55,7 +55,7 @@ jobs:
       name: Build backend
       run: |
         npm ci
-        npm run build-release-package
+        npm run build
       working-directory: ./backend
 
     #publish image

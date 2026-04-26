@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2026 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -92,28 +92,30 @@ export class ChordDetectionService
             const upwards = this.intervalsService.ComputeIntervalsUpwardsFromFirst(intervals.slice(index));
             const semiTones = this.intervalsService.To12TET(upwards);
 
-            const match = this.MatchChord(semiTones, chordMatchers);
+            const match = this.MatchChords(semiTones, chordMatchers);
             chords.push(match);
         }
 
         return chords;
     }
 
-    private MatchChord(semiTones: (number | undefined)[], chordMatchers: ChordMatcher[]): ChordType | undefined
+    private MatchChords(semiTones: (number | undefined)[], chordMatchers: ChordMatcher[]): ChordType[]
     {
+        const result = [];
         for (const chordMatcher of chordMatchers)
         {
             if(chordMatcher.matcher(semiTones))
             {
+                result.push(chordMatcher.type);
+
                 if(chordMatcher.children !== undefined)
                 {
-                    const childResult = this.MatchChord(semiTones, chordMatcher.children);
-                    return childResult === undefined ? chordMatcher.type : childResult;
+                    const childResult = this.MatchChords(semiTones, chordMatcher.children);
+                    result.push(...childResult);
                 }
-                return chordMatcher.type;
             }
         }
 
-        return undefined;
+        return result;
     }
 }
