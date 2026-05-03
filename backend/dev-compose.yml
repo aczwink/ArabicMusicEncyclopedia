@@ -1,0 +1,12 @@
+services:
+  backend:
+    build: .
+    container_name: ame-backend
+    environment:
+      AME_DICTDB_PATH: /mnt/db.json
+      AME_ORIGIN: http://localhost:8081
+      AME_PORT: 80
+    ports:
+      - 8080:80/tcp
+    volumes:
+      - ../../OpenArabicMusicDB/builder/dist/db.json:/mnt/db.json
