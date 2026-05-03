@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "npx acts-util-apilib && npx webpack",
-    "dev-docker-win": "nodemon --exec \"npm run build && docker build -t ame-backend . && cp ../../OpenArabicMusicDB/builder/dist/db.json ./dist/db.json && docker run --env-file ./.env -p 8080:80/tcp --rm ame-backend\"",
+    "dev-container": "nodemon --exec \"npm run build && docker compose -f dev-compose.yml up --build\"",
     "dev-local": "nodemon --exec \"npx acts-util-apilib && tsc; nodemon --exec '(dotenv -e .env -- && cd dist && SCRIPTDIR=../scripts node main.js)' --watch '../../OpenArabicMusicDB/builder/dist/db.json'\""
   },
   "keywords": [],
