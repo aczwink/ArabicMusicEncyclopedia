@@ -33,6 +33,8 @@ export enum ChordType
     DominantSeventh,
     MajorSeventh,
     MinorSeventh,
+    //Add9
+    MajorAddFlatNine
 }
 
 interface ChordMatcher
@@ -65,13 +67,16 @@ export class ChordDetectionService
 
         const chordMatchers: ChordMatcher[] = [
             {
-                type: ChordType.PowerChord, matcher: st => (st[3] === 7), children:
-                [
+                type: ChordType.PowerChord,
+                matcher: st => (st[3] === 7),
+                children: [
                     {
-                        type: ChordType.MajorTriad, matcher: st => (st[1] === 4), children:
-                        [
+                        type: ChordType.MajorTriad,
+                        matcher: st => (st[1] === 4),
+                        children: [
                             { type: ChordType.DominantSeventh, matcher: st => st[5] === minorSeventhSemiTones},
-                            { type: ChordType.MajorSeventh, matcher: st => st[5] === 11}
+                            { type: ChordType.MajorSeventh, matcher: st => st[5] === 11},
+                            { type: ChordType.MajorAddFlatNine, matcher: st => st[0] === 1},
                         ]
                     },
                     {

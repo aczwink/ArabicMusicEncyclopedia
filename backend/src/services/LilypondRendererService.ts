@@ -122,6 +122,7 @@ export class LilypondRendererService
             <c ef gf>1-\\markup { "dim" }
             <c e gs>1-\\markup { "aug" }
             <c e g b>1-\\markup { "M7" }
+            <c e g df'>1-\\markup { \\concat { "(add" \\musicglyph "accidentals.flat" "9)" } }
         }
         chExceptions = #( append
             ( sequential-music-to-chord-exceptions chExceptionMusic #t)
@@ -138,6 +139,7 @@ export class LilypondRendererService
             {
                 \\override Staff.TimeSignature.stencil = ##f
                 \\time 128/4
+                \\accidentalStyle forget
                 ${lilymusic}
             }
             \\new ChordNames {
@@ -184,6 +186,8 @@ export class LilypondRendererService
                 return [pitches[0], pitches[2], pitches[4], pitches[6]];
             case ChordType.PowerChord:
                 return [pitches[0], pitches[4], pitches[0]];
+            case ChordType.MajorAddFlatNine:
+                return [pitches[0], pitches[2], pitches[4], pitches[1]];
         }
     }
 
@@ -209,6 +213,8 @@ export class LilypondRendererService
                     return ":m";
                 case ChordType.PowerChord:
                     return ":5.8";
+                case ChordType.MajorAddFlatNine:
+                    return ":3.5.9-";
             }
         }
 

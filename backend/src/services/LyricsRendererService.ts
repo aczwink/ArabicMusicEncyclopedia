@@ -65,6 +65,7 @@ export class LyricsRendererService
 {
     title = \\markup \\naskh_bold "${pieceName}"
     composer = \\markup \\naskh_composer "${composerName}"
+    tagline = \\markup { \\abs-fontsize #11 "Released as part of https://github.com/aczwink/OpenArabicMusicDB. Copyright (C) 2026 Amir Czwink" }
 }
 ${pageRendered.join("\n")}
         `;
