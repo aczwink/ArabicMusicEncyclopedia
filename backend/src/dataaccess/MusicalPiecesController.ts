@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2026 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,16 +17,8 @@
  * */
 
 import { Injectable } from "@aczwink/acts-util-node";
-import { AttachmentContentType } from "../services/AttachmentTypeService";
 import { DatabaseController } from "./DatabaseController";
 import { OpenArabicMusicDBAttachment, OpenArabicMusicDBMusicalPiece } from "@aczwink/openarabicmusicdb-domain";
-
-interface FullAttachmentData
-{
-    comment: string;
-    contentType: AttachmentContentType;
-    content: Buffer;
-}
 
 export interface MusicalPiecesFilterCriteria
 {
@@ -83,6 +75,7 @@ export interface PieceDetailsData
     composerId: string;
     releaseDate: string;
     text: string;
+    hasNativeSheetMusic: boolean;
 
     lyrics?: PieceLyrics;
     maqamat: PieceMaqamAssociation[];
@@ -109,6 +102,7 @@ export class MusicalPiecesController
             attachments: this.QueryPieceAttachments(piece),
             composerId: piece.composerId,
             formId: piece.formId,
+            hasNativeSheetMusic: piece.sheetMusic !== undefined,
             lyrics: this.QueryPieceLyrics(piece),
             maqamat: piece.maqamat,
             name: piece.name,

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Anchor, BootstrapIcon, Component, Injectable, JSX_CreateElement, PopupManager, ProgressSpinner, RouterState, TitleService } from "@aczwink/acfrontend";
+import { Anchor, BootstrapIcon, Component, Injectable, JSX_CreateElement, JSX_Fragment, PopupManager, ProgressSpinner, RouterState, TitleService } from "@aczwink/acfrontend";
 import { OpenArabicMusicDBDialect, OpenArabicMusicDBForm, OpenArabicMusicDBPerson, PieceDetailsData } from "../../dist/api";
 import { g_backendBaseUrl } from "../env";
 import { MaqamatService } from "../maqamat/MaqamatService";
@@ -107,6 +107,8 @@ export class ShowMusicalPieceComponent extends Component
                             </tr>)}
                         </table>
 
+                        {this.RenderSheetMusicSection()}
+
                         <hr />
                         <h4>Attachments</h4>
                         <table>
@@ -119,7 +121,7 @@ export class ShowMusicalPieceComponent extends Component
                                 <td>
                                     <a href={g_backendBaseUrl + "/musicalpieces/" + this.pieceId + "/attachment/" + idx} target="_blank"><BootstrapIcon>download</BootstrapIcon></a>
                                     {attachment.isRenderable ?
-                                        <a onclick={this.OnDownloadRenderedAttachment.bind(this, idx)}><BootstrapIcon>file-pdf</BootstrapIcon></a>
+                                        <a onclick={this.OnDownloadRenderedAttachment.bind(this, idx)} href="#"><BootstrapIcon>file-pdf</BootstrapIcon></a>
                                     : null}
                                 </td>
                             </tr>)}
@@ -185,10 +187,37 @@ export class ShowMusicalPieceComponent extends Component
         </fragment>;
     }
 
-    //Event handlers
-    private OnDownloadRenderedAttachment(attachmentIndex: number)
+    private RenderSheetMusicSection()
     {
+        if(this.piece?.hasNativeSheetMusic === true)
+        {
+            return <>
+                <hr />
+                <h4>Sheet music</h4>
+                <a onclick={this.OnDownloadRenderedSheetMusic.bind(this)} href="#"><BootstrapIcon>file-pdf</BootstrapIcon></a>
+                <a onclick={this.OnDownloadMIDI.bind(this)} href="#"><BootstrapIcon>music-note-beamed</BootstrapIcon></a>
+            </>;
+        }
+
+        return null;
+    }
+
+    //Event handlers
+    private OnDownloadRenderedAttachment(attachmentIndex: number, event: Event)
+    {
+        event.preventDefault();
+
         this.popupManager.OpenDialog(<RenderedAttachmentDownloader attachmentIndex={attachmentIndex} pieceId={this.pieceId} />, { title: "Download as PDF" });
+    }
+
+    private OnDownloadRenderedSheetMusic(event: Event)
+    {
+        event.preventDefault();
+    }
+
+    private OnDownloadMIDI(event: Event)
+    {
+        event.preventDefault();
     }
 
     public async OnInitiated()
