@@ -27,6 +27,7 @@ import { WikiTextComponent } from "../shared/WikiTextComponent";
 import { MusicalPiecesService } from "./MusicalPiecesService";
 import { MusicalService } from "./MusicalService";
 import { RenderedAttachmentDownloader } from "./RenderedAttachmentDownloader";
+import { RenderedSheetMusicDownloader } from "./RenderedSheetMusicDownloader";
 
 interface Association
 {
@@ -213,6 +214,8 @@ export class ShowMusicalPieceComponent extends Component
     private OnDownloadRenderedSheetMusic(event: Event)
     {
         event.preventDefault();
+
+        this.popupManager.OpenDialog(<RenderedSheetMusicDownloader pieceId={this.pieceId} />, { title: "Download as PDF" });
     }
 
     private OnDownloadMIDI(event: Event)

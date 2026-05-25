@@ -39,6 +39,12 @@ export class LilypondRendererService
         return this.Render(this.ChordsToLilypondText(chords, pitches), "png");
     }
 
+    public GenerateTagLine()
+    {
+        const year = new Date().getFullYear();
+        return `\\markup { \\abs-fontsize #11 "Released as part of https://github.com/aczwink/OpenArabicMusicDB. Copyright (C) 2025-${year} Amir Czwink" }`;
+    }
+
     public async Render(text: string, outputFormat: "pdf" | "png")
     {
         const dir = await fs.promises.mkdtemp(`${os.tmpdir()}${path.sep}ame`, "utf-8");

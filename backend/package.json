@@ -15,10 +15,10 @@
     "@aczwink/acts-util-apilib": "^1.0.0",
     "@aczwink/acts-util-core": "^1.0.0",
     "@aczwink/acts-util-node": "^1.0.0",
-    "@aczwink/openarabicmusicdb-domain": "^1.0.1"
+    "@aczwink/openarabicmusicdb-domain": "^1.0.2"
   },
   "devDependencies": {
-    "@types/node": "^25.7.0",
+    "@types/node": "^25.8.0",
     "dotenv-cli": "^11.0.0",
     "nodemon": "^3.1.14",
     "source-map-loader": "^5.0.0",

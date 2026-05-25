@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2022-2024 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2022-2026 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -65,7 +65,7 @@ export class LyricsRendererService
 {
     title = \\markup \\naskh_bold "${pieceName}"
     composer = \\markup \\naskh_composer "${composerName}"
-    tagline = \\markup { \\abs-fontsize #11 "Released as part of https://github.com/aczwink/OpenArabicMusicDB. Copyright (C) 2026 Amir Czwink" }
+    tagline = ${this.lilypondRendererService.GenerateTagLine()}
 }
 ${pageRendered.join("\n")}
         `;

@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2026 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,12 +24,13 @@ import { ParseOctavePitch } from "@aczwink/openarabicmusicdb-domain/dist/OctaveP
 import { LilypondTransposer } from "../../services/LilypondTransposer";
 import { LilypondRendererService } from "../../services/LilypondRendererService";
 import { OpenArabicMusicDBFileDownloader } from "../../services/OpenArabicMusicDBFileDownloader";
+import { SheetMusicRealizerService } from "../../services/SheetMusicRealizerService";
 
 @APIController("musicalpieces/{pieceId}")
 class MusicalPieceAPIController
 {
     constructor(private musicalPiecesController: MusicalPiecesController, private lyricsRendererService: LyricsRendererService, private personsController: PersonsController, private attachmentTypeService: AttachmentTypeService,
-        private lilypondTransposer: LilypondTransposer, private lilypondService: LilypondRendererService, private downloader: OpenArabicMusicDBFileDownloader,
+        private lilypondTransposer: LilypondTransposer, private lilypondService: LilypondRendererService, private downloader: OpenArabicMusicDBFileDownloader, private sheetMusicRealizerService: SheetMusicRealizerService,
     )
     {
     }
@@ -90,6 +91,26 @@ class MusicalPieceAPIController
 
         const fileName = attachment.comment + ".pdf";
         const result = await this.lilypondService.Render(transposed, "pdf");
+        return Ok(result, {
+            "Content-Disposition": 'attachment; filename="' + fileName + '"'
+        });
+    }
+
+    @Get("rendered")
+    public async DownloadRenderedSheetMusic(
+        @Path pieceId: string,
+        @Query basePitch: string
+    )
+    {
+        const piece = await this.musicalPiecesController.QueryMusicalPiece(pieceId);
+        if(piece === undefined)
+            return NotFound("piece not found");
+        if(!piece.hasNativeSheetMusic)
+            return BadRequest("piece has no sheet music");
+
+        const result = await this.sheetMusicRealizerService.RenderAsPDF(pieceId, ParseOctavePitch(basePitch));
+
+        const fileName = "sheet-music.pdf";
         return Ok(result, {
             "Content-Disposition": 'attachment; filename="' + fileName + '"'
         });
