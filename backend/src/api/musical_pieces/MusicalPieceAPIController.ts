@@ -116,6 +116,26 @@ class MusicalPieceAPIController
         });
     }
 
+    @Get("midi")
+    public async DownloadSheetMusicAsMIDI(
+        @Path pieceId: string,
+        @Query basePitch: string
+    )
+    {
+        const piece = await this.musicalPiecesController.QueryMusicalPiece(pieceId);
+        if(piece === undefined)
+            return NotFound("piece not found");
+        if(!piece.hasNativeSheetMusic)
+            return BadRequest("piece has no sheet music");
+
+        const result = await this.sheetMusicRealizerService.RenderAsMIDI(pieceId, ParseOctavePitch(basePitch));
+
+        const fileName = "sheet-music.mid";
+        return Ok(result, {
+            "Content-Disposition": 'attachment; filename="' + fileName + '"'
+        });
+    }
+
     @Get("renderedtext")
     public async RenderPieceLyrics(
         @Path pieceId: string

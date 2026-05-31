@@ -45,7 +45,7 @@ export class LilypondRendererService
         return `\\markup { \\abs-fontsize #11 "Released as part of https://github.com/aczwink/OpenArabicMusicDB. Copyright (C) 2025-${year} Amir Czwink" }`;
     }
 
-    public async Render(text: string, outputFormat: "pdf" | "png")
+    public async Render(text: string, outputFormat: "midi" | "pdf" | "png")
     {
         const dir = await fs.promises.mkdtemp(`${os.tmpdir()}${path.sep}ame`, "utf-8");
 
@@ -62,10 +62,12 @@ export class LilypondRendererService
     }
 
     //Private methods
-    private async CallLilypond(inputDir: string, inputPath: string, outputFormat: "pdf" | "png")
+    private async CallLilypond(inputDir: string, inputPath: string, outputFormat: "midi" | "pdf" | "png")
     {
+        const flag = (outputFormat === "midi") ? "" : ("--" + outputFormat);
+
         const promise = new Promise<void>( (resolve, reject) => {
-            child_process.exec("lilypond --" + outputFormat + " " + inputPath, {
+            child_process.exec("lilypond " + flag + " " + inputPath, {
                 cwd: inputDir,
             }, (err, _stdout, _stderr) => {
                 if(err)
@@ -76,20 +78,22 @@ export class LilypondRendererService
         });
         await promise;
 
-        if(outputFormat === "pdf")
+        switch(outputFormat)
         {
-            await fs.promises.rename(inputPath + ".pdf", path.join(inputDir, "_output.pdf"));
-        }
-        else if(outputFormat === "png")
-        {
-            const child2 = child_process.exec("convert -trim " + inputPath + ".png" + " _output.png", {
-                cwd: inputDir,
-            });
-    
-            await new Promise( (resolve, reject) => {
-                child2.on("exit", resolve);
-                child2.on("error", reject);
-            });
+            case "midi":
+            case "pdf":
+                await fs.promises.rename(inputPath + "." + outputFormat, path.join(inputDir, "_output." + outputFormat));
+                break;
+            case "png":
+                const child2 = child_process.exec("convert -trim " + inputPath + ".png" + " _output.png", {
+                    cwd: inputDir,
+                });
+            
+                await new Promise( (resolve, reject) => {
+                    child2.on("exit", resolve);
+                    child2.on("error", reject);
+                });
+                break;
         }
     }
 

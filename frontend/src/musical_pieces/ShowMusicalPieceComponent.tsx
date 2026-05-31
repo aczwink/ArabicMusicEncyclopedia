@@ -28,6 +28,7 @@ import { MusicalPiecesService } from "./MusicalPiecesService";
 import { MusicalService } from "./MusicalService";
 import { RenderedAttachmentDownloader } from "./RenderedAttachmentDownloader";
 import { RenderedSheetMusicDownloader } from "./RenderedSheetMusicDownloader";
+import { RenderedMIDI_Downloader } from "./RenderedMIDI_Downloader";
 
 interface Association
 {
@@ -221,6 +222,8 @@ export class ShowMusicalPieceComponent extends Component
     private OnDownloadMIDI(event: Event)
     {
         event.preventDefault();
+
+        this.popupManager.OpenDialog(<RenderedMIDI_Downloader pieceId={this.pieceId} />, { title: "Download as MIDI" });
     }
 
     public async OnInitiated()

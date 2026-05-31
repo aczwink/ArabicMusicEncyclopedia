@@ -20,13 +20,27 @@ import { Injectable } from "@aczwink/acts-util-node";
 import { OctavePitch } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
 import { LilypondRendererService } from "./LilypondRendererService";
 import { DatabaseController } from "../dataaccess/DatabaseController";
-import { OAMDB_SheetMusic_MelodyEntry, OAMDB_SheetMusic_MelodyEntryType, OpenArabicMusicDBMusicalPiece } from "@aczwink/openarabicmusicdb-domain";
+import { OAMDB_SheetMusic_LilyPondMusic, OAMDB_SheetMusic_MelodyEntry, OAMDB_SheetMusic_MelodyEntryType, OpenArabicMusicDBMusicalPiece } from "@aczwink/openarabicmusicdb-domain";
+import { RhythmsController } from "../dataaccess/RhythmsController";
+import { RhythmRealizerService } from "./RhythmRealizerService";
 
 @Injectable
 export class SheetMusicRealizerService
 {
-    constructor(private lilypondService: LilypondRendererService, private dbController: DatabaseController)
+    constructor(private lilypondService: LilypondRendererService, private dbController: DatabaseController, private rhythmsController: RhythmsController, private rhythmRealizerService: RhythmRealizerService)
     {
+    }
+
+    //Public methods
+    public async RenderAsMIDI(pieceId: string, pitch: OctavePitch)
+    {
+        const document = await this.dbController.GetDocumentDB();
+        const piece = document.musicalPieces.find(x => x.id === pieceId)!;
+        const composer = document.persons.find(x => x.id === piece.composerId)!;
+
+        const code = await this.GenerateLilyPondCodeFromSheetMusic(piece, composer.name);
+
+        return await this.lilypondService.Render(code, "midi");
     }
 
     public async RenderAsPDF(pieceId: string, pitch: OctavePitch)
@@ -35,32 +49,41 @@ export class SheetMusicRealizerService
         const piece = document.musicalPieces.find(x => x.id === pieceId)!;
         const composer = document.persons.find(x => x.id === piece.composerId)!;
 
-        const code = this.GenerateLilyPondCodeFromSheetMusic(piece, composer.name);
+        const code = await this.GenerateLilyPondCodeFromSheetMusic(piece, composer.name);
 
         return await this.lilypondService.Render(code, "pdf");
     }
 
     //Private methods
-    private GenerateCode(melody: OAMDB_SheetMusic_MelodyEntry | OAMDB_SheetMusic_MelodyEntry[]): string
+    private async GenerateCode(melody: OAMDB_SheetMusic_MelodyEntry | OAMDB_SheetMusic_MelodyEntry[]): Promise<string>
     {
         if(Array.isArray(melody))
-            return melody.map(this.GenerateCode.bind(this)).join("\n");
+        {
+            const parts = await melody.Values().Map(this.GenerateCode.bind(this)).PromiseAll();
+            return parts.join("\n");
+        }
 
         switch(melody.type)
         {
             case OAMDB_SheetMusic_MelodyEntryType.LilyPondMusic:
-                return melody.notes;
+                const lang = this.MapNoteLanguage(melody);
+                return `\\language "${lang}" ` + melody.notes;
+            case OAMDB_SheetMusic_MelodyEntryType.Maqam:
+                return `\\language "english" \\key ` + melody.pitch + " " + this.MapMaqamId(melody.maqamId);
             case OAMDB_SheetMusic_MelodyEntryType.Repeat:
-                return `\\repeat volta 2 { ${this.GenerateCode(melody.music)} }`;
+                const nested = await this.GenerateCode(melody.music);
+                return `\\repeat volta 2 { ${nested} }`;
+            case OAMDB_SheetMusic_MelodyEntryType.Rhythm:
+                const timeSig = await this.QueryRhythmTimeSig(melody.rhythmId);
+                return `\\time ${timeSig.num}/${timeSig.den}`;
         }
-        return ""; //TODO
     }
 
-    private GenerateLilyPondCodeFromSheetMusic(piece: OpenArabicMusicDBMusicalPiece, composerName: string)
+    private async GenerateLilyPondCodeFromSheetMusic(piece: OpenArabicMusicDBMusicalPiece, composerName: string)
     {
         const fontSize = 20;
 
-        const melody = this.GenerateCode(piece.sheetMusic!.sections[0].melody);
+        const melody = await this.GenerateCode(piece.sheetMusic!.sections[0].melody);
 
         return `
 \\version "2.24.4"
@@ -95,7 +118,42 @@ melody = \\relative do' { ${melody} }
  <<
   \\new Staff \\melody
  >>
+  \\layout { }
+  \\midi { }
 }
 `;
+    }
+
+    private MapMaqamId(maqamId: string)
+    {
+        switch(maqamId)
+        {
+            case "kurdi":
+                return "\\kurd";
+            default:
+                throw new Error("Can't map maqam: " + maqamId);
+        }
+    }
+
+    private MapNoteLanguage(melody: OAMDB_SheetMusic_LilyPondMusic)
+    {
+        switch(melody.noteLanguage)
+        {
+            case "english":
+                return melody.noteLanguage;
+            case "italian":
+                return "italiano";
+        }
+    }
+
+    private async QueryRhythmTimeSig(rhythmId: string)
+    {
+        const rhythm = await this.rhythmsController.QueryRhythmDefinition(rhythmId);
+        if(rhythm === undefined)
+            throw new Error("Rhythm has no definition: " + rhythmId);
+
+        const result = this.rhythmRealizerService.ComputeTimeSig(rhythm);
+
+        return result;
     }
 }

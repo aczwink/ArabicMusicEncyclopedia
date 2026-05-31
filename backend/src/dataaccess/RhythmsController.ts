@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2026 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -65,6 +65,17 @@ export class RhythmsController
             popularity: usage.popularity,
             usage: usage.usage,
         };
+    }
+
+    public async QueryRhythmDefinition(rhythmId: string)
+    {
+        const document = await this.dbController.GetDocumentDB();
+        const rhythm = document.rhythms.find(x => x.id === rhythmId);
+
+        if(rhythm?.rhythm === undefined)
+            return undefined;
+
+        return rhythm.rhythm;
     }
 
     public async QueryRhythms(): Promise<RhythmOverviewData[]>
