@@ -29,6 +29,7 @@ export enum ChordType
     DiminishedTriad,
     MajorTriad,
     MinorTriad,
+    Suspended2nd,
     //Sevenths
     DominantSeventh,
     MajorSeventh,
@@ -84,6 +85,9 @@ export class ChordDetectionService
                         [
                             { type: ChordType.MinorSeventh, matcher: st => st[5] === minorSeventhSemiTones},
                         ]
+                    },
+                    {
+                        type: ChordType.Suspended2nd, matcher: st => (st[0] === 2)
                     },
                 ]
             },

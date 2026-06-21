@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 import { Injectable } from "@aczwink/acts-util-node";
-import { LilypondRendererService } from "./LilypondRendererService";
+import { LilyPondRendererService } from "./LilyPondRendererService";
 
 interface PageState
 {
@@ -27,7 +27,7 @@ interface PageState
 @Injectable
 export class LyricsRendererService
 {
-    constructor(private lilypondRendererService: LilypondRendererService)
+    constructor(private lilypondRendererService: LilyPondRendererService)
     {
     }
 

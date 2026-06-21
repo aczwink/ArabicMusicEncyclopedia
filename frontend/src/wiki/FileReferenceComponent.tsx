@@ -41,7 +41,7 @@ export class FileReferenceComponent extends Component<{ fileName: string; }>
     private RenderContent(fileName: string)
     {
         if(this.exists === false)
-            return <span style="color:red; font-weight:bold">TODO MISSING FILE: {fileName}</span>
+            return <span style="color:red; font-weight:bold">MISSING FILE: {fileName}</span>
 
         const url = g_backendBaseUrl + "/files?title=" + fileName;
 

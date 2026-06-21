@@ -17,7 +17,7 @@
  * */
 import crypto from "crypto";
 import { ImageCacheManager } from "../../services/ImageCacheManager";
-import { LilypondRendererService } from "../../services/LilypondRendererService";
+import { LilyPondRendererService } from "../../services/LilyPondRendererService";
 import { IntervalsService } from "../../services/IntervalsService";
 import { MaqamPicCreator } from "../../services/MaqamPicCreator";
 import { APIController, Get, Query } from "@aczwink/acts-util-apilib";
@@ -28,7 +28,7 @@ type ScoreType = "maqam" | "rhythm" | "rhythm2";
 @APIController("score")
 class ScoreAPIController
 {
-    constructor(private imgCacheManager: ImageCacheManager, private lilypondImageCreator: LilypondRendererService, private intervalsService: IntervalsService,
+    constructor(private imgCacheManager: ImageCacheManager, private lilypondImageCreator: LilyPondRendererService, private intervalsService: IntervalsService,
         private maqamPicCreator: MaqamPicCreator)
     {
     }

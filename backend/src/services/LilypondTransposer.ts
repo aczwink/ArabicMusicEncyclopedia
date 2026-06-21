@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2022-2025 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2022-2026 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,13 +17,13 @@
  * */
 
 import { Injectable } from "@aczwink/acts-util-node";
-import { LilypondNoteService } from "./LilypondNoteService";
+import { LilyPondNoteService } from "./LilyPondNoteService";
 import { OctavePitch } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
 
 @Injectable
 export class LilypondTransposer
 {
-    constructor(private lilypondNoteService: LilypondNoteService)
+    constructor(private lilypondNoteService: LilyPondNoteService)
     {
     }
 
@@ -34,7 +34,7 @@ export class LilypondTransposer
         if(keyMatches.length !== 1)
             throw new Error("no key or too many found");
         const stringKey = keyMatches[0][1];
-        const key = this.lilypondNoteService.ParseLilypondPitch(stringKey);
+        const key = this.lilypondNoteService.ParseLilypondPitch(stringKey, "italian");
 
         const headerPos = source.indexOf("\\header");
         const endOfHeaderPos = source.indexOf("}", headerPos);
@@ -42,7 +42,7 @@ export class LilypondTransposer
         const transposePositions = [];
         transposePositions.push(endOfHeaderPos + 1);
 
-        return this.InsertTranspositions(source, transposePositions, stringKey, this.lilypondNoteService.ToLilypondNote(targetPitch, key.language));
+        return this.InsertTranspositions(source, transposePositions, stringKey, this.lilypondNoteService.ToLilypondNote(targetPitch, "italian"));
     }
 
     //Private methods

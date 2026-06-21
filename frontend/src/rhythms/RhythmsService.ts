@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2025 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2026 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -31,7 +31,7 @@ export class RhythmsService
     {
         const result = await this.apiService.rhythms._any_.get(rhythmId);
         if(result.statusCode === 404)
-            throw new Error("TODO: implement me");
+            throw new Error("implement me");
         return result.data;
     }
 

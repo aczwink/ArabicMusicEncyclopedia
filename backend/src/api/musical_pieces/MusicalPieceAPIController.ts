@@ -22,7 +22,7 @@ import { LyricsRendererService } from "../../services/LyricsRendererService";
 import { AttachmentTypeService } from "../../services/AttachmentTypeService";
 import { ParseOctavePitch } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
 import { LilypondTransposer } from "../../services/LilypondTransposer";
-import { LilypondRendererService } from "../../services/LilypondRendererService";
+import { LilyPondRendererService } from "../../services/LilyPondRendererService";
 import { OpenArabicMusicDBFileDownloader } from "../../services/OpenArabicMusicDBFileDownloader";
 import { SheetMusicRealizerService } from "../../services/SheetMusicRealizerService";
 
@@ -30,7 +30,7 @@ import { SheetMusicRealizerService } from "../../services/SheetMusicRealizerServ
 class MusicalPieceAPIController
 {
     constructor(private musicalPiecesController: MusicalPiecesController, private lyricsRendererService: LyricsRendererService, private personsController: PersonsController, private attachmentTypeService: AttachmentTypeService,
-        private lilypondTransposer: LilypondTransposer, private lilypondService: LilypondRendererService, private downloader: OpenArabicMusicDBFileDownloader, private sheetMusicRealizerService: SheetMusicRealizerService,
+        private lilypondTransposer: LilypondTransposer, private lilypondService: LilyPondRendererService, private downloader: OpenArabicMusicDBFileDownloader, private sheetMusicRealizerService: SheetMusicRealizerService,
     )
     {
     }

@@ -19,36 +19,31 @@
 import { Injectable } from "@aczwink/acts-util-node";
 import { OctavePitch, NaturalNote, Accidental } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
 
-type NoteLanguage = "english" | "italian";
+export type LilyPondNoteLanguage = "english" | "italian";
 
 interface LilypondPitch
 {
     pitch: OctavePitch;
-    language: NoteLanguage;
+    language: LilyPondNoteLanguage;
 }
 
 @Injectable
-export class LilypondNoteService
+export class LilyPondNoteService
 {
     //Public methods
-    public ParseLilypondPitch(pitch: string): LilypondPitch
+    public ParseLilypondPitch(pitch: string, noteLanguage: LilyPondNoteLanguage): OctavePitch
     {
-        switch(pitch)
+        switch(noteLanguage)
         {
-            case "do":
-                return {
-                    pitch: {
-                        baseNote: NaturalNote.C,
-                        accidental: Accidental.Natural
-                    },
-                    language: "italian"
-                };
-            default:
-                throw new Error("NOT IMPLEMENTED: " + pitch);
+            case "english":
+                return this.ParseEnglishPitch(pitch);
+                throw new Error("NOT IMPLEMENTED: " + noteLanguage + "-" + pitch);
+            case "italian":
+                return this.ParseItalianPitch(pitch);
         }
     }
 
-    public ToLilypondNote(pitch: OctavePitch, language: NoteLanguage)
+    public ToLilypondNote(pitch: OctavePitch, language: LilyPondNoteLanguage)
     {
         switch(language)
         {
@@ -60,6 +55,79 @@ export class LilypondNoteService
     }
 
     //Private methods
+    private ParseEnglishPitch(pitch: string): OctavePitch
+    {
+        let base;
+        switch(pitch)
+        {
+            case "a":
+                base = NaturalNote.A;
+                break;
+            default:
+                throw new Error("Illegal english LilyPond pitch: " + pitch);
+        }
+
+        return {
+            accidental: Accidental.Natural,
+            baseNote: base
+        };
+    }
+
+    private ParseItalianPitch(pitch: string): OctavePitch
+    {
+        function ParseAccidental(remainder: string)
+        {
+            switch(remainder)
+            {
+                case "":
+                    return Accidental.Natural;
+                case "b":
+                    return Accidental.Flat;
+                case "d":
+                    return Accidental.Sharp;
+                default:
+                    throw new Error("Illegal italian LilyPond accidental: " + remainder);
+            }
+        }
+
+        let base;
+
+        if(pitch.substring(0, 3) === "sol")
+            base = NaturalNote.G;
+        else
+        {
+            const pitch2 = pitch.substring(0, 2);
+            switch(pitch2)
+            {
+                case "do":
+                    base = NaturalNote.C;
+                    break;
+                case "re":
+                    base = NaturalNote.D;
+                    break;
+                case "mi":
+                    base = NaturalNote.E;
+                    break;
+                case "fa":
+                    base = NaturalNote.F;
+                    break;
+                case "la":
+                    base = NaturalNote.A;
+                    break;
+                case "si":
+                    base = NaturalNote.B;
+                    break;
+                default:
+                    throw new Error("Illegal italian LilyPond pitch: " + pitch);
+            }
+        }
+        
+        return {
+            accidental: ParseAccidental( (base === NaturalNote.G) ? pitch.substring(3) : pitch.substring(2) ),
+            baseNote: base
+        };
+    }
+
     private ToEnglishLilypondNote(pitch: OctavePitch)
     {
         function AccidentalToString(acc: Accidental)

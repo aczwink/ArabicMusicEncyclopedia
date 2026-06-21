@@ -18,7 +18,7 @@
 import { ImageCacheManager } from "../../services/ImageCacheManager";
 import { IntervalsService } from "../../services/IntervalsService";
 import { ChordDetectionService } from "../../services/ChordDetectionService";
-import { LilypondRendererService } from "../../services/LilypondRendererService";
+import { LilyPondRendererService } from "../../services/LilyPondRendererService";
 import { APIController, Get, NotFound, Path, Query } from "@aczwink/acts-util-apilib";
 import { ParseOctavePitch, OctavePitch, OctavePitchToString } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
 
@@ -26,7 +26,7 @@ import { ParseOctavePitch, OctavePitch, OctavePitchToString } from "@aczwink/ope
 class MaqamChordsImageAPIController
 {
     constructor(private imgCacheManager: ImageCacheManager, private intervalsService: IntervalsService, private chordDetectionService: ChordDetectionService,
-        private lilypondImageCreator: LilypondRendererService)
+        private lilypondImageCreator: LilyPondRendererService)
     {
     }
 

@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021-2026 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2026 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,27 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-import { Injectable } from "@aczwink/acfrontend";
-import { APIService } from "../shared/APIService";
+import { Fraction } from "./Fraction";
+import { FullPitch } from "./FullPitch";
 
-@Injectable
-export class MaqamatService
+export interface Note extends FullPitch
 {
-    constructor(private apiService: APIService)
-    {
-    }
-
-    //Public methods
-    public async QueryMaqam(maqamId: string)
-    {
-        const result = await this.apiService.maqamat._any_.get(maqamId);
-        if(result.statusCode === 404)
-            throw new Error("implement me");
-        return result.data;
-    }
-    
-    public async QueryMaqamat(rootJinsId?: string)
-    {
-        return (await this.apiService.maqamat.get({ rootJinsId })).data;
-    }
+    duration: Fraction;
 }
+
+export interface Rest
+{
+    duration: Fraction;
+}
+
+export type NoteOrRest = Note | Rest;

@@ -1,6 +1,6 @@
 /**
  * ArabicMusicEncyclopedia
- * Copyright (C) 2021 Amir Czwink (amir130@hotmail.de)
+ * Copyright (C) 2021-2026 Amir Czwink (amir130@hotmail.de)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -49,6 +49,11 @@ export class Fraction
     {
         const gcd = this.GreatestCommonDivisor(this.num, this.den);
         return new Fraction( this.num / gcd, this.den / gcd);
+    }
+
+    public Scale(factor: number): Fraction
+    {
+        return new Fraction(this.num * factor, this.den).Reduce();
     }
 
     public Subtract(minuend: Fraction)

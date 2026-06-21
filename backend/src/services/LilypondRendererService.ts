@@ -22,14 +22,14 @@ import path from "path";
 
 import { Injectable } from "@aczwink/acts-util-node";
 import { ChordType } from "./ChordDetectionService";
-import { LilypondNoteService } from "./LilypondNoteService";
+import { LilyPondNoteService } from "./LilyPondNoteService";
 import { OctavePitch } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
 import { IntervalsService } from "./IntervalsService";
 
 @Injectable
-export class LilypondRendererService
+export class LilyPondRendererService
 {
-    constructor(private lilypondNoteService: LilypondNoteService, private intervalsService: IntervalsService)
+    constructor(private lilypondNoteService: LilyPondNoteService, private intervalsService: IntervalsService)
     {
     }
 
@@ -198,11 +198,14 @@ export class LilypondRendererService
                 return [pitches[0], pitches[4], pitches[0]];
             case ChordType.MajorAddFlatNine:
                 return [pitches[0], pitches[2], pitches[4], pitches[1]];
+            case ChordType.Suspended2nd:
+                return [pitches[0], pitches[1], pitches[4]];
         }
     }
 
     private ToLilypondChord(pitch: OctavePitch, chord: ChordType)
     {
+        //https://lilypond.org/doc/v2.23/Documentation/notation/common-chord-modifiers.html
         function ChordTypeToString(chord: ChordType): string
         {
             switch(chord)
@@ -225,6 +228,8 @@ export class LilypondRendererService
                     return ":5.8";
                 case ChordType.MajorAddFlatNine:
                     return ":3.5.9-";
+                case ChordType.Suspended2nd:
+                    return ":sus2";
             }
         }
 
