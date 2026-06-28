@@ -20,23 +20,7 @@ import { Injectable } from "@aczwink/acts-util-node";
 import { Fraction } from "../model/Fraction";
 import { IntervalsService } from "./IntervalsService";
 import { Interval } from "@aczwink/openarabicmusicdb-domain";
-
-export enum ChordType
-{
-    PowerChord,
-    //triads
-    AugmentedTriad,
-    DiminishedTriad,
-    MajorTriad,
-    MinorTriad,
-    Suspended2nd,
-    //Sevenths
-    DominantSeventh,
-    MajorSeventh,
-    MinorSeventh,
-    //Add9
-    MajorAddFlatNine
-}
+import { ChordType } from "../model/Chord";
 
 interface ChordMatcher
 {

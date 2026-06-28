@@ -58,17 +58,45 @@ export class LilyPondNoteService
     private ParseEnglishPitch(pitch: string): OctavePitch
     {
         let base;
-        switch(pitch)
+        switch(pitch.charAt(0))
         {
             case "a":
                 base = NaturalNote.A;
+                break;
+            case "b":
+                base = NaturalNote.B;
+                break;
+            case "c":
+                base = NaturalNote.C;
+                break;
+            case "d":
+                base = NaturalNote.D;
+                break;
+            case "f":
+                base = NaturalNote.F;
+                break;
+            case "g":
+                base = NaturalNote.G;
+                break;
+            default:
+                throw new Error("Illegal english LilyPond pitch: " + pitch);
+        }
+
+        let acc;
+        switch(pitch.substring(1))
+        {
+            case "":
+                acc = Accidental.Natural;
+                break;
+            case "f":
+                acc = Accidental.Flat;
                 break;
             default:
                 throw new Error("Illegal english LilyPond pitch: " + pitch);
         }
 
         return {
-            accidental: Accidental.Natural,
+            accidental: acc,
             baseNote: base
         };
     }

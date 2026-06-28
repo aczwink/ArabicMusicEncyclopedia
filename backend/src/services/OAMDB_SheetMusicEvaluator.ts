@@ -19,15 +19,16 @@
 import { Injectable } from "@aczwink/acts-util-node";
 import { Accidental, NaturalNote, OctavePitch } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
 import { DatabaseController } from "../dataaccess/DatabaseController";
-import { OAMDB_SheetMusic_Document, OAMDB_SheetMusic_MelodyEntryType, OAMDB_SheetMusic_MelodyEvent, OpenArabicMusicDBMusicalPiece } from "@aczwink/openarabicmusicdb-domain";
+import { OAMDB_SheetMusic_Document, OAMDB_SheetMusic_LilyPondMusic, OAMDB_SheetMusic_MelodyEntryType, OAMDB_SheetMusic_MelodyEvent, OpenArabicMusicDBMusicalPiece } from "@aczwink/openarabicmusicdb-domain";
 import { RhythmsController } from "../dataaccess/RhythmsController";
 import { RhythmRealizerService } from "./RhythmRealizerService";
-import { LilyPondNoteLanguage, LilyPondNoteService } from "./LilyPondNoteService";
+import { LilyPondNoteLanguage, LilyPondNoteService } from "./LilypondNoteService";
 import { Note, NoteOrRest } from "../model/Note";
 import { Fraction } from "../model/Fraction";
 import { IntervalsService } from "./IntervalsService";
 import { FullPitch } from "../model/FullPitch";
-import { MelodyEvent, MelodyEventType, SheetMusic } from "../model/SheetMusic";
+import { MelodyEvent, MelodyEventType, Section, SheetMusic } from "../model/SheetMusic";
+import { ChordType, TimedChord } from "../model/Chord";
 
 interface EvaluationState
 {
@@ -64,22 +65,25 @@ export class OAMDB_SheetMusicEvaluator
     }
 
     //Private methods
-    private async EmitSection(sheetMusic: OAMDB_SheetMusic_Document, sectionName: string, wrapInRepeat: boolean, state: EvaluationState)
+    private EvaluateChordEvent(event: OAMDB_SheetMusic_LilyPondMusic)
     {
-        const section = sheetMusic.sections.find(x => x.name === sectionName)!;
-
-        if(wrapInRepeat)
+        switch(event.type)
         {
-            const events = await this.EvaluateMelodyEvents([
+            case OAMDB_SheetMusic_MelodyEntryType.LilyPondMusic:
             {
-                type: OAMDB_SheetMusic_MelodyEntryType.Repeat,
-                music: section.melody
+                return this.ParseLilyPondChords(event);
             }
-            ], state);
-            return events;
         }
+    }
 
-        return await this.EvaluateMelodyEvents(section.melody, state);
+    private EvaluateChordEvents(events: OAMDB_SheetMusic_LilyPondMusic[])
+    {
+        const result = [];
+        for (const event of events)
+        {
+            result.push(...this.EvaluateChordEvent(event));
+        }
+        return result;
     }
 
     private async EvaluateMelody(melody: OAMDB_SheetMusic_MelodyEvent, state: EvaluationState): Promise<MelodyEvent | undefined>
@@ -134,12 +138,27 @@ export class OAMDB_SheetMusicEvaluator
         return parts;
     }
 
+    private async EvaluateSections(sheetMusic: OAMDB_SheetMusic_Document, state: EvaluationState)
+    {
+        const result: Section[] = [];
+        for (const section of sheetMusic.sections)
+        {
+            result.push({
+                chords: this.EvaluateChordEvents(section.chords),
+                melody: await this.EvaluateMelodyEvents(section.melody, state)
+            });
+        }
+
+        return result;
+    }
+
     private async EvaluateSheetMusic(piece: OpenArabicMusicDBMusicalPiece, composerName: string, state: EvaluationState): Promise<SheetMusic>
     {
         return {
             pieceTitle: piece.name,
             composerName,
-            melody: await this.TraverseSections(piece.sheetMusic!, state)
+            sections: await this.EvaluateSections(piece.sheetMusic!, state),
+            sectionSequence: piece.sheetMusic!.sectionsSequence,
         };
     }
 
@@ -151,6 +170,46 @@ export class OAMDB_SheetMusicEvaluator
             return new Fraction(1, den).Add(new Fraction(1, den * 2));
         }
         return new Fraction(1, parseInt(dur));
+    }
+
+    private ParseLilyPondChords(event: OAMDB_SheetMusic_LilyPondMusic)
+    {
+        const split = event.notes.trim().split(/[ \n]+/);
+
+        const result: TimedChord[] = [];
+        let currentDuration = new Fraction(1, 4);
+        for (const element of split)
+        {
+            const parts = element.split(":");
+
+            const parsed = this.ParseLilyPondNote(event.noteLanguage, parts[0]);
+            if(parsed.duration !== undefined)
+                currentDuration = parsed.duration;
+
+            const createdChord: TimedChord = {
+                root: parsed.pitch,
+                type: this.ParseLilyPondChordType(parts[1]),
+                duration: currentDuration
+            };
+            result.push(createdChord);
+        }
+
+        return result;
+    }
+
+    private ParseLilyPondChordType(text?: string)
+    {
+        switch(text)
+        {
+            case undefined:
+                return ChordType.MajorTriad;
+            case "5.8":
+                return ChordType.PowerChord;
+            case "min":
+                return ChordType.MinorTriad;
+        }
+
+        throw new Error("ParseLilyPondChordType: " + text);
     }
 
     private ParseLilyPondNote(noteLanguage: LilyPondNoteLanguage, note: string)
@@ -273,41 +332,5 @@ export class OAMDB_SheetMusicEvaluator
         }
 
         return best;
-    }
-
-    private async TraverseSections(sheetMusic: OAMDB_SheetMusic_Document, state: EvaluationState): Promise<MelodyEvent[]>
-    {
-        let currentSectionName;
-        let wrapInRepeat = false;
-
-        const result = [];
-        for (const sectionName of sheetMusic.sectionsSequence)
-        {
-            if(currentSectionName === undefined)
-            {
-                currentSectionName = sectionName;
-                wrapInRepeat = false;
-            }
-            else if(currentSectionName === sectionName)
-            {
-                wrapInRepeat = true;
-            }
-            else
-            {
-                const events = await this.EmitSection(sheetMusic, currentSectionName, wrapInRepeat, state);
-                result.push(...events);
-
-                currentSectionName = sectionName;
-                wrapInRepeat = false;
-            }
-        }
-
-        if(currentSectionName !== undefined)
-        {
-            const events = await this.EmitSection(sheetMusic, currentSectionName, wrapInRepeat, state);
-            result.push(...events);
-        }
-
-        return result;
     }
 }

@@ -18,11 +18,13 @@
 
 import { OctavePitch } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
 import { NoteOrRest } from "./Note";
+import { TimedChord } from "./Chord";
 
 export enum MelodyEventType
 {
     NotesOrRests,
     Repeat,
+    SegnoRepeat,
     UpdateMaqam,
     UpdateTimeSignature,
 }
@@ -39,6 +41,14 @@ export interface RepeatEvent
     nestedEvents: MelodyEvent[];
 }
 
+export interface SegnoRepeatEvent
+{
+    type: MelodyEventType.SegnoRepeat;
+    fineAfterRepeat: boolean;
+    followingEvents: MelodyEvent[];
+    repeatedEvents: MelodyEvent[];
+}
+
 export interface UpdateMaqamEvent
 {
     type: MelodyEventType.UpdateMaqam;
@@ -53,11 +63,26 @@ export interface UpdateTimeSignatureEvent
     den: number;
 }
 
-export type MelodyEvent = NotesOrRestsEvent | RepeatEvent | UpdateMaqamEvent | UpdateTimeSignatureEvent;
+export type MelodyEvent = NotesOrRestsEvent | RepeatEvent | SegnoRepeatEvent | UpdateMaqamEvent | UpdateTimeSignatureEvent;
+
+export interface Section
+{
+    chords: TimedChord[];
+    melody: MelodyEvent[];
+}
 
 export interface SheetMusic
 {
     pieceTitle: string;
     composerName: string;
+    sections: Section[];
+    sectionSequence: number[];
+}
+
+export interface SingleSectionSheetMusic
+{
+    pieceTitle: string;
+    composerName: string;
+    chords: TimedChord[];
     melody: MelodyEvent[];
 }

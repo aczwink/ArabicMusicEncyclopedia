@@ -21,10 +21,10 @@ import os from "os";
 import path from "path";
 
 import { Injectable } from "@aczwink/acts-util-node";
-import { ChordType } from "./ChordDetectionService";
-import { LilyPondNoteService } from "./LilyPondNoteService";
+import { LilyPondNoteService } from "./LilypondNoteService";
 import { OctavePitch } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
 import { IntervalsService } from "./IntervalsService";
+import { ChordType } from "../model/Chord";
 
 @Injectable
 export class LilyPondRendererService

@@ -22,7 +22,7 @@ import { LyricsRendererService } from "../../services/LyricsRendererService";
 import { AttachmentTypeService } from "../../services/AttachmentTypeService";
 import { ParseOctavePitch } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
 import { LilypondTransposer } from "../../services/LilypondTransposer";
-import { LilyPondRendererService } from "../../services/LilyPondRendererService";
+import { LilyPondRendererService } from "../../services/LilypondRendererService";
 import { OpenArabicMusicDBFileDownloader } from "../../services/OpenArabicMusicDBFileDownloader";
 import { SheetMusicRealizerService } from "../../services/SheetMusicRealizerService";
 

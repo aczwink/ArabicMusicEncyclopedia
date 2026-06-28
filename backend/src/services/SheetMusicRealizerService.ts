@@ -18,13 +18,15 @@
 
 import { Injectable } from "@aczwink/acts-util-node";
 import { OctavePitch } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
-import { LilyPondRendererService } from "./LilyPondRendererService";
-import { LilyPondNoteService } from "./LilyPondNoteService";
+import { LilyPondRendererService } from "./LilypondRendererService";
+import { LilyPondNoteService } from "./LilypondNoteService";
 import { NoteOrRest } from "../model/Note";
 import { Fraction } from "../model/Fraction";
 import { OAMDB_SheetMusicEvaluator } from "./OAMDB_SheetMusicEvaluator";
-import { MelodyEvent, MelodyEventType, RepeatEvent, SheetMusic } from "../model/SheetMusic";
+import { MelodyEvent, MelodyEventType, RepeatEvent, SingleSectionSheetMusic } from "../model/SheetMusic";
 import { SheetMusicTransposer } from "./SheetMusicTransposer";
+import { SheetMusicSectionSequenceResolverService } from "./SheetMusicSectionSequenceResolverService";
+import { TimedChord } from "../model/Chord";
 
 interface RealizationOptions
 {
@@ -34,7 +36,9 @@ interface RealizationOptions
 @Injectable
 export class SheetMusicRealizerService
 {
-    constructor(private lilypondService: LilyPondRendererService, private lilyPondNoteService: LilyPondNoteService, private oamdbSheetMusicEvaluator: OAMDB_SheetMusicEvaluator, private sheetMusicTransposer: SheetMusicTransposer)
+    constructor(private lilypondService: LilyPondRendererService, private lilyPondNoteService: LilyPondNoteService, private oamdbSheetMusicEvaluator: OAMDB_SheetMusicEvaluator, private sheetMusicTransposer: SheetMusicTransposer,
+        private sheetMusicSectionSequenceResolverService: SheetMusicSectionSequenceResolverService
+    )
     {
     }
 
@@ -42,7 +46,8 @@ export class SheetMusicRealizerService
     public async RenderAsMIDI(pieceId: string, pitch: OctavePitch)
     {
         const data = await this.oamdbSheetMusicEvaluator.Evaluate(pieceId);
-        const tranposed = await this.sheetMusicTransposer.TransposeTo(data, pitch);
+        const layout = await this.sheetMusicSectionSequenceResolverService.ResolveSequence(data);
+        const tranposed = await this.sheetMusicTransposer.TransposeTo(layout, pitch);
 
         const code = await this.GenerateLilyPondCodeFromSheetMusic(tranposed, {
             unfoldRepeats: true
@@ -54,7 +59,8 @@ export class SheetMusicRealizerService
     public async RenderAsPDF(pieceId: string, pitch: OctavePitch)
     {
         const data = await this.oamdbSheetMusicEvaluator.Evaluate(pieceId);
-        const tranposed = await this.sheetMusicTransposer.TransposeTo(data, pitch);
+        const layout = await this.sheetMusicSectionSequenceResolverService.ResolveSequence(data);
+        const tranposed = await this.sheetMusicTransposer.TransposeTo(layout, pitch);
 
         const code = await this.GenerateLilyPondCodeFromSheetMusic(tranposed, {
             unfoldRepeats: false
@@ -96,6 +102,16 @@ export class SheetMusicRealizerService
         throw new Error("Illegal duration value: " + duration.ToString());
     }
 
+    private GenerateChordModeCode(chords: TimedChord | TimedChord[]): string
+    {
+        if(Array.isArray(chords))
+        {
+            const parts = chords.Values().Map(x => this.GenerateChordModeCode(x)).ToArray();
+            return parts.join("\n");
+        }
+        return this.lilyPondNoteService.ToLilypondNote(chords.root, "english") + this.DurationToLilyPond(chords.duration);
+    }
+
     private async GenerateCode(event: MelodyEvent | MelodyEvent[], state: RealizationOptions): Promise<string>
     {
         if(Array.isArray(event))
@@ -110,8 +126,18 @@ export class SheetMusicRealizerService
                 return event.notesOrRests.map(x => this.GenerateCodeForNote(x)).join(" ");
             case MelodyEventType.Repeat:
                 return this.GenerateCodeForRepeat(event, state);
+            case MelodyEventType.SegnoRepeat:
+            {
+                const repeated = await this.GenerateCode(event.repeatedEvents, state);
+                const following = await this.GenerateCode(event.followingEvents, state);
+
+                if(!event.fineAfterRepeat)
+                    throw new Error("not implemented"); //need example
+
+                return `\\repeat segno 2 { ${repeated} \\volta 2 \\fine \\volta 1 ${following} }`;
+            }
             case MelodyEventType.UpdateMaqam:
-                const keyPitch = this.lilyPondNoteService.ToLilypondNote(event.pitch, "italian");
+                const keyPitch = this.lilyPondNoteService.ToLilypondNote(event.pitch, "english");
                 return `\\key ` + keyPitch + " " + this.MapMaqamId(event.maqamId);
             case MelodyEventType.UpdateTimeSignature:
                 return `\\time ${event.num}/${event.den}`;
@@ -138,7 +164,7 @@ export class SheetMusicRealizerService
 
         if("octave" in note)
         {
-            return this.lilyPondNoteService.ToLilypondNote(note, "italian") + OctaveToString(note.octave) + this.DurationToLilyPond(note.duration);
+            return this.lilyPondNoteService.ToLilypondNote(note, "english") + OctaveToString(note.octave) + this.DurationToLilyPond(note.duration);
         }
 
         return "r" + this.DurationToLilyPond(note.duration);
@@ -162,10 +188,11 @@ export class SheetMusicRealizerService
         return `\\repeat ${repeatType} 2 { ${nested} }`;
     }
 
-    private async GenerateLilyPondCodeFromSheetMusic(data: SheetMusic, state: RealizationOptions)
+    private async GenerateLilyPondCodeFromSheetMusic(data: SingleSectionSheetMusic, state: RealizationOptions)
     {
         const fontSize = 20;
 
+        const chords = this.GenerateChordModeCode(data.chords);
         const melody = await this.GenerateCode(data.melody, state);
 
         return `
@@ -188,6 +215,8 @@ export class SheetMusicRealizerService
 \\markup naskh_bold = \\markup \\override #'((font-name . "Noto Naskh Arabic Bold") (font-size . 6)) \\etc
 \\markup naskh_composer = \\markup \\override #'((font-name . "Noto Naskh Arabic") (font-size . 0.5)) \\etc
 
+\\pointAndClickOff
+
 \\header
 {
     title = \\markup \\naskh_bold "${data.pieceTitle}"
@@ -195,10 +224,16 @@ export class SheetMusicRealizerService
     tagline = ${this.lilypondService.GenerateTagLine()}
 }
 
+\\language "english"
+chordsStaff = \\chordmode {
+    \\set chordChanges = ##t
+    ${chords}
+}
 melody = { ${melody} }
 
 \\score {
  <<
+  \\new ChordNames \\chordsStaff
   \\new Staff \\melody
  >>
   \\layout { }

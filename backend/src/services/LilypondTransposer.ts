@@ -17,7 +17,7 @@
  * */
 
 import { Injectable } from "@aczwink/acts-util-node";
-import { LilyPondNoteService } from "./LilyPondNoteService";
+import { LilyPondNoteService } from "./LilypondNoteService";
 import { OctavePitch } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
 
 @Injectable

@@ -17,7 +17,7 @@
  * */
 import crypto from "crypto";
 import { ImageCacheManager } from "../../services/ImageCacheManager";
-import { LilyPondRendererService } from "../../services/LilyPondRendererService";
+import { LilyPondRendererService } from "../../services/LilypondRendererService";
 import { IntervalsService } from "../../services/IntervalsService";
 import { MaqamPicCreator } from "../../services/MaqamPicCreator";
 import { APIController, Get, Query } from "@aczwink/acts-util-apilib";

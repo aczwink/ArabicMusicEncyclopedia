@@ -18,11 +18,12 @@
 
 import { Injectable } from "@aczwink/acts-util-node";
 import { NaturalNote, OctavePitch } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
-import { MelodyEvent, MelodyEventType, SheetMusic } from "../model/SheetMusic";
+import { MelodyEvent, MelodyEventType, SingleSectionSheetMusic } from "../model/SheetMusic";
 import { NoteOrRest } from "../model/Note";
 import { IntervalsService } from "./IntervalsService";
 import { MaqamatController } from "../dataaccess/MaqamatController";
 import { FullPitch } from "../model/FullPitch";
+import { TimedChord } from "../model/Chord";
 
 interface PitchMap
 {
@@ -45,16 +46,19 @@ export class SheetMusicTransposer
     }
 
     //Public methods
-    public async TransposeTo(data: SheetMusic, targetKey: OctavePitch): Promise<SheetMusic>
+    public async TransposeTo(data: SingleSectionSheetMusic, targetKey: OctavePitch): Promise<SingleSectionSheetMusic>
     {
+        const state = {
+            pitchMap: [],
+            sourceKey: targetKey,
+            targetKey
+        };
+        const melody = await this.TransposeEvents(data.melody, state);
         return {
+            chords: this.TransposeChords(data.chords, state),
             composerName: data.composerName,
-            melody: await this.TransposeEvents(data.melody, {
-                pitchMap: [],
-                sourceKey: targetKey,
-                targetKey
-            }),
-            pieceTitle: data.pieceTitle
+            melody,
+            pieceTitle: data.pieceTitle,
         };
     }
 
@@ -80,6 +84,26 @@ export class SheetMusicTransposer
             });
         }
         state.pitchMap = pitchMap;
+    }
+
+    private TransposeChord(state: TranspositionState, chord: TimedChord): TimedChord
+    {
+        return {
+            duration: chord.duration,
+            root: this.TransposePitch({ octave: 4, ...chord.root }, state),
+            type: chord.type
+        };
+    }
+
+    private TransposeChords(chords: TimedChord[], state: TranspositionState)
+    {
+        const mapped = [];
+        for (const chord of chords)
+        {
+            mapped.push(this.TransposeChord(state, chord));
+        }
+
+        return mapped;
     }
 
     private TransposeChromatic(pitch: FullPitch, state: TranspositionState)
@@ -170,19 +194,30 @@ export class SheetMusicTransposer
     {
         if("octave" in noteOrRest)
         {
-            const diatonicSteps = state.targetKey.baseNote - state.sourceKey.baseNote;
-
-            const diatonicTransposed = this.TransposeDiatonic(noteOrRest.baseNote, noteOrRest.octave, diatonicSteps);
-            const chromaticTransposition = this.TransposeChromatic(noteOrRest, state);
+            const transposed = this.TransposePitch(noteOrRest, state);
 
             return {
-                accidental: chromaticTransposition,
-                baseNote: diatonicTransposed.basePitch,
+                accidental: transposed.accidental,
+                baseNote: transposed.baseNote,
                 duration: noteOrRest.duration,
-                octave: diatonicTransposed.octave
+                octave: transposed.octave
             };
         }
 
         return noteOrRest;
+    }
+
+    private TransposePitch(pitch: FullPitch, state: TranspositionState): FullPitch
+    {
+        const diatonicSteps = state.targetKey.baseNote - state.sourceKey.baseNote;
+
+        const chromaticTransposition = this.TransposeChromatic(pitch, state);
+        const diatonicTransposed = this.TransposeDiatonic(pitch.baseNote, pitch.octave, diatonicSteps);
+
+        return {
+            accidental: chromaticTransposition,
+            baseNote: diatonicTransposed.basePitch,
+            octave: diatonicTransposed.octave
+        };
     }
 }

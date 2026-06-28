@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 import { Injectable } from "@aczwink/acts-util-node";
-import { LilyPondRendererService } from "./LilyPondRendererService";
+import { LilyPondRendererService } from "./LilypondRendererService";
 
 interface PageState
 {
