@@ -73,16 +73,22 @@ export interface Section
 
 export interface SheetMusic
 {
-    pieceTitle: string;
-    composerName: string;
+    pieceInfo: {
+        title: string;
+        composerName: string;
+        lyrics: string;
+    };
     sections: Section[];
     sectionSequence: number[];
 }
 
 export interface SingleSectionSheetMusic
 {
-    pieceTitle: string;
-    composerName: string;
+    pieceInfo: {
+        title: string;
+        composerName: string;
+        lyrics: string;
+    };
     chords: TimedChord[];
     melody: MelodyEvent[];
 }

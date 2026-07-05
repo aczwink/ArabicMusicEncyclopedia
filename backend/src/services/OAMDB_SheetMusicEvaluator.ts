@@ -155,8 +155,11 @@ export class OAMDB_SheetMusicEvaluator
     private async EvaluateSheetMusic(piece: OpenArabicMusicDBMusicalPiece, composerName: string, state: EvaluationState): Promise<SheetMusic>
     {
         return {
-            pieceTitle: piece.name,
-            composerName,
+            pieceInfo: {
+                composerName,
+                lyrics: piece.lyrics?.text ?? "",
+                title: piece.name
+            },
             sections: await this.EvaluateSections(piece.sheetMusic!, state),
             sectionSequence: piece.sheetMusic!.sectionsSequence,
         };

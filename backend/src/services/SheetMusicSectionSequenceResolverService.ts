@@ -68,9 +68,8 @@ export class SheetMusicSectionSequenceResolverService
 
         return {
             chords: flattenedChords,
-            composerName: sheetMusic.composerName,
-            pieceTitle: sheetMusic.pieceTitle,
-            melody: flattened
+            melody: flattened,
+            pieceInfo: sheetMusic.pieceInfo,
         };
     }
 

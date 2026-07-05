@@ -56,9 +56,8 @@ export class SheetMusicTransposer
         const melody = await this.TransposeEvents(data.melody, state);
         return {
             chords: this.TransposeChords(data.chords, state),
-            composerName: data.composerName,
             melody,
-            pieceTitle: data.pieceTitle,
+            pieceInfo: data.pieceInfo,
         };
     }
 

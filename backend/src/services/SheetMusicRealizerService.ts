@@ -27,6 +27,7 @@ import { MelodyEvent, MelodyEventType, RepeatEvent, SingleSectionSheetMusic } fr
 import { SheetMusicTransposer } from "./SheetMusicTransposer";
 import { SheetMusicSectionSequenceResolverService } from "./SheetMusicSectionSequenceResolverService";
 import { TimedChord } from "../model/Chord";
+import { LyricsRendererService } from "./LyricsRendererService";
 
 interface RealizationOptions
 {
@@ -37,7 +38,7 @@ interface RealizationOptions
 export class SheetMusicRealizerService
 {
     constructor(private lilypondService: LilyPondRendererService, private lilyPondNoteService: LilyPondNoteService, private oamdbSheetMusicEvaluator: OAMDB_SheetMusicEvaluator, private sheetMusicTransposer: SheetMusicTransposer,
-        private sheetMusicSectionSequenceResolverService: SheetMusicSectionSequenceResolverService
+        private sheetMusicSectionSequenceResolverService: SheetMusicSectionSequenceResolverService, private lyricsRendererService: LyricsRendererService
     )
     {
     }
@@ -195,6 +196,8 @@ export class SheetMusicRealizerService
         const chords = this.GenerateChordModeCode(data.chords);
         const melody = await this.GenerateCode(data.melody, state);
 
+        const lyricsCode = this.lyricsRendererService.GenerateLilyPondCode(data.pieceInfo.lyrics);
+
         return `
 \\version "2.24.4"
 \\include "arabic.ly"
@@ -219,8 +222,8 @@ export class SheetMusicRealizerService
 
 \\header
 {
-    title = \\markup \\naskh_bold "${data.pieceTitle}"
-    composer = \\markup \\naskh_composer "${data.composerName}"
+    title = \\markup \\naskh_bold "${data.pieceInfo.title}"
+    composer = \\markup \\naskh_composer "${data.pieceInfo.composerName}"
     tagline = ${this.lilypondService.GenerateTagLine()}
 }
 
@@ -239,6 +242,8 @@ melody = { ${melody} }
   \\layout { }
   \\midi { }
 }
+
+${lyricsCode}
 `;
     }
 
