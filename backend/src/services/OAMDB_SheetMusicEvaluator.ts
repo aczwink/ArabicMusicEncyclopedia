@@ -95,17 +95,20 @@ export class OAMDB_SheetMusicEvaluator
                     type: MelodyEventType.NotesOrRests,
                     notesOrRests: this.ParseLilyPondNotes(melody.noteLanguage, melody.notes, state)
                 };
+
             case OAMDB_SheetMusic_MelodyEntryType.Repeat:
                 return {
                     type: MelodyEventType.Repeat,
                     nestedEvents: await this.EvaluateMelodyEvents(melody.music, state)
                 };
+
             case OAMDB_SheetMusic_MelodyEntryType.UpdateMaqam:
                 return {
                     type: MelodyEventType.UpdateMaqam,
                     pitch: this.lilyPondNoteService.ParseLilypondPitch(melody.octavePitch, "english"),
                     maqamId: melody.maqamId
                 };
+
             case OAMDB_SheetMusic_MelodyEntryType.UpdateRelativePitch:
                 {
                     const pitch = this.lilyPondNoteService.ParseLilypondPitch(melody.pitch.substring(0, melody.pitch.length - 1), "english");
@@ -115,7 +118,8 @@ export class OAMDB_SheetMusicEvaluator
                         octave: parseInt(melody.pitch[melody.pitch.length - 1])
                     };
                 }
-                break;
+                return undefined;
+
             case OAMDB_SheetMusic_MelodyEntryType.UpdateRhythm:
                 const timeSig = await this.QueryRhythmTimeSig(melody.rhythmId);
                 return {
@@ -123,6 +127,14 @@ export class OAMDB_SheetMusicEvaluator
                     num: timeSig.num,
                     den: timeSig.den
                 };
+
+            case OAMDB_SheetMusic_MelodyEntryType.UpdateTempo:
+                return {
+                    type: MelodyEventType.UpdateTempo,
+                    tempo: melody.tempo,
+                    duration: this.ParseDuration(melody.durationValue),
+                };
+
             case OAMDB_SheetMusic_MelodyEntryType.UpdateTimeSignature:
                 return {
                     type: MelodyEventType.UpdateTimeSignature,
@@ -155,6 +167,7 @@ export class OAMDB_SheetMusicEvaluator
     private async EvaluateSheetMusic(piece: OpenArabicMusicDBMusicalPiece, composerName: string, state: EvaluationState): Promise<SheetMusic>
     {
         return {
+            layout: piece.sheetMusic!.layout,
             pieceInfo: {
                 composerName,
                 lyrics: piece.lyrics?.text ?? "",

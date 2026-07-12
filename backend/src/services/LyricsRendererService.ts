@@ -32,16 +32,43 @@ export class LyricsRendererService
     }
 
     //Public methods
-    public GenerateLilyPondCode(lyrics: string)
+    public GenerateLilyPondCode(lyrics: string, twoColumns: boolean)
     {
         const blocks = this.SplitIntoBlocks(lyrics);
 
-        const { twoColumns, fontSize, linesPerPage } = this.DoLayoutComputation(blocks);
+        const pageState: PageState = {
+            leftCol: [],
+            rightCol: []
+        };
+        if(twoColumns)
+        {
+            const linesPerColumn = blocks.Values().Map(x => x.length).Sum() / 2;
 
-        const pageBlocks = this.SplitBlocksOntoPages(blocks, twoColumns, linesPerPage);
-        const pageRendered = pageBlocks.map(this.RenderPage.bind(this));
+            for (const block of blocks)
+            {
+                if(pageState.leftCol.length > linesPerColumn)
+                {
+                    pageState.rightCol.push(...block);
+                    pageState.rightCol.push(null); //end of block
+                }
+                else
+                {
+                    pageState.leftCol.push(...block);
+                    pageState.leftCol.push(null); //end of block
+                }
+            }
+        }
+        else
+        {
+            for (const block of blocks)
+            {
+                pageState.leftCol.push(...block);
+                pageState.leftCol.push(null); //end of block
+            }
+        }
 
-        return pageRendered.join("\n");
+        const pageRendered = this.RenderPage(pageState);
+        return pageRendered;
     }
 
     public async Render(pieceName: string, composerName: string, lyrics: string)

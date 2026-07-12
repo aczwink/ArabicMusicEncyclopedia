@@ -28,9 +28,11 @@ import { SheetMusicTransposer } from "./SheetMusicTransposer";
 import { SheetMusicSectionSequenceResolverService } from "./SheetMusicSectionSequenceResolverService";
 import { TimedChord } from "../model/Chord";
 import { LyricsRendererService } from "./LyricsRendererService";
+import { ChordTypeToLilyPondString } from "../lilypond/chords";
 
 interface RealizationOptions
 {
+    fullAccompaniment: boolean;
     unfoldRepeats: boolean;
 }
 
@@ -51,6 +53,7 @@ export class SheetMusicRealizerService
         const tranposed = await this.sheetMusicTransposer.TransposeTo(layout, pitch);
 
         const code = await this.GenerateLilyPondCodeFromSheetMusic(tranposed, {
+            fullAccompaniment: true,
             unfoldRepeats: true
         });
 
@@ -64,6 +67,7 @@ export class SheetMusicRealizerService
         const tranposed = await this.sheetMusicTransposer.TransposeTo(layout, pitch);
 
         const code = await this.GenerateLilyPondCodeFromSheetMusic(tranposed, {
+            fullAccompaniment: false,
             unfoldRepeats: false
         });
         
@@ -103,6 +107,21 @@ export class SheetMusicRealizerService
         throw new Error("Illegal duration value: " + duration.ToString());
     }
 
+    private GenerateAccompanimentCode(data: SingleSectionSheetMusic, state: RealizationOptions)
+    {
+        if(state.fullAccompaniment)
+        {
+            //TODO :-)
+        }
+
+        const chords = this.GenerateChordModeCode(data.chords);
+
+        return {
+            staff: `\\chordmode { \\set chordChanges = ##t ${chords} }`,
+            staffType: "ChordNames",
+        };
+    }
+
     private GenerateChordModeCode(chords: TimedChord | TimedChord[]): string
     {
         if(Array.isArray(chords))
@@ -110,7 +129,7 @@ export class SheetMusicRealizerService
             const parts = chords.Values().Map(x => this.GenerateChordModeCode(x)).ToArray();
             return parts.join("\n");
         }
-        return this.lilyPondNoteService.ToLilypondNote(chords.root, "english") + this.DurationToLilyPond(chords.duration);
+        return this.lilyPondNoteService.ToLilypondNote(chords.root, "english") + this.DurationToLilyPond(chords.duration) + ChordTypeToLilyPondString(chords.type);
     }
 
     private async GenerateCode(event: MelodyEvent | MelodyEvent[], state: RealizationOptions): Promise<string>
@@ -140,6 +159,10 @@ export class SheetMusicRealizerService
             case MelodyEventType.UpdateMaqam:
                 const keyPitch = this.lilyPondNoteService.ToLilypondNote(event.pitch, "english");
                 return `\\key ` + keyPitch + " " + this.MapMaqamId(event.maqamId);
+
+            case MelodyEventType.UpdateTempo:
+                return "\\tempo " + this.DurationToLilyPond(event.duration) + " = " + event.tempo
+
             case MelodyEventType.UpdateTimeSignature:
                 return `\\time ${event.num}/${event.den}`;
         }
@@ -191,12 +214,12 @@ export class SheetMusicRealizerService
 
     private async GenerateLilyPondCodeFromSheetMusic(data: SingleSectionSheetMusic, state: RealizationOptions)
     {
-        const fontSize = 20;
+        const fontSize = data.layout.globalStaffSize;
 
-        const chords = this.GenerateChordModeCode(data.chords);
+        const acc = this.GenerateAccompanimentCode(data, state);
         const melody = await this.GenerateCode(data.melody, state);
 
-        const lyricsCode = this.lyricsRendererService.GenerateLilyPondCode(data.pieceInfo.lyrics);
+        const lyricsCode = data.layout.includeLyrics ? this.lyricsRendererService.GenerateLilyPondCode(data.pieceInfo.lyrics, data.layout.useTwoColumnsForLyrics) : "";
 
         return `
 \\version "2.24.4"
@@ -228,15 +251,12 @@ export class SheetMusicRealizerService
 }
 
 \\language "english"
-chordsStaff = \\chordmode {
-    \\set chordChanges = ##t
-    ${chords}
-}
+accStaff = ${acc.staff}
 melody = { ${melody} }
 
 \\score {
  <<
-  \\new ChordNames \\chordsStaff
+  \\new ${acc.staffType} \\accStaff
   \\new Staff \\melody
  >>
   \\layout { }

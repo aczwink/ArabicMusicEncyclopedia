@@ -19,6 +19,8 @@
 import { OctavePitch } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
 import { NoteOrRest } from "./Note";
 import { TimedChord } from "./Chord";
+import { OAMDB_SheetMusic_LayoutInfo } from "@aczwink/openarabicmusicdb-domain";
+import { Fraction } from "./Fraction";
 
 export enum MelodyEventType
 {
@@ -26,6 +28,7 @@ export enum MelodyEventType
     Repeat,
     SegnoRepeat,
     UpdateMaqam,
+    UpdateTempo,
     UpdateTimeSignature,
 }
 
@@ -56,6 +59,13 @@ export interface UpdateMaqamEvent
     maqamId: string;
 }
 
+export interface UpdateTempoEvent
+{
+    type: MelodyEventType.UpdateTempo;
+    tempo: number;
+    duration: Fraction;
+}
+
 export interface UpdateTimeSignatureEvent
 {
     type: MelodyEventType.UpdateTimeSignature;
@@ -63,7 +73,7 @@ export interface UpdateTimeSignatureEvent
     den: number;
 }
 
-export type MelodyEvent = NotesOrRestsEvent | RepeatEvent | SegnoRepeatEvent | UpdateMaqamEvent | UpdateTimeSignatureEvent;
+export type MelodyEvent = NotesOrRestsEvent | RepeatEvent | SegnoRepeatEvent | UpdateMaqamEvent | UpdateTempoEvent | UpdateTimeSignatureEvent;
 
 export interface Section
 {
@@ -71,24 +81,25 @@ export interface Section
     melody: MelodyEvent[];
 }
 
+interface PieceInfo
+{
+    title: string;
+    composerName: string;
+    lyrics: string;
+}
+
 export interface SheetMusic
 {
-    pieceInfo: {
-        title: string;
-        composerName: string;
-        lyrics: string;
-    };
+    layout: OAMDB_SheetMusic_LayoutInfo;
+    pieceInfo: PieceInfo;
     sections: Section[];
     sectionSequence: number[];
 }
 
 export interface SingleSectionSheetMusic
 {
-    pieceInfo: {
-        title: string;
-        composerName: string;
-        lyrics: string;
-    };
+    layout: OAMDB_SheetMusic_LayoutInfo;
+    pieceInfo: PieceInfo;
     chords: TimedChord[];
     melody: MelodyEvent[];
 }

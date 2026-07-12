@@ -67,6 +67,7 @@ export class SheetMusicSectionSequenceResolverService
         }
 
         return {
+            layout: sheetMusic.layout,
             chords: flattenedChords,
             melody: flattened,
             pieceInfo: sheetMusic.pieceInfo,

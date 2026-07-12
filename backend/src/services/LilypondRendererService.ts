@@ -25,6 +25,7 @@ import { LilyPondNoteService } from "./LilypondNoteService";
 import { OctavePitch } from "@aczwink/openarabicmusicdb-domain/dist/OctavePitch";
 import { IntervalsService } from "./IntervalsService";
 import { ChordType } from "../model/Chord";
+import { ChordTypeToLilyPondString } from "../lilypond/chords";
 
 @Injectable
 export class LilyPondRendererService
@@ -205,34 +206,6 @@ export class LilyPondRendererService
 
     private ToLilypondChord(pitch: OctavePitch, chord: ChordType)
     {
-        //https://lilypond.org/doc/v2.23/Documentation/notation/common-chord-modifiers.html
-        function ChordTypeToString(chord: ChordType): string
-        {
-            switch(chord)
-            {
-                case ChordType.AugmentedTriad:
-                    return ":aug";
-                case ChordType.DiminishedTriad:
-                    return ":dim";
-                case ChordType.DominantSeventh:
-                    return ":7";
-                case ChordType.MajorSeventh:
-                    return ":maj7";
-                case ChordType.MajorTriad:
-                    return "";
-                case ChordType.MinorSeventh:
-                    return ":m7";
-                case ChordType.MinorTriad:
-                    return ":m";
-                case ChordType.PowerChord:
-                    return ":5.8";
-                case ChordType.MajorAddFlatNine:
-                    return ":3.5.9-";
-                case ChordType.Suspended2nd:
-                    return ":sus2";
-            }
-        }
-
-        return this.lilypondNoteService.ToLilypondNote(pitch, "english") + "1" + ChordTypeToString(chord);
+        return this.lilypondNoteService.ToLilypondNote(pitch, "english") + "1" + ChordTypeToLilyPondString(chord);
     }
 }
